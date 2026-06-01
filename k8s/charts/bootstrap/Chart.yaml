@@ -1,0 +1,5 @@
+apiVersion: v2
+name: blueprint
+description: GitOps bootstrap chart that defines the desired state of the cluster. Manages system components and applications via ArgoCD.
+type: application
+version: 0.1.0

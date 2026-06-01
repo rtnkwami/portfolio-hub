@@ -1,0 +1,35 @@
+{{- if .Values.apps.nodeExporter.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: node-exporter
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    chart: prometheus-node-exporter
+    repoURL: oci://ghcr.io/prometheus-community/charts/prometheus-node-exporter
+    targetRevision: {{ .Values.apps.nodeExporter.version }}
+    {{- if .Values.apps.nodeExporter.values }}
+    helm:
+      valuesObject:
+        {{- toYaml .Values.apps.nodeExporter.values | nindent 8 }}
+    {{- end }}
+  destination:
+    namespace: node-exporter
+    server: {{ $.Values.globals.destinationServer }}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    managedNamespaceMetadata:
+      labels:
+        pod-security.kubernetes.io/enforce: privileged
+    syncOptions:
+      - ServerSideApply=true
+      - CreateNamespace=true
+{{- end }}

@@ -1,0 +1,32 @@
+{{- if .Values.operators.externalDns.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: external-dns
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    chart: external-dns
+    repoURL: https://kubernetes-sigs.github.io/external-dns/
+    targetRevision: {{ .Values.operators.externalDns.version }}
+    {{- if .Values.operators.externalDns.values }}
+    helm:
+      valuesObject:
+        {{- toYaml .Values.operators.externalDns.values | nindent 8 }}
+    {{- end }}
+  destination:
+    namespace: external-dns
+    server: {{ $.Values.globals.destinationServer }}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - ServerSideApply=true
+      - CreateNamespace=true
+{{- end }}

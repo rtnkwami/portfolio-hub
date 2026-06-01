@@ -1,0 +1,28 @@
+{{- if .Values.crds.gatewayApi.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: gateway-api-crds
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-2"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/kubernetes-sigs/gateway-api
+    path: config/crd/experimental
+    targetRevision: {{ .Values.crds.gatewayApi.version }}
+    directory:
+      recurse: true
+  destination:
+    namespace: kube-system
+    server: {{ $.Values.globals.destinationServer }}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - ServerSideApply=true
+{{- end }}

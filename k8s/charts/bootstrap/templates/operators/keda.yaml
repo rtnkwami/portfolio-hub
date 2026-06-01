@@ -1,0 +1,32 @@
+{{- if .Values.operators.keda.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: keda
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    chart: keda
+    repoURL: https://kedacore.github.io/charts
+    targetRevision: {{ .Values.operators.keda.version }}
+    {{- if .Values.operators.keda.values }}
+    helm:
+      valuesObject:
+        {{- toYaml .Values.operators.keda.values | nindent 8 }}
+    {{- end }}
+  destination:
+    namespace: keda
+    server: {{ $.Values.globals.destinationServer }}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - ServerSideApply=true
+      - CreateNamespace=true
+{{- end }}

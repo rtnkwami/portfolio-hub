@@ -1,0 +1,32 @@
+{{- if .Values.operators.cnpg.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cnpg
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    chart: cloudnative-pg
+    repoURL: oci://ghcr.io/cloudnative-pg/charts/cloudnative-pg
+    targetRevision: {{ .Values.operators.cnpg.version }}
+    {{- if .Values.operators.cnpg.values }}
+    helm:
+      valuesObject:
+        {{- toYaml .Values.operators.cnpg.values | nindent 8 }}
+    {{- end }}
+  destination:
+    namespace: cnpg-system
+    server: {{ $.Values.globals.destinationServer }}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - ServerSideApply=true
+      - CreateNamespace=true
+{{- end }}

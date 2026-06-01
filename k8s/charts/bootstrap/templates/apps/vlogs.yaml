@@ -1,0 +1,32 @@
+{{- if .Values.apps.vlogs.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: vlogs
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    chart: victoria-logs-single
+    repoURL: oci://ghcr.io/victoriametrics/helm-charts/victoria-logs-single
+    targetRevision: {{ .Values.apps.vlogs.version }}
+    {{- if .Values.apps.vlogs.values }}
+    helm:
+      valuesObject:
+        {{- toYaml .Values.apps.vlogs.values | nindent 8 }}
+    {{- end }}
+  destination:
+    namespace: observability
+    server: {{ $.Values.globals.destinationServer }}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - ServerSideApply=true
+      - CreateNamespace=true
+{{- end }}

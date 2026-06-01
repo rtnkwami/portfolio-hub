@@ -1,0 +1,26 @@
+{{- if .Values.operators.karpenter.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: gateway-api-crds
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-2"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    chart: karpenter
+    repoURL: oci://public.ecr.aws/karpenter/karpenter-crd
+    targetRevision: {{ .Values.operators.karpenter.version }}
+  destination:
+    namespace: kube-system
+    server: {{ $.Values.globals.destinationServer }}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - ServerSideApply=true
+{{- end }}

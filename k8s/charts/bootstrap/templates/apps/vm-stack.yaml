@@ -1,0 +1,41 @@
+{{- if .Values.apps.vmStack.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: vm-stack
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    chart: victoria-metrics-k8s-stack
+    repoURL: oci://ghcr.io/victoriametrics/helm-charts/victoria-metrics-k8s-stack
+    targetRevision: {{ .Values.apps.vmStack.version }}
+    {{- if .Values.apps.vmStack.values }}
+    helm:
+      valuesObject:
+        {{- toYaml .Values.apps.vmStack.values | nindent 8 }}
+    {{- end }}
+  destination:
+    namespace: observability
+    server: {{ $.Values.globals.destinationServer }}
+  ignoreDifferences:
+    - kind: Secret
+      jsonPointers:
+        - /data/admin-password
+    - group: apps
+      kind: Deployment
+      jsonPointers:
+        - /spec/template/metadata/annotations/checksum~1secret
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - ServerSideApply=true
+      - CreateNamespace=true
+      - RespectIgnoreDifferences=true
+{{- end }}

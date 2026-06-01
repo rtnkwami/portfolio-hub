@@ -1,0 +1,178 @@
+.system-tolerations: &system-tolerations
+  tolerations:
+    - key: niovial.io/node-purpose
+      operator: Equal
+      value: system
+      effect: NoSchedule
+
+.observability-scheduling: &observability-scheduling
+  nodeSelector:
+    niovial.io/node-purpose: observability
+  tolerations:
+    - key: niovial.io/node-purpose
+      operator: Equal
+      value: observability
+      effect: NoSchedule
+
+globals:
+  destinationServer: https://kubernetes.default.svc
+  clusterName: homelab
+
+crds:
+  gatewayApi:
+    enabled: false
+    version: v1.5.1
+
+operators:  
+  certManager:
+    enabled: true
+    version: 1.20.2
+    values:
+      global:
+        nodeSelector:
+          niovial.io/node-purpose: system
+      <<: *system-tolerations
+      crds:
+        enabled: true
+      webhook:
+        <<: *system-tolerations
+      cainjector:
+        <<: *system-tolerations
+      startupapicheck:
+        <<: *system-tolerations
+  
+  cnpg:
+    enabled: true
+    version: 0.28.2
+    values:
+      resources:
+        limits:
+          cpu: 100m
+          memory: 200Mi
+        requests:
+          cpu: 100m
+          memory: 100Mi
+      nodeSelector:
+        niovial.io/node-purpose: system
+      <<: *system-tolerations
+
+  keda:
+    enabled: true
+    version: 2.19.0
+    values:
+      nodeSelector:
+        niovial.io/node-purpose: system
+      <<: *system-tolerations
+  
+  externalDns:
+    enabled: true
+    version: 1.21.1
+    values:
+      nodeSelector:
+        niovial.io/node-purpose: system
+      <<: *system-tolerations
+      sources:
+        - service
+        - gateway-httproute
+        - gateway-tlsroute
+        - gateway-tcproute
+      rbac:
+        additionalPermissions:
+          - apiGroups: [""]
+            resources: ["namespaces"]
+            verbs: ["get","watch","list"]
+      provider:
+        # override with values file if you use something else
+        name: cloudflare
+      txtOwnerId: homelab
+
+  karpenter:
+    enabled: false
+    version: 1.11.1
+    values: {}
+
+apps:
+  nodeExporter:
+    enabled: true
+    version: 4.55.0
+    values:
+      extraArgs:
+        - --collector.filesystem.ignored-mount-points=^/(dev|proc|sys|var/lib/docker/.+|var/lib/kubelet/.+)($|/)
+        - --collector.filesystem.ignored-fs-types=^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs)$
+      prometheus:
+        monitor:
+          enabled: true      
+
+  vmStack:
+    enabled: true
+    version: 0.78.0
+    values:
+      prometheus-node-exporter:
+        enabled: false
+      kube-state-metrics:
+        <<: *observability-scheduling
+      defaultDatasources:
+        extra:
+          - name: VictoriaLogs
+            type: victoriametrics-logs-datasource
+            url: http://vlogs-victoria-logs-single-server:9428
+      grafana:
+        <<: *observability-scheduling
+        plugins:
+          - victoriametrics-logs-datasource
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+      victoria-metrics-operator:
+        admissionWebhooks:
+          certManager:
+            enabled: true
+        nodeSelector:
+          niovial.io/node-purpose: system
+        <<: *system-tolerations
+      alertmanager:
+        spec:
+          <<: *observability-scheduling
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+      vmsingle:
+        spec:
+          <<: *observability-scheduling
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "500m"
+            limits:
+              memory: "1Gi"
+      vmalert:
+        spec:
+          <<: *observability-scheduling
+      vmagent:
+        spec:
+          <<: *observability-scheduling
+
+  vlogsCollector:
+    enabled: true
+    version: 0.3.4
+    values:
+      remoteWrite:
+        - url: http://vlogs-victoria-logs-single-server.observability.svc.cluster.local:9428
+      podMonitor:
+        enabled: true
+      tolerations:
+        - operator: Exists
+
+  vlogs:
+    enabled: true
+    version: 0.13.3
+    values:
+      server:
+        <<: *observability-scheduling
+
