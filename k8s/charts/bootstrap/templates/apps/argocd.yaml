@@ -1,0 +1,28 @@
+{{- if .Values.apps.argocd.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd
+  namespace: argocd
+  annotations:
+    # argocd needs to manage itself before managing anything else in the cluster
+    argocd.argoproj.io/sync-wave: "-3"
+spec:
+  project: default
+  source:
+    chart: argo-cd
+    repoURL: oci://ghcr.io/argoproj/argo-helm
+    targetRevision: {{ .Values.apps.argocd.version }}
+    helm:
+      valuesObject:
+        {{- toYaml .Values.apps.argocd.values | nindent 8 }}
+  destination:
+    namespace: argocd
+    server: {{ $.Values.globals.destinationServer }}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - ServerSideApply=true
+{{- end }}

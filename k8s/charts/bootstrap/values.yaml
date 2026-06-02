@@ -76,6 +76,15 @@ operators:
     values: {}
 
 apps:
+  argocd:
+    enabled: true
+    version: 9.5.17
+    values:
+      global:
+        <<: *system-tolerations
+        nodeSelector:
+          niovial.io/node-purpose: system
+
   nodeExporter:
     enabled: true
     version: 4.55.0
