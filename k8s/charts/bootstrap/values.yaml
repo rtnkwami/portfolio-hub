@@ -5,15 +5,6 @@
       value: system
       effect: NoSchedule
 
-.observability-scheduling: &observability-scheduling
-  nodeSelector:
-    niovial.io/node-purpose: observability
-  tolerations:
-    - key: niovial.io/node-purpose
-      operator: Equal
-      value: observability
-      effect: NoSchedule
-
 globals:
   destinationServer: https://kubernetes.default.svc
   clusterName: homelab
@@ -45,13 +36,6 @@ operators:
     enabled: true
     version: 0.28.2
     values:
-      resources:
-        limits:
-          cpu: 100m
-          memory: 200Mi
-        requests:
-          cpu: 100m
-          memory: 100Mi
       nodeSelector:
         niovial.io/node-purpose: system
       <<: *system-tolerations
@@ -109,23 +93,20 @@ apps:
     values:
       prometheus-node-exporter:
         enabled: false
-      kube-state-metrics:
-        <<: *observability-scheduling
       defaultDatasources:
         extra:
           - name: VictoriaLogs
             type: victoriametrics-logs-datasource
             url: http://vlogs-victoria-logs-single-server:9428
       grafana:
-        <<: *observability-scheduling
         plugins:
           - victoriametrics-logs-datasource
         resources:
           requests:
             memory: "512Mi"
-            cpu: "500m"
+            cpu: "250m"
           limits:
-            memory: "1Gi"
+            memory: "512Mi"
       victoria-metrics-operator:
         admissionWebhooks:
           certManager:
@@ -135,28 +116,12 @@ apps:
         <<: *system-tolerations
       alertmanager:
         spec:
-          <<: *observability-scheduling
           resources:
             requests:
-              memory: "512Mi"
-              cpu: "250m"
+              memory: "256Mi"
+              cpu: "125m"
             limits:
-              memory: "1Gi"
-      vmsingle:
-        spec:
-          <<: *observability-scheduling
-          resources:
-            requests:
-              memory: "512Mi"
-              cpu: "500m"
-            limits:
-              memory: "1Gi"
-      vmalert:
-        spec:
-          <<: *observability-scheduling
-      vmagent:
-        spec:
-          <<: *observability-scheduling
+              memory: "256Mi"
 
   vlogsCollector:
     enabled: true
@@ -172,7 +137,4 @@ apps:
   vlogs:
     enabled: true
     version: 0.13.3
-    values:
-      server:
-        <<: *observability-scheduling
-
+    values: {}      
