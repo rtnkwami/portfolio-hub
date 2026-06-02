@@ -29,25 +29,6 @@ module "kubernetes" {
     # { name = "control", type = "cx23", location = "nbg1", count = 1 }
   ]
 
-  worker_nodepools = [
-    {
-      name = "system-1"
-      type = "cx23"
-      location = "hel1"
-      count = 1
-      labels = { "niovial.io/node-purpose" = "system" }
-      taints = ["niovial.io/node-purpose=system:NoSchedule"]
-    },
-    {
-      name     = "system-2"
-      type     = "cx23"
-      location = "fsn1"
-      count    = 1
-      labels = { "niovial.io/node-purpose" = "system" }
-      taints = ["niovial.io/node-purpose=system:NoSchedule" ]
-    }
-  ]
-
   cluster_autoscaler_discovery_enabled = true
   cluster_autoscaler_cleanup_enabled = true
   cluster_autoscaler_helm_values = {
@@ -57,9 +38,9 @@ module "kubernetes" {
   }
 
   cluster_autoscaler_nodepools = concat(
+    flatten(values(local.node_pools.system)),
     flatten(values(local.node_pools.general)),
     flatten(values(local.node_pools.database)),
-    flatten(values(local.node_pools.observability)),
   )
 }
 

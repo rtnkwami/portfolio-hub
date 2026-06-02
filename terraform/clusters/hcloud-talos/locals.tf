@@ -12,20 +12,35 @@ locals {
     small = "cx23"
     medium = "cx33"
     large = "cx43"
+    xlarge = "cx53"
   }
 
   node_pools = {
+    system = {
+      for size in ["small", "medium"] :
+      size => [
+        for zone_index, zone in local.zones : {
+          name = "system-${size}-${zone_index + 1}"
+          type = local.node_sizes[size]
+          location = zone
+          min = 0
+          max = 1
+          labels = { "niovial.io/node-purpose" = "system" }
+          taints = ["niovial.io/node-purpose=system:NoSchedule"]
+        }
+      ]
+    }
+
     general = {
-      for size in ["small", "medium", "large"] :
+      for size in ["small", "medium", "large", "xlarge"] :
       size => [
         for zone_index, zone in local.zones : {
           name = "general-${size}-${zone_index + 1}"
           type = local.node_sizes[size]
           location = zone
           min = 0
-          max = 3
+          max = 10
           labels = { "niovial.io/node-purpose" = "general" }
-          taints = ["niovial.io/node-purpose=general:NoSchedule"]
         }
       ]
     }
@@ -41,21 +56,6 @@ locals {
           max = 3
           labels = { "niovial.io/node-purpose" = "database" }
           taints = ["niovial.io/node-purpose=database:NoSchedule"]
-        }
-      ]
-    }
-
-    observability = {
-      for size_index, size in ["small", "medium",] :
-      size => [
-        for zone_index, zone in local.zones : {
-          name = "observability-${size}-${zone_index + 1}"
-          type = local.node_sizes[size]
-          location = zone
-          min = 0
-          max = 3
-          labels = { "niovial.io/node-purpose" = "observability" }
-          taints = ["niovial.io/node-purpose=observability:NoSchedule"]
         }
       ]
     }
