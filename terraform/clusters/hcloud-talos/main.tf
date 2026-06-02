@@ -50,11 +50,16 @@ module "kubernetes" {
 
   cluster_autoscaler_discovery_enabled = true
   cluster_autoscaler_cleanup_enabled = true
+  cluster_autoscaler_helm_values = {
+    extraArgs = {
+      expander = "least-waste"
+    }
+  }
 
   cluster_autoscaler_nodepools = concat(
-    local.general_nodepools,
-    local.database_nodepools,
-    local.observability_nodepools
+    flatten(values(local.node_pools.general)),
+    flatten(values(local.node_pools.database)),
+    flatten(values(local.node_pools.observability)),
   )
 }
 
