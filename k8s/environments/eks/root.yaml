@@ -11,11 +11,11 @@ spec:
     server: https://kubernetes.default.svc
     namespace: argocd
   sources:
-    - repoURL: https://github.com/rtnkwami/portfolio.git
+    - repoURL: https://github.com/rtnkwami/portfolio-hub.git
       path: k8s/charts/blueprint
       targetRevision: HEAD
 
-    - repoURL: https://github.com/rtnkwami/portfolio.git
+    - repoURL: https://github.com/rtnkwami/portfolio-hub.git
       path: k8s/environments/eks/manifests
       targetRevision: HEAD
   syncPolicy:
