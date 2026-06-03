@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  sources:
+    - repoURL: https://github.com/rtnkwami/portfolio.git
+      path: k8s/charts/blueprint
+      targetRevision: HEAD
+
+    - repoURL: https://github.com/rtnkwami/portfolio.git
+      path: k8s/environments/eks/manifests
+      targetRevision: HEAD
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
