@@ -67,7 +67,7 @@ resource "helm_release" "argocd" {
 
 resource "kubernetes_secret_v1" "infisical_credentials" {
   metadata {
-    name = "infisical_credentials"
+    name = "infisical-credentials"
     namespace = "external-secrets"
   }
 
