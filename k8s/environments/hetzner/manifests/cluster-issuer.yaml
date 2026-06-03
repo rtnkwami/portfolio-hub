@@ -4,6 +4,7 @@ metadata:
   name: letsencrypt-dns01
   annotations:
     argocd.argoproj.io/sync-wave: "3"
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 spec:
   acme:
     email: cert-alerts@niovial.io
