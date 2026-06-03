@@ -48,6 +48,15 @@ operators:
         niovial.io/node-purpose: system
       <<: *system-tolerations
   
+  eso:
+    enabled: true
+    version: 2.5.0
+    values:
+      global:
+        nodeSelector:
+          niovial.io/node-purpose: system
+        <<: *system-tolerations
+
   externalDns:
     enabled: true
     version: 1.21.1
