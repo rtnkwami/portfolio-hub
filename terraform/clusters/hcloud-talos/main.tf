@@ -72,8 +72,8 @@ resource "kubernetes_secret_v1" "infisical_secret" {
   }
 
   data_wo = {
-    client_id = var.infisical_client
-    client_secret = var.infisical_secret
+    clientId = var.infisical_client
+    clientSecret = var.infisical_secret
   }
   immutable = true
 }
