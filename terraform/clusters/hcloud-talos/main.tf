@@ -64,3 +64,16 @@ resource "helm_release" "argocd" {
   
   depends_on = [ module.kubernetes ]
 }
+
+resource "kubernetes_secret_v1" "infisical_secret" {
+  metadata {
+    name = "infisical_secret"
+    namespace = "external-secrets"
+  }
+
+  data_wo = {
+    client_id = var.infisical_client
+    client_secret = var.infisical_secret
+  }
+  immutable = true
+}
