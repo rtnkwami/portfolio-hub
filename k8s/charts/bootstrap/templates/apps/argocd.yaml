@@ -11,7 +11,7 @@ spec:
   project: default
   source:
     chart: argo-cd
-    repoURL: oci://ghcr.io/argoproj/argo-helm
+    repoURL: oci://ghcr.io/argoproj/argo-helm/argo-cd
     targetRevision: {{ .Values.apps.argocd.version }}
     helm:
       valuesObject:
