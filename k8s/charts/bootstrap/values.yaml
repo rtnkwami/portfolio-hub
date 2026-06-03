@@ -86,7 +86,7 @@ operators:
 
 apps:
   argocd:
-    enabled: true
+    enabled: false
     version: 9.5.17
     values:
       global:
