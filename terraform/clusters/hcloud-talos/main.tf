@@ -65,9 +65,9 @@ resource "helm_release" "argocd" {
   depends_on = [ module.kubernetes ]
 }
 
-resource "kubernetes_secret_v1" "infisical_secret" {
+resource "kubernetes_secret_v1" "infisical_credentials" {
   metadata {
-    name = "infisical_secret"
+    name = "infisical_credentials"
     namespace = "external-secrets"
   }
 
