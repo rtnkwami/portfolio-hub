@@ -5,7 +5,7 @@ metadata:
   name: {{ .Values.config.gateway.name }}
   namespace: {{ .Values.config.gateway.namespace }}
   annotations:
-    argocd.argoproj.io/sync-wave: "4"
+    argocd.argoproj.io/sync-wave: "2"
     {{- if .Values.config.clusterIssuer.enabled }}
     cert-manager.io/cluster-issuer: {{ .Values.config.clusterIssuer.name }}
     {{- end }}

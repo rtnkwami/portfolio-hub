@@ -46,6 +46,8 @@ kind: HTTPRoute
 metadata:
   name: grafana-route
   namespace: observability
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
 spec:
   parentRefs:
     - name: {{ .Values.config.gateway.name }}
