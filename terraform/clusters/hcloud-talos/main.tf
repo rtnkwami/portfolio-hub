@@ -110,12 +110,27 @@ resource "kubernetes_namespace_v1" "external_dns" {
   metadata {
     name = "external-dns"
   }
+
+  depends_on = [ module.kubernetes ]
+}
+
+resource "kubernetes_namespace_v1" "cert-manager" {
+  metadata {
+    name = "cert-manager"
+  }
+
+  depends_on = [ module.kubernetes ]
 }
 
 resource "kubernetes_secret_v1" "cloudflare_dns_credentials" {
+  for_each = {
+    external-dns = kubernetes_namespace_v1.external_dns.metadata[0].name
+    cert-manager = kubernetes_namespace_v1.cert-manager.metadata[0].name
+  }
+
   metadata {
     name = "cloudflare-dns-token"
-    namespace = kubernetes_namespace_v1.external_dns.metadata[0].name
+    namespace = each.value
   }
 
   data_wo = {
