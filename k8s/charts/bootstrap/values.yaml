@@ -25,6 +25,8 @@ operators:
       <<: *system-tolerations
       crds:
         enabled: true
+      config:
+        enableGatewayAPI: true
       webhook:
         <<: *system-tolerations
       cainjector:
