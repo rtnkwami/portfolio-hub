@@ -14,7 +14,7 @@ spec:
     repoURL: https://github.com/rtnkwami/portfolio-hub.git
     path: k8s/charts/bootstrap
     targetRevision: HEAD
-    valuesFiles:
+    valueFiles:
       - ../../environments/hetzner/values.yaml
   syncPolicy:
     automated:
