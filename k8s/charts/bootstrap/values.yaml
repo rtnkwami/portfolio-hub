@@ -76,17 +76,6 @@ operators:
           - apiGroups: [""]
             resources: ["namespaces"]
             verbs: ["get","watch","list"]
-      provider:
-        # override with values file if you use something else
-        name: cloudflare
-      env:
-        # externaldns requires cloudflare token to exist before bootstrap (try terraform)
-        - name: CF_API_TOKEN
-          valueFrom:
-            secretKeyRef:
-              name: cloudflare-dns-token
-              key: token
-      txtOwnerId: homelab
 
   karpenter:
     enabled: false
