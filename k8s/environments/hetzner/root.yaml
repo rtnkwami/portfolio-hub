@@ -10,14 +10,12 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
-  sources:
-    - repoURL: https://github.com/rtnkwami/portfolio-hub.git
-      path: k8s/charts/bootstrap
-      targetRevision: HEAD
-
-    - repoURL: https://github.com/rtnkwami/portfolio-hub.git
-      path: k8s/environments/hetzner/manifests
-      targetRevision: HEAD
+  source:
+    repoURL: https://github.com/rtnkwami/portfolio-hub.git
+    path: k8s/charts/bootstrap
+    targetRevision: HEAD
+    valuesFiles:
+      - ../../environments/hetzner/values.yaml
   syncPolicy:
     automated:
       prune: true

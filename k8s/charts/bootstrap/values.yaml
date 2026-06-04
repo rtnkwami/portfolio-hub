@@ -106,6 +106,10 @@ apps:
   vmStack:
     enabled: true
     version: 0.81.0
+    # expose grafana UI via o11y.[config.gateway.hostname]
+    # If gateway is not enabled, this remains inactive
+    httpRoute:
+      enabled: true
     values:
       prometheus-node-exporter:
         enabled: false
@@ -246,4 +250,8 @@ config:
   #     from: observability  # namespace where the HTTPRoute lives
   #   - name: allow-argocd
   #     from: argocd
-  referenceGrants: []
+  referenceGrants:
+    # If referenceGrants is overriden in values, copy the below to allow complete creation
+    # of the observability route.
+    - name: allow-observability
+      from: observability
