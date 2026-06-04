@@ -56,6 +56,6 @@ spec:
     - "o11y.{{ .Values.config.gateway.hostname }}"
   rules:
     - backendRefs:
-        - name: argocd-server
-          port: 8080
+        - name: vm-stack-grafana
+          port: 3000
 {{- end }}
