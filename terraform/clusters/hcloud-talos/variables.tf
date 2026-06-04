@@ -2,6 +2,10 @@ variable "hcloud_token" {
   sensitive = true
 }
 
+variable "cloudflare_dns_token" {
+  sensitive = true
+}
+
 variable "infisical_client" {
   sensitive = true
 }

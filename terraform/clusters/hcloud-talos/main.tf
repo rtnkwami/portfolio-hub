@@ -10,6 +10,7 @@ module "kubernetes" {
   cluster_kubeconfig_path = "./outputs/kubeconfig"
 
   cilium_gateway_api_enabled = true
+  gateway_api_crds_release_channel = "experimental"
   cilium_hubble_enabled = true
   cilium_hubble_relay_enabled = true
   cilium_service_monitor_enabled = true
@@ -27,6 +28,25 @@ module "kubernetes" {
     { name = "control", type = "cx23", location = "hel1", count = 1 },
     # { name = "control", type = "cx23", location = "fsn1", count = 1 },
     # { name = "control", type = "cx23", location = "nbg1", count = 1 }
+  ]
+
+  worker_nodepools = [
+    {
+      name = "system-fixed-1"
+      type = "cx23"
+      location = "hel1"
+      count = 1
+      labels = { "niovial.io/node-purpose" = "system" }
+      taints = ["niovial.io/node-purpose=system:NoSchedule"]
+    },
+    {
+      name     = "system-fixed-2"
+      type     = "cx23"
+      location = "fsn1"
+      count    = 1
+      labels = { "niovial.io/node-purpose" = "system" }
+      taints = ["niovial.io/node-purpose=system:NoSchedule" ]
+    }
   ]
 
   cluster_autoscaler_discovery_enabled = true
@@ -65,15 +85,42 @@ resource "helm_release" "argocd" {
   depends_on = [ module.kubernetes ]
 }
 
+resource "kubernetes_namespace_v1" "external_secrets" {
+  metadata {
+    name = "external-secrets"
+  }
+  depends_on = [ module.kubernetes ]
+}
+
 resource "kubernetes_secret_v1" "infisical_credentials" {
   metadata {
     name = "infisical-credentials"
-    namespace = "external-secrets"
+    namespace = kubernetes_namespace_v1.external_secrets.metadata[0].name
   }
 
   data_wo = {
     clientId = var.infisical_client
     clientSecret = var.infisical_secret
   }
+  data_wo_revision = 1
+  immutable = true
+}
+
+resource "kubernetes_namespace_v1" "external_dns" {
+  metadata {
+    name = "external-dns"
+  }
+}
+
+resource "kubernetes_secret_v1" "cloudflare_dns_credentials" {
+  metadata {
+    name = "cloudflare-dns-token"
+    namespace = kubernetes_namespace_v1.external_dns.metadata[0].name
+  }
+
+  data_wo = {
+    token = var.cloudflare_dns_token
+  }
+  data_wo_revision = 1
   immutable = true
 }

@@ -24,7 +24,7 @@ locals {
           type = local.node_sizes[size]
           location = zone
           min = 0
-          max = 2
+          max = 3
           labels = { "niovial.io/node-purpose" = "system" }
           taints = ["niovial.io/node-purpose=system:NoSchedule"]
         }

@@ -1,3 +1,3 @@
 .terraform/
 outputs/
-**/*.auto.tfvars
+secrets.auto.tfvars
