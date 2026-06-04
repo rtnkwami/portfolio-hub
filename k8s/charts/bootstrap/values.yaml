@@ -225,7 +225,9 @@ config:
   gateway:
     enabled: false
     # Name of the Gateway resource
-    name: cluster-gateway
+    name: ""
+    # The namespace where the Gateway is deployed
+    namespace: ""
     # Additional annotations to merge onto the resource
     annotations: {}
     # GatewayClass name. Depends on your provider (e.g. cilium, nginx, istio)
@@ -244,4 +246,13 @@ config:
     # This Secret will be created by cert-manager if clusterIssuer is enabled
     tlsSecretName: ""
 
+  # ReferenceGrants permit HTTPRoutes in app namespaces to attach to the
+  # Gateway. Each entry creates one ReferenceGrant in the target namespace.
+  # Add one entry per namespace that needs to attach routes to the Gateway.
+  # Example:
+  # referenceGrants:
+  #   - name: allow-observability
+  #     from: observability  # namespace where the HTTPRoute lives
+  #   - name: allow-argocd
+  #     from: argocd
   referenceGrants: []
