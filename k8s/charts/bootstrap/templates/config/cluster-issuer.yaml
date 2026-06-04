@@ -1,0 +1,20 @@
+{{- if .Values.config.clusterIssuer.enabled }}
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: {{ .Values.config.clusterIssuer.name }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+    {{- with .Values.config.clusterIssuer.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  acme:
+    email: {{ .Values.config.clusterIssuer.email }}
+    server: {{ .Values.config.clusterIssuer.server }}
+    privateKeySecretRef:
+      name: {{ .Values.config.clusterIssuer.privateKeySecretRef }}
+    solvers:
+      {{- toYaml .Values.config.clusterIssuer.solvers | nindent 6 }}
+{{- end }}

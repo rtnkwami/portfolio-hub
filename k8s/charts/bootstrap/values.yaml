@@ -165,3 +165,83 @@ apps:
     enabled: true
     version: 0.13.5
     values: {}      
+
+config:
+  clusterIssuer:
+    enabled: false
+    # Name of the ClusterIssuer resource
+    name: ""
+    # Additional annotations to merge onto the resource
+    annotations: {}
+    # Email for ACME registration and expiry alerts
+    email: ""
+    # ACME server URL
+    # Staging: https://acme-staging-v02.api.letsencrypt.org/directory
+    # Production: https://acme-v02.api.letsencrypt.org/directory
+    server: ""
+    # Name of the Secret where the ACME account private key will be stored
+    privateKeySecretRef: ""
+    # Solvers configuration — passed through as-is to cert-manager
+    # Prerequisites: the Secret referenced by any solver must exist in the
+    # cluster before bootstrap runs (e.g. cloudflare-dns-token).
+    # This Secret cannot be created by this chart.
+    # Example dns01 solver using Cloudflare:
+    # solvers:
+    #   - dns01:
+    #       cloudflare:
+    #         apiTokenSecretRef:
+    #           name: cloudflare-dns-token
+    #           key: token
+    solvers: []
+  
+  clusterSecretStore:
+    enabled: false
+    # Name of the ClusterSecretStore resource
+    name: ""
+    # Additional annotations to merge onto the resource
+    annotations: {}
+    # Provider configuration — passed through as-is to external-secrets
+    # Prerequisites: any Secret referenced by the provider must exist in the
+    # cluster before bootstrap runs. These Secrets cannot be created by this chart.
+    # Example using Infisical:
+    # provider:
+    #   infisical:
+    #     hostAPI: https://app.infisical.com
+    #     auth:
+    #       universalAuthCredentials:
+    #         clientId:
+    #           name: infisical-credentials
+    #           key: clientId
+    #           namespace: external-secrets
+    #         clientSecret:
+    #           name: infisical-credentials
+    #           key: clientSecret
+    #           namespace: external-secrets
+    #     secretsScope:
+    #       projectSlug: my-project
+    #       environmentSlug: staging
+    provider: {}
+
+  gateway:
+    enabled: false
+    # Name of the Gateway resource
+    name: cluster-gateway
+    # Additional annotations to merge onto the resource
+    annotations: {}
+    # GatewayClass name. Depends on your provider (e.g. cilium, nginx, istio)
+    class: ""
+    # Annotations passed through to the infrastructure provider (e.g. cloud load balancer)
+    # Prerequisites: these are provider-specific and passed through as-is
+    # Example using Hetzner:
+    # infrastructureAnnotations:
+    #   load-balancer.hetzner.cloud/name: "my-lb"
+    #   load-balancer.hetzner.cloud/location: "nbg1"
+    #   load-balancer.hetzner.cloud/uses-proxyprotocol: "true"
+    infrastructureAnnotations: {}
+    # Base hostname for the wildcard listener. E.g. example.io produces *.example.io
+    hostname: ""
+    # Name of the TLS Secret containing the wildcard certificate
+    # This Secret will be created by cert-manager if clusterIssuer is enabled
+    tlsSecretName: ""
+
+  referenceGrants: []
