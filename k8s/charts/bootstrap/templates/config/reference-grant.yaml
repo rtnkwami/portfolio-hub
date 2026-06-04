@@ -1,4 +1,4 @@
-{{- if .Values.config.referenceGrants }}
+{{- if and .Values.config.gateway.enabled .Values.config.referenceGrants }}
 {{- range $grant := .Values.config.referenceGrants }}
 apiVersion: gateway.networking.k8s.io/v1
 kind: ReferenceGrant

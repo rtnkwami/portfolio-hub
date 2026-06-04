@@ -157,6 +157,7 @@ apps:
 
 config:
   clusterIssuer:
+    # Enabling this requires setting operators.certManager.enabled: true
     enabled: false
     # Name of the ClusterIssuer resource
     name: ""
@@ -184,6 +185,7 @@ config:
     solvers: []
   
   clusterSecretStore:
+    # Enabling this requires setting operators.eso.enabled: true
     enabled: false
     # Name of the ClusterSecretStore resource
     name: ""
