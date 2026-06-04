@@ -57,5 +57,5 @@ spec:
   rules:
     - backendRefs:
         - name: vm-stack-grafana
-          port: 3000
+          port: 80
 {{- end }}
