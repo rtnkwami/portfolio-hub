@@ -59,6 +59,13 @@ app:
         path: /
         port: http
 
+    serviceAccount:
+      create: true
+
+      annotations: {}
+
+      automount: false
+
     # resources defines the compute resource requests and limits for the frontend container.
     # Ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     # Example:
@@ -119,6 +126,13 @@ app:
         path: /
         port: http
     
+    serviceAccount:
+      create: true
+
+      annotations: {}
+
+      automount: false
+
     # resources defines the compute resource requests and limits for the backend container.
     # Ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     # Example:
