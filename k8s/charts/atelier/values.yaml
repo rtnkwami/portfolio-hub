@@ -1,3 +1,224 @@
+global:
+  # This is to override the chart name.
+  nameOverride: atelier
+  fullnameOverride: atelier
+  # This is for the secrets for pulling an image from a private repository.
+  imagePullSecrets: []
+
+# app defines the configuration for the frontend and backend application components.
+app:
+  # nodeSelector is applied to both frontend and backend pods.
+  # Used to constrain pods to nodes with specific labels.
+  # Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector
+  # Example:
+  # nodeSelector:
+  #   kubernetes.io/os: linux
+  #   node-type: application
+  nodeSelector: {}
+
+  # tolerations are applied to both frontend and backend pods.
+  # Used to allow pods to schedule onto nodes with matching taints.
+  # Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
+  # Example:
+  # tolerations:
+  #   - key: "node-role"
+  #     operator: "Equal"
+  #     value: "application"
+  #     effect: "NoSchedule"
+  tolerations: []
+
+  frontend:
+    # image defines the container image for the frontend.
+    image:
+      # repository is the container image repository.
+      repository: ghcr.io/rtnkwami/atelier-frontend
+      # tag is the container image tag.
+      tag: 0.1.0
+      # pullPolicy controls when the image is pulled.
+      # One of: Always, Never, IfNotPresent.
+      pullPolicy: IfNotPresent
+
+    # service defines how the frontend is exposed within the cluster.
+    service:
+      # type is the Kubernetes service type.
+      # One of: ClusterIP, NodePort, LoadBalancer.
+      type: ClusterIP
+      # servicePort is the port the service exposes to other components.
+      servicePort: 80
+      # containerPort is the port the frontend container listens on.
+      # This is used to define the named port in the deployment.
+      containerPort: 4000
+    
+    # This is to setup the liveness and readiness probes more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+    livenessProbe:
+      httpGet:
+        path: /
+        port: http
+    readinessProbe:
+      httpGet:
+        path: /
+        port: http
+
+    # resources defines the compute resource requests and limits for the frontend container.
+    # Ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    # Example:
+    # resources:
+    #   requests:
+    #     cpu: 100m
+    #     memory: 128Mi
+    #   limits:
+    #     cpu: 250m
+    #     memory: 256Mi
+    resources: {}
+
+    autoscaling: {}
+
+    # podLabels are applied to frontend pods only.
+    # Example:
+    # podLabels:
+    #   app.kubernetes.io/component: frontend
+    podLabels:
+      app.kubernetes.io/component: frontend
+
+    # podAnnotations areapplied to frontend pods only.
+    # Example:
+    # podAnnotations:
+    #   prometheus.io/scrape: "true"
+    #   prometheus.io/port: "4000"
+    podAnnotations: {}
+
+  backend:
+    # image defines the container image for the backend.
+    image:
+      # repository is the container image repository.
+      repository: ghcr.io/rtnkwami/atelier-backend
+      # tag is the container image tag.
+      tag: 0.1.0
+      # pullPolicy controls when the image is pulled.
+      # One of: Always, Never, IfNotPresent.
+      pullPolicy: IfNotPresent
+    
+    # service defines how the backend is exposed within the cluster.
+    service:
+      # type is the Kubernetes service type.
+      # One of: ClusterIP, NodePort, LoadBalancer.
+      type: ClusterIP
+      # servicePort is the port the service exposes to other components.
+      servicePort: 80
+      # containerPort is the port the backend container listens on.
+      # This is used to define the named port in the deployment.
+      containerPort: 3000
+
+    # This is to setup the liveness and readiness probes more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+    livenessProbe:
+      httpGet:
+        path: /
+        port: http
+    readinessProbe:
+      httpGet:
+        path: /
+        port: http
+    
+    # resources defines the compute resource requests and limits for the backend container.
+    # Ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    # Example:
+    # resources:
+    #   requests:
+    #     cpu: 100m
+    #     memory: 128Mi
+    #   limits:
+    #     cpu: 250m
+    #     memory: 256Mi
+    resources: {}
+
+    autoscaling: {}
+    
+    # podLabels are applied to backend pods only.
+    # Example:
+    # podLabels:
+    #   app.kubernetes.io/component: backend
+    podLabels:
+      app.kubernetes.io/component: backend
+    
+    # podAnnotations are applied to backend pods only.
+    # Example:
+    # podAnnotations:
+    #   prometheus.io/scrape: "true"
+    #   prometheus.io/port: "3000"
+    podAnnotations: {}
+
+# Secrets defines the ExternalSecret CRDs that will be created for this chart.
+# Each component (backend, frontend, database) can define multiple ExternalSecrets.
+# All ExternalSecrets share the same store and refreshInterval.
+secrets:
+
+  # store defines the SecretStore or ClusterSecretStore used to fetch secrets from.
+  store:
+    # name is the name of the SecretStore or ClusterSecretStore resource.
+    name: infisical
+    # kind is the type of store (SecretStore or ClusterSecretStore).
+    kind: ClusterSecretStore
+
+  # refreshInterval controls how often ExternalSecrets re-sync from the provider.
+  # Valid units: "ns", "us", "ms", "s", "m", "h".
+  # Set to "0" to fetch once and never refresh.
+  refreshInterval: "1h"
+
+
+  # backend defines secrets injected into the backend workload.
+  # Structure:
+  # backend:
+  #   <group>:                # logical grouping -> becomes part of Secret name
+  #     - remoteKey: ...      # external secret key (e.g. Infisical path)
+  #       remoteProperty: ... # optional JSON field selector
+  #       envKey: ...        # key written into Kubernetes Secret
+  #
+  # Each <group> becomes a separate Kubernetes Secret.
+  # Each item under a group becomes a key inside that Secret.
+  #
+  # Resulting pattern:
+  #   <release>-<component>-<group>
+  backend: {}
+
+
+  # frontend defines secrets injected into the frontend workload.
+  # Same structure as backend.
+  # Each group becomes a separate Kubernetes Secret.
+  frontend: {}
+
+
+  # database defines secrets used by the database layer (e.g., CNPG cluster).
+  # These are typically consumed directly by CRDs rather than env injection.
+  # Same grouping model applies.
+  database: {}
+
+database:
+  config:
+    instances: 3
+    storage:
+      size: 30Gi
+    replication:
+      method: any
+      number: 1
+      durability: required
+
+  backups: {}
+
+  poolers: []
+
+httpRoute:
+  annotations: {}
+
+  parentRefs:
+    - name: ""
+      namespace: ""
+  
+  hostnames: []
+
+  rules:
+    - backendRefs:
+        - name: frontend
+
 
 # This will set the replicaset count more information can be found here: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
 replicaCount: 1
@@ -73,40 +294,6 @@ ingress:
 # -- Expose the service via gateway-api HTTPRoute
 # Requires Gateway API resources and suitable controller installed within the cluster
 # (see: https://gateway-api.sigs.k8s.io/guides/)
-httpRoute:
-  # HTTPRoute enabled.
-  enabled: false
-  # HTTPRoute annotations.
-  annotations: {}
-  # Which Gateways this Route is attached to.
-  parentRefs:
-  - name: gateway
-    sectionName: http
-    # namespace: default
-  # Hostnames matching HTTP header.
-  hostnames:
-  - chart-example.local
-  # List of rules and filters applied.
-  rules:
-  - matches:
-    - path:
-        type: PathPrefix
-        value: /headers
-  #   filters:
-  #   - type: RequestHeaderModifier
-  #     requestHeaderModifier:
-  #       set:
-  #       - name: My-Overwrite-Header
-  #         value: this-is-the-only-value
-  #       remove:
-  #       - User-Agent
-  # - matches:
-  #   - path:
-  #       type: PathPrefix
-  #       value: /echo
-  #     headers:
-  #     - name: version
-  #       value: v2
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
