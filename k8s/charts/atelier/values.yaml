@@ -203,15 +203,14 @@ database:
 
   poolers: []
 
+# httpRoute configures the HTTPRoute resource for routing external traffic to the frontend.
 httpRoute:
+  # annotations to add to the HTTPRoute resource.
   annotations: {}
 
+  # parentRefs defines the Gateways this HTTPRoute should attach to.
   parentRefs:
-    - name: ""
-      namespace: ""
-  
-  hostnames: []
+    - name: ""       # name of the Gateway resource.
+      namespace: ""  # namespace of the Gateway resource.
 
-  rules:
-    - backendRefs:
-        - name: frontend
+  hostnames: []

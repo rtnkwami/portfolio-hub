@@ -1,6 +1,5 @@
-{{- if .Values.httpRoute.enabled -}}
 {{- $fullName := include "..fullname" . -}}
-{{- $svcPort := .Values.service.port -}}
+{{- $svcPort := .Values.app.frontend.service.servicePort -}}
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
@@ -21,18 +20,6 @@ spec:
     {{- toYaml . | nindent 4 }}
   {{- end }}
   rules:
-    {{- range .Values.httpRoute.rules }}
-    {{- with .matches }}
-    - matches:
-      {{- toYaml . | nindent 8 }}
-    {{- end }}
-    {{- with .filters }}
-      filters:
-      {{- toYaml . | nindent 8 }}
-    {{- end }}
-      backendRefs:
-        - name: {{ $fullName }}
+    - backendRefs:
+        - name: {{ printf "%s-frontend" $fullName }}
           port: {{ $svcPort }}
-          weight: 1
-    {{- end }}
-{{- end }}
