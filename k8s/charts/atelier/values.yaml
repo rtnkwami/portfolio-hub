@@ -205,13 +205,31 @@ secrets:
 
 database:
   config:
+    image:
+      repository: ""
+      tag: ""
+  
     instances: 3
-    storage:
-      size: 30Gi
-    replication:
-      method: any
-      number: 1
-      durability: required
+    syncReplicas: 1
+    
+    storageSize: 30Gi
+    storageClass: ""
+    walStorageSize: 10Gi
+
+    resources:
+      requests:
+        memory: "6Gi"
+        cpu: "2000m"
+      limits:
+        memory: "6Gi"
+    sharedBufferSize: 1.5Gi
+    
+    nodeSelector: {}
+
+    tolerations: []
+
+    monitoring:
+      enabled: true
 
   backups: {}
 
