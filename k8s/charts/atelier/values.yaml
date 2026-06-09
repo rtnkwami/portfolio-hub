@@ -228,9 +228,6 @@ database:
 
     tolerations: []
 
-    monitoring:
-      enabled: true
-
   backups: {}
 
   poolers: []
