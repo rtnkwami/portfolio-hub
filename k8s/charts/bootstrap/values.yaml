@@ -38,6 +38,10 @@ operators:
     enabled: true
     version: 0.28.2
     values:
+      monitoring:
+        podMonitorEnabled: true
+        grafanaDashboard:
+          create: true
       nodeSelector:
         niovial.io/node-purpose: system
       <<: *system-tolerations

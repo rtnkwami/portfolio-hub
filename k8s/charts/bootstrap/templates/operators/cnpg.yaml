@@ -5,7 +5,8 @@ metadata:
   name: cnpg
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "-1"
+    # cnpg deploys pod monitors and so needs to be applied after vm-stack for prometheus crds.
+    argocd.argoproj.io/sync-wave: "1"
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
