@@ -4,7 +4,7 @@ kind: ClusterIssuer
 metadata:
   name: {{ .Values.config.clusterIssuer.name }}
   annotations:
-    argocd.argoproj.io/sync-wave: "1"
+    argocd.argoproj.io/sync-wave: "-6"
     argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
     {{- with .Values.config.clusterIssuer.annotations }}
     {{- toYaml . | nindent 4 }}

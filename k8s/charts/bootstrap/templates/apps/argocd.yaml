@@ -6,7 +6,7 @@ metadata:
   namespace: argocd
   annotations:
     # argocd needs to manage itself before managing anything else in the cluster
-    argocd.argoproj.io/sync-wave: "-3"
+    argocd.argoproj.io/sync-wave: "-10"
 spec:
   project: default
   source:
