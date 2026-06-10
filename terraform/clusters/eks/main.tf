@@ -10,6 +10,11 @@ module "vpc" {
 
   private_subnet_tags = {
     "karpenter.sh/discovery" = "${var.project_name}-eks-cluster"
+    "kubernetes.io/role/internal-elb" = 1
+  }
+
+  public_subnet_tags = {
+    "kubernetes.io/role/elb" = 1
   }
 
   enable_dns_hostnames = true
@@ -31,7 +36,7 @@ module "eks" {
   version = local.versions.modules.eks
 
   name               = "${var.project_name}-eks-cluster"
-  kubernetes_version = "1.35"
+  kubernetes_version = local.versions.kubernetes
 
   endpoint_private_access                  = true
   endpoint_public_access                   = true

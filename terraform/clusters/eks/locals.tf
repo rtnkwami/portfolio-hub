@@ -21,6 +21,7 @@ data "aws_iam_policy" "ssm_access_policy" {
 locals {
   azs = slice(data.aws_availability_zones.available_azs.names, 0, 3)
   versions = {
+    kubernetes = "1.35"
     modules = {
       vpc = "6.6.1"
       eks = "21.18.0"
