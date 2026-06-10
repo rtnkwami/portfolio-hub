@@ -57,6 +57,7 @@ module "kubernetes" {
     }
   }
 
+  
   cluster_autoscaler_nodepools = concat(
     flatten(values(local.node_pools.system)),
     flatten(values(local.node_pools.general)),

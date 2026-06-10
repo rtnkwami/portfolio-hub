@@ -15,7 +15,26 @@ locals {
     xlarge = "cx53"
   }
 
+  # To prevent cognitive overload, follow the comments below for the structure returned
+  # by the nested loops
   node_pools = {
+    # Generated structure (per group):
+    # <group> = {
+    #   <size> = [
+    #     { name = "<group>-<size>-<zone_index+1>"... }
+    #     { name = "<group>-<size>-<zone_index+1>"... }
+    #     { name = "<group>-<size>-<zone_index+1>"... }
+    #   ]
+    # }
+
+    # Example:
+    # system = {
+    #   small = [
+    #     { name = "system-small-1"... }
+    #     { name = "system-small-2"... }
+    #     { name = "system-small-3"... }
+    #   ]
+    # }
     system = {
       for size in ["small", "medium"] :
       size => [
