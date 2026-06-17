@@ -36,6 +36,8 @@ spec:
   values:
     nodeSelector:
       niovial.io/node-purpose: system
+    # see terraform/eks/eks.tf for cluster name, interruption queue and service account for
+    # pod identity
     settings:
       clusterName: portfolio-eks-cluster
       interruptionQueue: karpenter-interruption-queue-portfolio-eks-cluster
