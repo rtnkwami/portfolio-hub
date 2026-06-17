@@ -15,7 +15,7 @@ metadata:
   namespace: flux-system
 spec:
   # interval at which HelmRelease config is reconciled
-  interval: 10m
+  interval: 1m
   targetNamespace: cert-manager
   # cert-manager's helm chart manages its own crds, and so no need for
   # install.crds or upgrade.crds
@@ -37,6 +37,7 @@ spec:
     global:
       nodeSelector:
         niovial.io/node-purpose: system
+    # cert-manager handles it's own crds
     crds:
       enabled: true
     config:

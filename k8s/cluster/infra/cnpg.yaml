@@ -15,7 +15,7 @@ metadata:
   namespace: flux-system
 spec:
   # interval at which HelmRelease config is reconciled
-  interval: 10m
+  interval: 1m
   targetNamespace: cnpg-system
   # cnpg's helm chart manages its own crds, and so no need for
   # install.crds or upgrade.crds
@@ -41,7 +41,7 @@ spec:
         operator: Equal
         value: system
         effect: NoSchedule
-    monitoring:
-      podMonitorEnabled: true
-      grafanaDashboard:
-        create: true
+    # monitoring:
+    #   podMonitorEnabled: true
+    #   grafanaDashboard:
+    #     create: true
