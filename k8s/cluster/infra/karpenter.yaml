@@ -6,7 +6,7 @@ metadata:
 spec:
   interval: 2h
   type: "oci"
-  url: oci://public.ecr.aws/karpenter/karpenter
+  url: oci://public.ecr.aws/karpenter
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
