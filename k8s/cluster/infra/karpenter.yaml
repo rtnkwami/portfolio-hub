@@ -38,3 +38,6 @@ spec:
       niovial.io/node-purpose: system
     settings:
       clusterName: portfolio-eks-cluster
+      interruptionQueue: karpenter-interruption-queue-portfolio-eks-cluster
+    serviceAccount:
+      name: "karpenter"
