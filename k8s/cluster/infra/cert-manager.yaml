@@ -6,7 +6,7 @@ metadata:
 spec:
   interval: 2h
   type: "oci"
-  url: oci://quay.io/jetstack/charts/cert-manager
+  url: oci://quay.io/jetstack/charts
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
@@ -19,6 +19,8 @@ spec:
   targetNamespace: cert-manager
   # cert-manager's helm chart manages its own crds, and so no need for
   # install.crds or upgrade.crds
+  install:
+    createNamespace: true
   upgrade:
     cleanupOnFail: true
   chart:

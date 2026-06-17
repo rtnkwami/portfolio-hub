@@ -6,7 +6,7 @@ metadata:
 spec:
   interval: 2h
   type: "oci"
-  url: oci://ghcr.io/cloudnative-pg/charts/cloudnative-pg
+  url: oci://ghcr.io/cloudnative-pg/charts
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
@@ -17,10 +17,11 @@ spec:
   # interval at which HelmRelease config is reconciled
   interval: 10m
   targetNamespace: cnpg-system
+  # cnpg's helm chart manages its own crds, and so no need for
+  # install.crds or upgrade.crds
   install:
-    crds: Create
+    createNamespace: true
   upgrade:
-    crds: CreateReplace
     cleanupOnFail: true
   chart:
     spec:

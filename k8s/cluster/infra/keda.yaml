@@ -18,6 +18,8 @@ spec:
   targetNamespace: keda
   # keda's helm chart manages its own crds, and so no need for
   # install.crds or upgrade.crds
+  install:
+    createNamespace: true
   upgrade:
     cleanupOnFail: true
   chart:

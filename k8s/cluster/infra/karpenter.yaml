@@ -19,13 +19,14 @@ spec:
   targetNamespace: kube-system
   install:
     crds: Create
+    createNamespace: true
   upgrade:
     crds: CreateReplace
     cleanupOnFail: true
   chart:
     spec:
       chart: karpenter
-      version: 1.13.0
+      version: 1.12.1
       sourceRef:
         kind: HelmRepository
         name: karpenter
