@@ -44,19 +44,13 @@ spec:
       enableGatewayAPI: true
     webhook:
       tolerations:
-        - key: niovial.io/node-purpose
-          operator: Equal
-          value: system
-          effect: NoSchedule
+        - key: CriticalAddonsOnly
+          operator: Exists
     cainjector:
       tolerations:
-        - key: niovial.io/node-purpose
-          operator: Equal
-          value: system
-          effect: NoSchedule
+        - key: CriticalAddonsOnly
+          operator: Exists
     startupapicheck:
       tolerations:
-        - key: niovial.io/node-purpose
-          operator: Equal
-          value: system
-          effect: NoSchedule
+        - key: CriticalAddonsOnly
+          operator: Exists

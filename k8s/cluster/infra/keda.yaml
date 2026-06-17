@@ -36,7 +36,5 @@ spec:
     nodeSelector:
       niovial.io/node-purpose: system
     tolerations:
-      - key: niovial.io/node-purpose
-        operator: Equal
-        value: system
-        effect: NoSchedule
+      - key: CriticalAddonsOnly
+        operator: Exists
