@@ -1,0 +1,39 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: keda
+  namespace: flux-system
+spec:
+  interval: 2h
+  url: https://kedacore.github.io/charts
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: keda
+  namespace: flux-system
+spec:
+  # interval at which HelmRelease config is reconciled
+  interval: 10m
+  targetNamespace: keda
+  # keda's helm chart manages its own crds, and so no need for
+  # install.crds or upgrade.crds
+  upgrade:
+    cleanUpOnFail: true
+  chart:
+    spec:
+      chart: keda
+      sourceRef:
+        kind: HelmRepository
+        name: keda
+        namespace: flux-system
+      # interval at which chart source is reconciled
+      interval: 2h
+  values:
+    nodeSelector:
+      niovial.io/node-purpose: system
+    tolerations:
+      - key: niovial.io/node-purpose
+        operator: Equal
+        value: system
+        effect: NoSchedule

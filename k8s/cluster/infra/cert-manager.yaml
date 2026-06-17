@@ -21,7 +21,7 @@ spec:
   # interval at which HelmRelease config is reconciled
   interval: 10m
   targetNamespace: cert-manager
-  # helm chart manages its own crds, and so no need for
+  # cert-manager's helm chart manages its own crds, and so no need for
   # install.crds or upgrade.crds
   upgrade:
     cleanUpOnFail: true
