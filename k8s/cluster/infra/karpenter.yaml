@@ -36,3 +36,5 @@ spec:
   values:
     nodeSelector:
       niovial.io/node-purpose: system
+    settings:
+      clusterName: portfolio-eks-cluster
