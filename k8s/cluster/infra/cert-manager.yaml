@@ -37,6 +37,9 @@ spec:
     global:
       nodeSelector:
         niovial.io/node-purpose: system
+    tolerations:
+      - key: CriticalAddonsOnly
+        operator: Exists
     # cert-manager handles it's own crds
     crds:
       enabled: true
