@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: vlogs-collector
+  labels:
+    pod-security.kubernetes.io/enforce: privileged
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: vlogs-collector
+  namespace: flux-system
+spec:
+  interval: 2h
+  type: "oci"
+  url: oci://ghcr.io/victoriametrics/helm-charts
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: vlogs-collector
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: vm-stack
+  # interval at which HelmRelease config is reconciled
+  interval: 1m
+  targetNamespace: vlogs-collector
+  upgrade:
+    cleanupOnFail: true
+  chart:
+    spec:
+      chart: victoria-logs-collector
+      version: 0.3.6
+      sourceRef:
+        kind: HelmRepository
+        name: vlogs-collector
+        namespace: flux-system
+      # interval at which chart source is reconciled
+      interval: 2h
+  values:
+    remoteWrite:
+      - url: http://vlogs-victoria-logs-single-server.observability.svc.cluster.local:9428
+    podMonitor:
+      enabled: true
+    tolerations:
+      - operator: Exists

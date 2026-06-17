@@ -17,6 +17,8 @@ spec:
   # interval at which HelmRelease config is reconciled
   interval: 1m
   targetNamespace: observability
+  install:
+    createNamespace: true
   upgrade:
     cleanupOnFail: true
   chart:
