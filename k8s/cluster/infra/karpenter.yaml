@@ -1,0 +1,40 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: karpenter
+  namespace: flux-system
+spec:
+  interval: 2h
+  url: oci://public.ecr.aws/karpenter/karpenter
+  layerSelector:
+    mediaType: "application/vnd.cncf.helm.chart.content.v1.tar+gzip"
+    operation: copy
+  ref:
+    tag: 1.11.1
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: karpenter
+  namespace: flux-system
+spec:
+  # interval at which HelmRelease config is reconciled
+  interval: 10m
+  targetNamespace: kube-system
+  install:
+    crds: Create
+  upgrade:
+    crds: CreateReplace
+    cleanUpOnFail: true
+  chart:
+    spec:
+      chart: .
+      sourceRef:
+        kind: OCIRepository
+        name: karpenter
+        namespace: flux-system
+      # interval at which chart source is reconciled
+      interval: 2h
+  values:
+    nodeSelector:
+      niovial.io/node-purpose: system
