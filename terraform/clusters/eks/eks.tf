@@ -153,6 +153,20 @@ resource "helm_release" "ebs_csi_driver" {
           "niovial.io/node-purpose" = "system"
         }
       }
+      storageClasses = [
+        {
+          name = "standard"
+          annotations = {
+            "storageclass.kubernetes.io/is-default-class" = "true"
+          }
+          volumeBindingMode = "WaitForFirstConsumer"
+          reclaimPolicy    = "Delete"
+          parameters = {
+            type      = "gp3"
+            encrypted = "true"
+          }
+        }
+      ]
     })
   ]
   depends_on = [aws_eks_addon.coredns]
