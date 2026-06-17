@@ -1,9 +1,0 @@
-# if this option is enabled, taints and tolerations should not be set in the
-# values block of any operator/controller in this chart. If you wish to enable
-# your own custom taints and tolerations, disable this feature first.
-enableOperatorIsolation: true
-
-karpenter:
-  enabled: true
-  version: 1.11.1
-  values: {}
