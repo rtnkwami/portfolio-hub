@@ -139,11 +139,27 @@ resource "aws_eks_addon" "coredns" {
   depends_on = [module.eks_managed_node_group]
 }
 
+resource "helm_release" "ebs_csi_driver" {
+  name = "ebs-csi-driver"
+  namespace = "kube-system"
+  repository = "https://kubernetes-sigs.github.io/aws-ebs-csi-driver"
+  chart = "aws-ebs-csi-driver"
+  version = local.versions.helm_releases.ebs_csi_driver
+  values = [
+    yamlencode({
+      nodeSelector = {
+        "niovial.io/node-purpose" = "system"
+      }
+    })
+  ]
+  depends_on = [aws_eks_addon.coredns]
+}
+
 resource "helm_release" "flux_operator" {
   name = "flux-operator"
   namespace = "flux-system"
   create_namespace = true
-  repository = "oci://ghcr.io/controlplaneio-fluxcd/charts/flux-operator"
+  repository = "oci://ghcr.io/controlplaneio-fluxcd/charts"
   chart = "flux-operator"
   version = local.versions.helm_releases.fluxcd
   values = [

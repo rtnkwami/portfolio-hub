@@ -28,7 +28,6 @@ locals {
       pod_identity = "2.8.0"
     }
     helm_releases = {
-      argocd         = "9.5.14"
       fluxcd         = "0.52.0"
       ebs_csi_driver = "2.60.0"
       cilium         = "1.19.4"

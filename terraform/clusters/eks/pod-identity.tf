@@ -13,7 +13,7 @@ module "karpenter" {
 module "aws_ebs_csi_pod_identity" {
   source = "terraform-aws-modules/eks-pod-identity/aws"
 
-  name                      = "aws-ebs-csi"
+  name                      = "aws-ebs-csi-driver"
   attach_aws_ebs_csi_policy = true
 
   associations = {
