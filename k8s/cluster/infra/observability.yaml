@@ -14,3 +14,24 @@ spec:
   path: "./k8s/cluster/infra/observability"
   prune: true
   timeout: 1m
+  patches:
+    - patch: |
+        apiVersion: v1
+        kind: Namespace
+        metadata:
+          name: node-exporter
+          labels:
+            pod-security.kubernetes.io/enforce: privileged
+      target:
+        kind: Namespace
+        name: node-exporter
+    - patch: |
+        apiVersion: v1
+        kind: Namespace
+        metadata:
+          name: vlogs-collector
+          labels:
+            pod-security.kubernetes.io/enforce: privileged
+      target:
+        kind: Namespace
+        name: vlogs-collector
