@@ -1,68 +1,68 @@
-# apiVersion: source.toolkit.fluxcd.io/v1
-# kind: HelmRepository
-# metadata:
-#   name: vm-stack
-#   namespace: flux-system
-# spec:
-#   interval: 2h
-#   type: "oci"
-#   url: oci://ghcr.io/victoriametrics/helm-charts
-# ---
-# apiVersion: helm.toolkit.fluxcd.io/v2
-# kind: HelmRelease
-# metadata:
-#   name: vm-stack
-#   namespace: flux-system
-# spec:
-#   # interval at which HelmRelease config is reconciled
-#   interval: 1m
-#   targetNamespace: observability
-#   install:
-#     createNamespace: true
-#   upgrade:
-#     cleanupOnFail: true
-#   chart:
-#     spec:
-#       chart: victoria-metrics-k8s-stack
-#       version: 0.84.0
-#       sourceRef:
-#         kind: HelmRepository
-#         name: vm-stack
-#         namespace: flux-system
-#       # interval at which chart source is reconciled
-#       interval: 2h
-#   values:
-#     prometheus-node-exporter:
-#         enabled: false
-#     defaultDatasources:
-#       extra:
-#         - name: VictoriaLogs
-#           type: victoriametrics-logs-datasource
-#           url: http://vlogs-victoria-logs-single-server:9428
-#     grafana:
-#       plugins:
-#         - victoriametrics-logs-datasource
-#       resources:
-#         requests:
-#           memory: "512Mi"
-#           cpu: "250m"
-#         limits:
-#           memory: "512Mi"
-#     victoria-metrics-operator:
-#       admissionWebhooks:
-#         certManager:
-#           enabled: true
-#       nodeSelector:
-#         niovial.io/node-purpose: system
-#       tolerations:
-#         - key: CriticalAddonsOnly
-#           operator: Exists
-#     alertmanager:
-#         spec:
-#           resources:
-#             requests:
-#               memory: "256Mi"
-#               cpu: "125m"
-#             limits:
-#               memory: "256Mi"
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: vm-stack
+  namespace: flux-system
+spec:
+  interval: 2h
+  type: "oci"
+  url: oci://ghcr.io/victoriametrics/helm-charts
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: vm-stack
+  namespace: flux-system
+spec:
+  # interval at which HelmRelease config is reconciled
+  interval: 1m
+  targetNamespace: observability
+  install:
+    createNamespace: true
+  upgrade:
+    cleanupOnFail: true
+  chart:
+    spec:
+      chart: victoria-metrics-k8s-stack
+      version: 0.84.0
+      sourceRef:
+        kind: HelmRepository
+        name: vm-stack
+        namespace: flux-system
+      # interval at which chart source is reconciled
+      interval: 2h
+  values:
+    prometheus-node-exporter:
+        enabled: false
+    defaultDatasources:
+      extra:
+        - name: VictoriaLogs
+          type: victoriametrics-logs-datasource
+          url: http://vlogs-victoria-logs-single-server:9428
+    grafana:
+      plugins:
+        - victoriametrics-logs-datasource
+      resources:
+        requests:
+          memory: "512Mi"
+          cpu: "250m"
+        limits:
+          memory: "512Mi"
+    victoria-metrics-operator:
+      admissionWebhooks:
+        certManager:
+          enabled: true
+      nodeSelector:
+        niovial.io/node-purpose: system
+      tolerations:
+        - key: CriticalAddonsOnly
+          operator: Exists
+    alertmanager:
+        spec:
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "125m"
+            limits:
+              memory: "256Mi"
       
