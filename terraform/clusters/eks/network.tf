@@ -9,7 +9,7 @@ module "vpc" {
   public_subnets  = [for index, value in local.azs : cidrsubnet(var.vpc_cidr, 8, index + 112)]
 
   private_subnet_tags = {
-    "karpenter.sh/discovery" = "${var.project_name}-eks-cluster"
+    "karpenter.sh/discovery"          = "${var.project_name}-eks-cluster"
     "kubernetes.io/role/internal-elb" = 1
   }
 
@@ -24,9 +24,5 @@ module "vpc" {
   single_nat_gateway     = true
   one_nat_gateway_per_az = false
 
-  tags = {
-    Project      = var.project_name
-    ResourceType = "Networking"
-    ManagedBy    = "OpenTofu"
-  }
+  tags = merge(local.global_tags)
 }
