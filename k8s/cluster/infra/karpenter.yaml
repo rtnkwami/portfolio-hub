@@ -1,5 +1,5 @@
 apiVersion: source.toolkit.fluxcd.io/v1
-kind: OCIRepository
+kind: HelmRepository
 metadata:
   name: karpenter
   namespace: flux-system
@@ -27,7 +27,7 @@ spec:
       chart: karpenter
       version: 1.13.0
       sourceRef:
-        kind: OCIRepository
+        kind: HelmRepository
         name: karpenter
         namespace: flux-system
       # interval at which chart source is reconciled
