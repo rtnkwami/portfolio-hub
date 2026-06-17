@@ -146,6 +146,7 @@ resource "helm_release" "ebs_csi_driver" {
   repository = "https://kubernetes-sigs.github.io/aws-ebs-csi-driver"
   chart = "aws-ebs-csi-driver"
   version = local.versions.helm_releases.ebs_csi_driver
+  wait = false
   values = [
     yamlencode({
       controller = {
@@ -179,6 +180,7 @@ resource "helm_release" "flux_operator" {
   repository = "oci://ghcr.io/controlplaneio-fluxcd/charts"
   chart = "flux-operator"
   version = local.versions.helm_releases.fluxcd
+  wait = true
   values = [
     yamlencode({
       nodeSelector = {
