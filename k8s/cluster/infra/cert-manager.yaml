@@ -24,7 +24,7 @@ spec:
   # cert-manager's helm chart manages its own crds, and so no need for
   # install.crds or upgrade.crds
   upgrade:
-    cleanUpOnFail: true
+    cleanupOnFail: true
   chart:
     spec:
       chart: .

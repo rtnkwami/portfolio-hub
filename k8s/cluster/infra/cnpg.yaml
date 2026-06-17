@@ -25,7 +25,7 @@ spec:
     crds: Create
   upgrade:
     crds: CreateReplace
-    cleanUpOnFail: true
+    cleanupOnFail: true
   chart:
     spec:
       chart: .
