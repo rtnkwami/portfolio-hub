@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: node-exporter
+  labels:
+    pod-security.kubernetes.io/enforce: privileged
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: prometheus-node-exporter
+  namespace: flux-system
+spec:
+  interval: 2h
+  type: "oci"
+  url: oci://ghcr.io/prometheus-community/charts
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: node-exporter
+  namespace: flux-system
+spec:
+  # interval at which HelmRelease config is reconciled
+  interval: 1m
+  targetNamespace: node-exporter
+  # cert-manager's helm chart manages its own crds, and so no need for
+  # install.crds or upgrade.crds
+  upgrade:
+    cleanupOnFail: true
+  chart:
+    spec:
+      chart: prometheus-node-exporter
+      version: 4.55.0
+      sourceRef:
+        kind: HelmRepository
+        name: prometheus-node-exporter
+        namespace: flux-system
+      # interval at which chart source is reconciled
+      interval: 2h
+  values:
+    extraArgs:
+      - --collector.filesystem.ignored-mount-points=^/(dev|proc|sys|var/lib/docker/.+|var/lib/kubelet/.+)($|/)
+      - --collector.filesystem.ignored-fs-types=^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs)$
+    prometheus:
+      monitor:
+        enabled: true
