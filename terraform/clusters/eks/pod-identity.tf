@@ -6,6 +6,7 @@ module "karpenter" {
   node_iam_role_use_name_prefix = false
   enable_spot_termination       = true
   queue_name                    = "karpenter-interruption-queue-${module.eks.cluster_name}"
+  enable_inline_policy = true
 
   tags = merge(local.global_tags)
 }

@@ -80,6 +80,7 @@ module "eks_managed_node_group" {
   cluster_service_cidr = module.eks.cluster_service_cidr
   cluster_endpoint     = module.eks.cluster_endpoint
   cluster_auth_base64  = module.eks.cluster_certificate_authority_data
+  kubernetes_version = local.versions.kubernetes
 
   subnet_ids = module.vpc.private_subnets
 
@@ -147,8 +148,10 @@ resource "helm_release" "ebs_csi_driver" {
   version = local.versions.helm_releases.ebs_csi_driver
   values = [
     yamlencode({
-      nodeSelector = {
-        "niovial.io/node-purpose" = "system"
+      controller = {
+        nodeSelector = {
+          "niovial.io/node-purpose" = "system"
+        }
       }
     })
   ]

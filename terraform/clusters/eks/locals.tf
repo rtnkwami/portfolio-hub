@@ -21,15 +21,15 @@ data "aws_iam_policy" "ssm_access_policy" {
 locals {
   azs = slice(data.aws_availability_zones.available_azs.names, 0, 3)
   versions = {
-    kubernetes = "1.35"
+    kubernetes = "1.36"
     modules = {
       vpc          = "6.6.1"
-      eks          = "21.18.0"
-      pod_identity = "2.8.0"
+      eks          = "21.23.0"
+      pod_identity = "2.8.1"
     }
     helm_releases = {
       fluxcd         = "0.52.0"
-      ebs_csi_driver = "2.60.0"
+      ebs_csi_driver = "2.62.0"
       cilium         = "1.19.4"
     }
   }
