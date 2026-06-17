@@ -23,15 +23,20 @@ locals {
   versions = {
     kubernetes = "1.35"
     modules = {
-      vpc = "6.6.1"
-      eks = "21.18.0"
+      vpc          = "6.6.1"
+      eks          = "21.18.0"
       pod_identity = "2.8.0"
     }
     helm_releases = {
-      argocd = "9.5.14"
+      argocd         = "9.5.14"
+      fluxcd         = "0.52.0"
       ebs_csi_driver = "2.60.0"
-      cilium = "1.19.4"
-    } 
+      cilium         = "1.19.4"
+    }
+  }
+  global_tags = {
+    "niovial.io/project"    = var.project_name
+    "niovial.io/managed-by" = "OpenTofu"
   }
 }
 
