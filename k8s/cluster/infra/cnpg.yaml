@@ -1,16 +1,12 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: OCIRepository
 metadata:
-  name: cnpg
+  name: cloudnative-pg
   namespace: flux-system
 spec:
   interval: 2h
+  type: "oci"
   url: oci://ghcr.io/cloudnative-pg/charts/cloudnative-pg
-  layerSelector:
-    mediaType: "application/vnd.cncf.helm.chart.content.v1.tar+gzip"
-    operation: copy
-  ref:
-    tag: 0.28.3
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
@@ -28,10 +24,11 @@ spec:
     cleanupOnFail: true
   chart:
     spec:
-      chart: .
+      chart: cloudnative-pg
+      version: 0.28.3
       sourceRef:
-        kind: OCIRepository
-        name: karpenter
+        kind: HelmRepository
+        name: cloudnative-pg
         namespace: flux-system
       # interval at which chart source is reconciled
       interval: 2h

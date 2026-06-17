@@ -1,16 +1,12 @@
 apiVersion: source.toolkit.fluxcd.io/v1
-kind: OCIRepository
+kind: HelmRepository
 metadata:
   name: cert-manager
   namespace: flux-system
 spec:
   interval: 2h
+  type: "oci"
   url: oci://quay.io/jetstack/charts/cert-manager
-  layerSelector:
-    mediaType: "application/vnd.cncf.helm.chart.content.v1.tar+gzip"
-    operation: copy
-  ref:
-    tag: 1.20.2
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
@@ -27,9 +23,10 @@ spec:
     cleanupOnFail: true
   chart:
     spec:
-      chart: .
+      chart: cert-manager
+      version: 1.20.2
       sourceRef:
-        kind: OCIRepository
+        kind: HelmRepository
         name: cert-manager
         namespace: flux-system
       # interval at which chart source is reconciled
