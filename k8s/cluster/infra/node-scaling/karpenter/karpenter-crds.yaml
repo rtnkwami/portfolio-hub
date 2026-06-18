@@ -1,7 +1,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: karpenter
+  name: karpenter-crds
   namespace: flux-system
 spec:
   dependsOn:
@@ -13,7 +13,7 @@ spec:
     cleanupOnFail: true
   chart:
     spec:
-      chart: karpenter
+      chart: karpenter-crds
       version: 1.11.1
       sourceRef:
         kind: HelmRepository
@@ -21,13 +21,3 @@ spec:
         namespace: flux-system
       # interval at which chart source is reconciled
       interval: 2h
-  values:
-    nodeSelector:
-      niovial.io/node-purpose: system
-    # see terraform/eks/eks.tf for cluster name, interruption queue and service account for
-    # pod identity
-    settings:
-      clusterName: portfolio-eks-cluster
-      interruptionQueue: karpenter-interruption-queue-portfolio-eks-cluster
-    serviceAccount:
-      name: "karpenter"
