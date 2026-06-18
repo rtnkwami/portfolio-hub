@@ -8,6 +8,6 @@ spec:
   sourceRef:
     kind: GitRepository
     name: portfolio-hub
-  path: "./k8s/cluster/infra"
+  path: "./k8s/cluster/infra/system"
   prune: true
   timeout: 1m
