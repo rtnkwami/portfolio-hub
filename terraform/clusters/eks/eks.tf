@@ -48,9 +48,7 @@ resource "helm_release" "cilium" {
       operator = {
         tolerations = [{
           key      = "CriticalAddonsOnly"
-          operator = "Equal"
-          value    = "true"
-          effect   = "NoSchedule"
+          operator = "Exists"
         }]
       }
       hubble = {
@@ -131,9 +129,7 @@ resource "aws_eks_addon" "coredns" {
     }
     tolerations = [{
       key      = "CriticalAddonsOnly"
-      operator = "Equal"
-      value    = "true"
-      effect   = "NoSchedule"
+      operator = "Exists"
     }]
   })
 
@@ -173,28 +169,27 @@ resource "helm_release" "ebs_csi_driver" {
   depends_on = [aws_eks_addon.coredns]
 }
 
-resource "helm_release" "flux_operator" {
-  name = "flux-operator"
-  namespace = "flux-system"
+resource "helm_release" "argocd" {
+  name = "argocd"
+  namespace = "argocd"
   create_namespace = true
-  repository = "oci://ghcr.io/controlplaneio-fluxcd/charts"
-  chart = "flux-operator"
-  version = local.versions.helm_releases.fluxcd
-  wait = true
+  repository = "oci://ghcr.io/argoproj/argo-helm"
+  chart = "argo-cd"
+  version = local.versions.helm_releases.argocd
   values = [
     yamlencode({
-      nodeSelector = {
-        "niovial.io/node-purpose" = "system"
-      }
-      tolerations = [
-        {
-          key      = "CriticalAddonsOnly"
-          operator = "Equal"
-          value    = "true"
-          effect   = "NoSchedule"
+      global = {
+        tolerations = [
+          {
+            key      = "CriticalAddonsOnly"
+            operator = "Exists"
+          }
+        ]
+        node_selector = {
+          "niovial.io/node-purpose" = "system"
         }
-      ]
+      }
     })
   ]
-  depends_on = [aws_eks_addon.coredns]
+  depends_on = [ aws_eks_addon.coredns ]
 }
