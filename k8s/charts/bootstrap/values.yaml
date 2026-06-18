@@ -10,7 +10,7 @@ globals:
   
   clusterName: homelab
   
-  enableIsolation: true
+  enableIsolation: false
 
   nodeSelectors:
     niovial.io/node-purpose: system
@@ -36,16 +36,11 @@ keda:
   enabled: true
   version: 2.20.1
 
-operators:  
-  eso:
-    enabled: true
-    version: 2.5.0
-    values:
-      global:
-        nodeSelector:
-          niovial.io/node-purpose: system
-        <<: *system-tolerations
+eso:
+  enabled: true
+  version: 2.6.0
 
+operators:
   externalDns:
     enabled: true
     version: 1.21.1
