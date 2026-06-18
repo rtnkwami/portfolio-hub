@@ -1,4 +1,4 @@
-{{- if .Values.operators.keda.enabled }}
+{{- if .Values.keda.enabled }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -13,12 +13,32 @@ spec:
   source:
     chart: keda
     repoURL: https://kedacore.github.io/charts
-    targetRevision: {{ .Values.operators.keda.version }}
-    {{- if .Values.operators.keda.values }}
+    targetRevision: {{ .Values.keda.version }}
     helm:
       valuesObject:
-        {{- toYaml .Values.operators.keda.values | nindent 8 }}
-    {{- end }}
+        {{- if .Values.globals.enableIsolation }}
+        nodeSelector:
+        {{- with .Values.globals.nodeSelectors }}
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        tolerations:
+        {{- with .Values.globals.tolerations }}
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        {{- end }}
+        prometheus:
+          metricServer:
+            enabled: true
+            serviceMonitor:
+              enabled: true
+          operator:
+            enabled: true
+            serviceMonitor:
+              enabled: true
+          webhooks:
+            enabled: true
+            serviceMonitor:
+              enabled: true
   destination:
     namespace: keda
     server: {{ $.Values.globals.destinationServer }}

@@ -36,15 +36,11 @@ cnpg:
   version: 0.28.3
   resources: {}
 
+keda:
+  enabled: true
+  version: 2.20.1
+
 operators:  
-  keda:
-    enabled: true
-    version: 2.19.0
-    values:
-      nodeSelector:
-        niovial.io/node-purpose: system
-      <<: *system-tolerations
-  
   eso:
     enabled: true
     version: 2.5.0
