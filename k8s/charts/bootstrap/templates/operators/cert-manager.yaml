@@ -31,7 +31,7 @@ spec:
           enabled: true
         config:
           enableGatewayAPI: true
-        {{- with .Values.operators.certManager.resources.controller }}
+        {{- with .Values.certManager.resources.controller }}
         resources:
           {{- toYaml . | nindent 10 }}
         {{- end }}
@@ -42,7 +42,7 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
           {{- end }}
-          {{- with .Values.operators.certManager.resources.webhook }}
+          {{- with .Values.certManager.resources.webhook }}
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
@@ -53,7 +53,7 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
           {{- end }}
-          {{- with .Values.operators.certManager.resources.cainjector }}
+          {{- with .Values.certManager.resources.cainjector }}
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
@@ -64,7 +64,7 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
           {{- end }}
-          {{- with .Values.operators.certManager.resources.startupapicheck }}
+          {{- with .Values.certManager.resources.startupapicheck }}
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
