@@ -1,0 +1,59 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: gateway-api-repo
+  namespace: flux-system
+spec:
+  interval: 2h
+  url: https://github.com/kubernetes-sigs/gateway-api
+  ref:
+    tag: v1.5.1
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: gateway-api-crds
+  namespace: flux-system
+spec:
+  interval: 2h
+  targetNamespace: kube-system
+  sourceRef:
+    kind: GitRepository
+    name: gateway-api-repo
+  path: "./config/crd/experimental"
+  prune: true
+  timeout: 1m
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: karpenter
+  namespace: flux-system
+spec:
+  interval: 2h
+  type: "oci"
+  url: oci://public.ecr.aws/karpenter
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: karpenter-crds
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: vm-stack
+  # interval at which HelmRelease config is reconciled
+  interval: 1m
+  targetNamespace: kube-system
+  upgrade:
+    cleanupOnFail: true
+  chart:
+    spec:
+      chart: karpenter-crds
+      version: 1.11.1
+      sourceRef:
+        kind: HelmRepository
+        name: karpenter
+        namespace: flux-system
+      # interval at which chart source is reconciled
+      interval: 2h
