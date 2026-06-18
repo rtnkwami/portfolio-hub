@@ -24,7 +24,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: portfolio-hub
-  path: "./k8s/cluster/infra/node-scaling"
+  path: "./k8s/cluster/infra/node-scaling/kustomizations"
   prune: true
   timeout: 1m
 ---

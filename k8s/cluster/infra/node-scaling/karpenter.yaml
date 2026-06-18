@@ -14,6 +14,8 @@ metadata:
   name: karpenter
   namespace: flux-system
 spec:
+  dependsOn:
+    - name: vm-stack
   # interval at which HelmRelease config is reconciled
   interval: 1m
   targetNamespace: kube-system
