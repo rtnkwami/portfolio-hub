@@ -8,32 +8,29 @@
 globals:
   destinationServer: https://kubernetes.default.svc
   clusterName: homelab
+  # setting this option to false allows the components in this chart to be scheduled on any nodes
+  # without taints.
+  enableIsolation: true
+  nodeSelectors:
+    niovial.io/node-purpose: system
+  tolerations:
+    - key: niovial.io/node-purpose
+      operator: Exists
 
 crds:
   gatewayApi:
     enabled: false
     version: v1.5.1
 
+certManager:
+  enabled: true
+  resources:
+    controller: {}
+    webhook: {}
+    cainjector: {}
+    startupapicheck: {}
+
 operators:  
-  certManager:
-    enabled: true
-    version: 1.20.2
-    values:
-      global:
-        nodeSelector:
-          niovial.io/node-purpose: system
-      <<: *system-tolerations
-      crds:
-        enabled: true
-      config:
-        enableGatewayAPI: true
-      webhook:
-        <<: *system-tolerations
-      cainjector:
-        <<: *system-tolerations
-      startupapicheck:
-        <<: *system-tolerations
-  
   cnpg:
     enabled: true
     version: 0.28.2
@@ -87,15 +84,6 @@ operators:
     values: {}
 
 apps:
-  argocd:
-    enabled: false
-    version: 9.5.17
-    values:
-      global:
-        <<: *system-tolerations
-        nodeSelector:
-          niovial.io/node-purpose: system
-
   nodeExporter:
     enabled: true
     version: 4.55.0

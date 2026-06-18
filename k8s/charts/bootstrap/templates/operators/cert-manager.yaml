@@ -1,4 +1,4 @@
-{{- if .Values.operators.certManager.enabled }}
+{{- if .Values.certManager.enabled }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -13,15 +13,67 @@ spec:
   source:
     chart: cert-manager
     repoURL: oci://quay.io/jetstack/charts/cert-manager
-    targetRevision: {{ .Values.operators.certManager.version }}
-    {{- if .Values.operators.certManager.values }}
+    targetRevision: 1.20.2
     helm:
       valuesObject:
-        {{- toYaml .Values.operators.certManager.values | nindent 8 }}
-    {{- end }}
+        global:
+        {{- if .Values.globals.enableIsolation }}
+          nodeSelector:
+          {{- with .Values.globals.nodeSelectors }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+        tolerations:
+        {{- with .Values.globals.tolerations }}
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        {{- end }}
+        crds:
+          enabled: true
+        config:
+          enableGatewayAPI: true
+        {{- with .Values.operators.certManager.resources.controller }}
+        resources:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        webhook:
+          {{- if .Values.globals.enableIsolation }}
+          {{- with .Values.globals.tolerations }}
+          tolerations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- end }}
+          {{- with .Values.operators.certManager.resources.webhook }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+        cainjector:
+          {{- if .Values.globals.enableIsolation }}
+          {{- with .Values.globals.tolerations }}
+          tolerations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- end }}
+          {{- with .Values.operators.certManager.resources.cainjector }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+        startupapicheck:
+          {{- if .Values.globals.enableIsolation }}
+          {{- with .Values.globals.tolerations }}
+          tolerations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- end }}
+          {{- with .Values.operators.certManager.resources.startupapicheck }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+        prometheus:
+          serviceMonitor:
+            enabled: true
   destination:
     namespace: cert-manager
-    server: {{ $.Values.globals.destinationServer }}
+    server: https://kubernetes.default.svc
   syncPolicy:
     automated:
       prune: true
