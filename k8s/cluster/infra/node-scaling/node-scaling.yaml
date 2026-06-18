@@ -4,8 +4,6 @@ metadata:
   name: karpenter
   namespace: flux-system
 spec:
-  dependsOn:
-    - name: karpenter
   interval: 2m
   sourceRef:
     kind: GitRepository
