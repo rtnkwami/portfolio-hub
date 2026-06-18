@@ -24,25 +24,19 @@ crds:
 
 certManager:
   enabled: true
+  version: 1.20.2
   resources:
     controller: {}
     webhook: {}
     cainjector: {}
     startupapicheck: {}
 
-operators:  
-  cnpg:
-    enabled: true
-    version: 0.28.2
-    values:
-      monitoring:
-        podMonitorEnabled: true
-        grafanaDashboard:
-          create: true
-      nodeSelector:
-        niovial.io/node-purpose: system
-      <<: *system-tolerations
+cnpg:
+  enabled: true
+  version: 0.28.3
+  resources: {}
 
+operators:  
   keda:
     enabled: true
     version: 2.19.0

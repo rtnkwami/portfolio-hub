@@ -1,4 +1,4 @@
-{{- if .Values.operators.cnpg.enabled }}
+{{- if .Values.cnpg.enabled }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -13,15 +13,26 @@ spec:
   source:
     chart: cloudnative-pg
     repoURL: oci://ghcr.io/cloudnative-pg/charts/cloudnative-pg
-    targetRevision: {{ .Values.operators.cnpg.version }}
-    {{- if .Values.operators.cnpg.values }}
+    targetRevision: {{ .Values.cnpg.version }}
     helm:
       valuesObject:
-        {{- toYaml .Values.operators.cnpg.values | nindent 8 }}
-    {{- end }}
+        {{- if .Values.globals.enableIsolation }}
+        nodeSelector:
+        {{- with .Values.globals.nodeSelectors }}
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        tolerations:
+        {{- with .Values.globals.tolerations }}
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        {{- end }}
+        monitoring:
+          podMonitorEnabled: true
+          grafanaDashboard:
+            create: true
   destination:
     namespace: cnpg-system
-    server: {{ $.Values.globals.destinationServer }}
+    server: https://kubernetes.default.svc
   syncPolicy:
     automated:
       prune: true
