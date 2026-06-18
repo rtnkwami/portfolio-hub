@@ -16,14 +16,14 @@ spec:
     targetRevision: {{ .Values.certManager.version }}
     helm:
       valuesObject:
-        global:
         {{- if .Values.globals.enableIsolation }}
-          nodeSelector:
+        global:
           {{- with .Values.globals.nodeSelectors }}
+          nodeSelector:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-        tolerations:
         {{- with .Values.globals.tolerations }}
+        tolerations:
           {{- toYaml . | nindent 10 }}
         {{- end }}
         {{- end }}
@@ -31,43 +31,23 @@ spec:
           enabled: true
         config:
           enableGatewayAPI: true
-        {{- with .Values.certManager.resources.controller }}
-        resources:
-          {{- toYaml . | nindent 10 }}
-        {{- end }}
+        {{- if .Values.globals.enableIsolation }}
         webhook:
-          {{- if .Values.globals.enableIsolation }}
           {{- with .Values.globals.tolerations }}
           tolerations:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-          {{- end }}
-          {{- with .Values.certManager.resources.webhook }}
-          resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
         cainjector:
-          {{- if .Values.globals.enableIsolation }}
           {{- with .Values.globals.tolerations }}
           tolerations:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-          {{- end }}
-          {{- with .Values.certManager.resources.cainjector }}
-          resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
         startupapicheck:
-          {{- if .Values.globals.enableIsolation }}
           {{- with .Values.globals.tolerations }}
           tolerations:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- end }}
-          {{- with .Values.certManager.resources.startupapicheck }}
-          resources:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
+        {{- end }}
         prometheus:
           serviceMonitor:
             enabled: true
