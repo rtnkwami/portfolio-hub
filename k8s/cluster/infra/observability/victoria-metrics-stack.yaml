@@ -39,6 +39,7 @@ spec:
         - name: VictoriaLogs
           type: victoriametrics-logs-datasource
           url: http://vlogs-victoria-logs-single-server:9428
+    
     grafana:
       plugins:
         - victoriametrics-logs-datasource
@@ -48,6 +49,12 @@ spec:
           cpu: "250m"
         limits:
           memory: "512Mi"
+      nodeSelector:
+        niovial.io/node-purpose: system
+      tolerations:
+        - key: CriticalAddonsOnly
+          operator: Exists
+    
     victoria-metrics-operator:
       admissionWebhooks:
         certManager:
@@ -57,12 +64,41 @@ spec:
       tolerations:
         - key: CriticalAddonsOnly
           operator: Exists
+    
     alertmanager:
-        spec:
-          resources:
-            requests:
-              memory: "256Mi"
-              cpu: "125m"
-            limits:
-              memory: "256Mi"
-      
+      spec:
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "125m"
+          limits:
+            memory: "256Mi"
+        nodeSelector:
+          niovial.io/node-purpose: system
+        tolerations:
+          - key: CriticalAddonsOnly
+            operator: Exists
+    
+    vmagent:
+      spec:
+        nodeSelector:
+          niovial.io/node-purpose: system
+        tolerations:
+          - key: CriticalAddonsOnly
+            operator: Exists
+    
+    vmsingle:
+      spec:
+        nodeSelector:
+          niovial.io/node-purpose: system
+        tolerations:
+          - key: CriticalAddonsOnly
+            operator: Exists
+
+    vmalert:
+      spec:
+        nodeSelector:
+          niovial.io/node-purpose: system
+        tolerations:
+          - key: CriticalAddonsOnly
+            operator: Exists  

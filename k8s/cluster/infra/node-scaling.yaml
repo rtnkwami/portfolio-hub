@@ -4,6 +4,8 @@ metadata:
   name: cluster-node-scaling
   namespace: flux-system
 spec:
+  dependsOn:
+    - name: observability
   interval: 2m
   sourceRef:
     kind: GitRepository

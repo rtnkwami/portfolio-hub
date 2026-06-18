@@ -37,3 +37,8 @@ spec:
     server:
       serviceMonitor:
         enabled: true
+      nodeSelector:
+        niovial.io/node-purpose: system
+      tolerations:
+        - key: CriticalAddonsOnly
+          operator: Exists
