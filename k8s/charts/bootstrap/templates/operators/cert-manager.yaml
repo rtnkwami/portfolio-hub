@@ -73,7 +73,7 @@ spec:
             enabled: true
   destination:
     namespace: cert-manager
-    server: https://kubernetes.default.svc
+    server: {{ .Values.globals.destinationServer }}
   syncPolicy:
     automated:
       prune: true
