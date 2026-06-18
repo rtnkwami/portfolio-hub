@@ -11,6 +11,11 @@ spec:
   path: "./k8s/cluster/infra/node-scaling/karpenter"
   prune: true
   timeout: 1m
+  healthCheck:
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: karpenter
+      namespace: karpenter
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
