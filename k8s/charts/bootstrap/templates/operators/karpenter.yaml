@@ -1,4 +1,4 @@
-{{- if .Values.operators.karpenter.enabled }}
+{{- if .Values.karpenter.enabled }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -13,12 +13,21 @@ spec:
   source:
     chart: karpenter
     repoURL: oci://public.ecr.aws/karpenter/karpenter
-    targetRevision: {{ .Values.operators.karpenter.version }}
-    {{- if .Values.operators.karpenter.values }}
+    targetRevision: {{ .Values.karpenter.version }}
     helm:
       valuesObject:
-        {{- toYaml .Values.operators.karpenter.values | nindent 8 }}
-    {{- end }}
+        {{- if .Values.globals.enableIsolation }}
+        global:
+          nodeSelector:
+          {{- with .Values.globals.nodeSelectors }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+        {{- end }}
+        settings:
+          clusterName: {{ .Values.globals.clusterName }}
+          interruptionQueue: {{ .Values.karpenter.interruptionQueue }}
+        serviceAccount:
+          name: "karpenter"
   destination:
     namespace: kube-system
     server: {{ $.Values.globals.destinationServer }}

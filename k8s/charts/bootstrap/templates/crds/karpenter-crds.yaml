@@ -1,4 +1,4 @@
-{{- if .Values.operators.karpenter.enabled }}
+{{- if .Values.karpenter.enabled }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -13,7 +13,7 @@ spec:
   source:
     chart: karpenter
     repoURL: oci://public.ecr.aws/karpenter/karpenter-crd
-    targetRevision: {{ .Values.operators.karpenter.version }}
+    targetRevision: {{ .Values.karpenter.version }}
   destination:
     namespace: kube-system
     server: {{ $.Values.globals.destinationServer }}

@@ -10,7 +10,7 @@ globals:
   
   clusterName: homelab
   
-  enableIsolation: false
+  enableIsolation: true
 
   nodeSelectors:
     niovial.io/node-purpose: system
@@ -40,6 +40,11 @@ eso:
   enabled: true
   version: 2.6.0
 
+karpenter:
+  enabled: true
+  version: 1.11.1
+  interruptionQueue: karpenter-interruption-queue
+
 operators:
   externalDns:
     enabled: true
@@ -58,11 +63,6 @@ operators:
           - apiGroups: [""]
             resources: ["namespaces"]
             verbs: ["get","watch","list"]
-
-  karpenter:
-    enabled: false
-    version: 1.11.1
-    values: {}
 
 apps:
   nodeExporter:
