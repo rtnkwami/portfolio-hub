@@ -36,6 +36,8 @@ spec:
             - apiGroups: [""]
               resources: ["namespaces"]
               verbs: ["get","watch","list"]
+        serviceMonitor:
+          enabled: true
         {{- with .Values.externalDns.config }}
         {{- with .provider }}
         provider:

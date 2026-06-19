@@ -28,6 +28,8 @@ spec:
           interruptionQueue: {{ .Values.karpenter.interruptionQueue }}
         serviceAccount:
           name: "karpenter"
+        serviceMonitor:
+          enabled: true
   destination:
     namespace: kube-system
     server: {{ $.Values.globals.destinationServer }}
