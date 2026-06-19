@@ -1,4 +1,4 @@
-{{- if .Values.apps.vlogsCollector.enabled }}
+{{- if .Values.vlogsCollector.enabled }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -13,12 +13,15 @@ spec:
   source:
     chart: victoria-logs-collector
     repoURL: oci://ghcr.io/victoriametrics/helm-charts/victoria-logs-collector
-    targetRevision: {{ .Values.apps.vlogsCollector.version }}
-    {{- if .Values.apps.vlogsCollector.values }}
+    targetRevision: {{ .Values.vlogsCollector.version }}
     helm:
       valuesObject:
-        {{- toYaml .Values.apps.vlogsCollector.values | nindent 8 }}
-    {{- end }}
+        remoteWrite:
+          - url: http://vlogs-victoria-logs-single-server.observability.svc.cluster.local:9428
+        podMonitor:
+          enabled: true
+        tolerations:
+          - operator: Exists
   destination:
     namespace: vlogs-collector
     server: {{ $.Values.globals.destinationServer }}

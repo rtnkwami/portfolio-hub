@@ -62,6 +62,10 @@ nodeExporter:
   enabled: true
   version: 4.55.0
 
+vlogsCollector:
+  enabled: true
+  version: 0.3.6
+
 apps:
   vmStack:
     enabled: true
@@ -102,17 +106,6 @@ apps:
               cpu: "125m"
             limits:
               memory: "256Mi"
-
-  vlogsCollector:
-    enabled: true
-    version: 0.3.4
-    values:
-      remoteWrite:
-        - url: http://vlogs-victoria-logs-single-server.observability.svc.cluster.local:9428
-      podMonitor:
-        enabled: true
-      tolerations:
-        - operator: Exists
 
   vlogs:
     enabled: true
