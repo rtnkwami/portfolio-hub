@@ -1,10 +1,3 @@
-.system-tolerations: &system-tolerations
-  tolerations:
-    - key: niovial.io/node-purpose
-      operator: Equal
-      value: system
-      effect: NoSchedule
-
 globals:
   destinationServer: https://kubernetes.default.svc
   
@@ -62,51 +55,19 @@ nodeExporter:
   enabled: true
   version: 4.55.0
 
+vmStack:
+  enabled: true
+  version: 0.84.0
+  resources:
+    grafana: {}
+    alertmanager: {}
+    vmsingle: {}
+
 vlogsCollector:
   enabled: true
   version: 0.3.6
 
 apps:
-  vmStack:
-    enabled: true
-    version: 0.81.0
-    # expose grafana UI via o11y.[config.gateway.hostname]
-    # If gateway is not enabled, this remains inactive
-    httpRoute:
-      enabled: true
-    values:
-      prometheus-node-exporter:
-        enabled: false
-      defaultDatasources:
-        extra:
-          - name: VictoriaLogs
-            type: victoriametrics-logs-datasource
-            url: http://vlogs-victoria-logs-single-server:9428
-      grafana:
-        plugins:
-          - victoriametrics-logs-datasource
-        resources:
-          requests:
-            memory: "512Mi"
-            cpu: "250m"
-          limits:
-            memory: "512Mi"
-      victoria-metrics-operator:
-        admissionWebhooks:
-          certManager:
-            enabled: true
-        nodeSelector:
-          niovial.io/node-purpose: system
-        <<: *system-tolerations
-      alertmanager:
-        spec:
-          resources:
-            requests:
-              memory: "256Mi"
-              cpu: "125m"
-            limits:
-              memory: "256Mi"
-
   vlogs:
     enabled: true
     version: 0.13.5

@@ -1,0 +1,21 @@
+globals:
+  clusterName: portfolio-eks-cluster
+  tolerations:
+    - key: CriticalAddonsOnly
+      operator: Exists
+
+vmStack:
+  resources:
+    grafana:
+      requests:
+        memory: "512Mi"
+        cpu: "250m"
+      limits:
+        memory: "512Mi"
+    
+    alertmanager:
+      requests:
+        memory: "256Mi"
+        cpu: "125m"
+      limits:
+        memory: "256Mi"

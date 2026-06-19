@@ -1,4 +1,4 @@
-{{- if .Values.apps.vmStack.enabled }}
+{{- if .Values.vmStack.enabled }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -13,12 +13,49 @@ spec:
   source:
     chart: victoria-metrics-k8s-stack
     repoURL: oci://ghcr.io/victoriametrics/helm-charts/victoria-metrics-k8s-stack
-    targetRevision: {{ .Values.apps.vmStack.version }}
-    {{- if .Values.apps.vmStack.values }}
+    targetRevision: {{ .Values.vmStack.version }}
     helm:
       valuesObject:
-        {{- toYaml .Values.apps.vmStack.values | nindent 8 }}
-    {{- end }}
+        prometheus-node-exporter:
+          enabled: false
+        defaultDatasources:
+          extra:
+            - name: VictoriaLogs
+              type: victoriametrics-logs-datasource
+              url: http://vlogs-victoria-logs-single-server:9428
+        victoria-metrics-operator:
+          admissionWebhooks:
+            certManager:
+              enabled: true
+          {{- if .Values.globals.enableIsolation }}
+          nodeSelector:
+          {{- with .Values.globals.nodeSelectors }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          tolerations:
+          {{- with .Values.globals.tolerations }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- end }}
+        grafana:
+          plugins:
+            - victoriametrics-logs-datasource
+          {{- with .Values.vmStack.resources.grafana }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+        alertManager:
+          spec:
+            {{- with .Values.vmStack.resources.alertmanager }}
+            resources:
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
+        vmsingle:
+          spec:
+            {{- with .Values.vmStack.resources.vmsingle }}
+            resources:
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
   destination:
     namespace: observability
     server: {{ $.Values.globals.destinationServer }}
