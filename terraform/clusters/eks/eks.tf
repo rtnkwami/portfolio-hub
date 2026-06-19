@@ -108,7 +108,6 @@ module "eks_managed_node_group" {
     },
   }
   labels = {
-    "karpenter.sh/controller" = "true"
     "niovial.io/node-purpose" = "system"
   }
   update_config = {
