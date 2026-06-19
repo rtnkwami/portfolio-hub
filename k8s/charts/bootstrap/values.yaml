@@ -41,28 +41,16 @@ eso:
   version: 2.6.0
 
 karpenter:
-  enabled: true
+  enabled: truee
   version: 1.11.1
   interruptionQueue: karpenter-interruption-queue
 
-operators:
-  externalDns:
-    enabled: true
-    version: 1.21.1
-    values:
-      nodeSelector:
-        niovial.io/node-purpose: system
-      <<: *system-tolerations
-      sources:
-        - service
-        - gateway-httproute
-        - gateway-tlsroute
-        - gateway-tcproute
-      rbac:
-        additionalPermissions:
-          - apiGroups: [""]
-            resources: ["namespaces"]
-            verbs: ["get","watch","list"]
+externalDns:
+  enabled: true
+  version: 1.21.1
+  config:
+    provider: ""
+    env: []
 
 apps:
   nodeExporter:

@@ -1,4 +1,4 @@
-{{- if .Values.operators.externalDns.enabled }}
+{{- if .Values.externalDns.enabled }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -13,12 +13,40 @@ spec:
   source:
     chart: external-dns
     repoURL: https://kubernetes-sigs.github.io/external-dns/
-    targetRevision: {{ .Values.operators.externalDns.version }}
-    {{- if .Values.operators.externalDns.values }}
+    targetRevision: {{ .Values.externalDns.version }}
     helm:
       valuesObject:
-        {{- toYaml .Values.operators.externalDns.values | nindent 8 }}
-    {{- end }}
+        {{- if .Values.globals.enableIsolation }}
+        nodeSelector:
+          {{- with .Values.globals.nodeSelectors }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+        tolerations:
+        {{- with .Values.globals.tolerations }}
+          {{- toYaml . | nindent 12 }}
+        {{- end }}
+        {{- end }}
+        sources:
+          - service
+          - gateway-httproute
+          - gateway-tlsroute
+          - gateway-tcproute
+        rbac:
+          additionalPermissions:
+            - apiGroups: [""]
+              resources: ["namespaces"]
+              verbs: ["get","watch","list"]
+        {{- with .Values.externalDns.config }}
+        {{- with .provider }}
+        provider:
+          name: {{ . }}
+        txtOwnerId: {{ $.Values.globals.clusterName }}
+        {{- end }}
+        {{- with .env }}
+        env:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        {{- end }}
   destination:
     namespace: external-dns
     server: {{ $.Values.globals.destinationServer }}
