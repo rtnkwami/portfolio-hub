@@ -1,5 +1,4 @@
 apiVersion: v2
 name: bootstrap
-description: GitOps bootstrap chart that defines the desired state of the cluster. Manages system components and applications via ArgoCD.
-type: application
+description: GitOps bootstrap chart defining a cluster's desired state via ArgoCD
 version: 0.1.0

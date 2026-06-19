@@ -41,7 +41,7 @@ eso:
   version: 2.6.0
 
 karpenter:
-  enabled: truee
+  enabled: true
   version: 1.11.1
   interruptionQueue: karpenter-interruption-queue
 
@@ -49,7 +49,9 @@ externalDns:
   enabled: true
   version: 1.21.1
   config:
+    # e.g. cloudflare, aws, gcp, etc.
     provider: ""
+    # Any credentials or environment variables used to authenticate to the service provider.
     env: []
 
 apps:
