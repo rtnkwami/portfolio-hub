@@ -23,6 +23,10 @@ crds:
   gatewayApi:
     enabled: false
     version: v1.5.1
+  
+  prometheus:
+    enabled: true
+    version: 30.0.0
 
 certManager:
   enabled: true
