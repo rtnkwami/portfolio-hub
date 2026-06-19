@@ -54,18 +54,11 @@ externalDns:
     # Any credentials or environment variables used to authenticate to the service provider.
     env: []
 
-apps:
-  nodeExporter:
-    enabled: true
-    version: 4.55.0
-    values:
-      extraArgs:
-        - --collector.filesystem.ignored-mount-points=^/(dev|proc|sys|var/lib/docker/.+|var/lib/kubelet/.+)($|/)
-        - --collector.filesystem.ignored-fs-types=^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs)$
-      prometheus:
-        monitor:
-          enabled: true      
+nodeExporter:
+  enabled: true
+  version: 4.55.0
 
+apps:
   vmStack:
     enabled: true
     version: 0.81.0

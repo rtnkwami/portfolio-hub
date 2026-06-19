@@ -1,4 +1,4 @@
-{{- if .Values.apps.nodeExporter.enabled }}
+{{- if .Values.nodeExporter.enabled }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -13,12 +13,15 @@ spec:
   source:
     chart: prometheus-node-exporter
     repoURL: oci://ghcr.io/prometheus-community/charts/prometheus-node-exporter
-    targetRevision: {{ .Values.apps.nodeExporter.version }}
-    {{- if .Values.apps.nodeExporter.values }}
+    targetRevision: {{ .Values.nodeExporter.version }}
     helm:
       valuesObject:
-        {{- toYaml .Values.apps.nodeExporter.values | nindent 8 }}
-    {{- end }}
+        extraArgs:
+          - --collector.filesystem.ignored-mount-points=^/(dev|proc|sys|var/lib/docker/.+|var/lib/kubelet/.+)($|/)
+          - --collector.filesystem.ignored-fs-types=^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs)$
+        prometheus:
+          monitor:
+            enabled: true 
   destination:
     namespace: node-exporter
     server: {{ $.Values.globals.destinationServer }}
