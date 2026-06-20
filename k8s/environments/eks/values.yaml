@@ -4,6 +4,13 @@ globals:
     - key: CriticalAddonsOnly
       operator: Exists
 
+karpenter:
+  enabled: true
+  interruptionQueue: karpenter-interruption-queue-portfolio-eks-cluster
+
+externalDns:
+  enabled: false
+
 vmStack:
   resources:
     grafana:

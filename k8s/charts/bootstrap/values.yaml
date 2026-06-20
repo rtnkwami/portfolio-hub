@@ -38,9 +38,9 @@ eso:
   version: 2.6.0
 
 karpenter:
-  enabled: true
+  enabled: false
   version: 1.11.1
-  interruptionQueue: karpenter-interruption-queue
+  interruptionQueue: ""
 
 externalDns:
   enabled: true

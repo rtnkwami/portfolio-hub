@@ -14,6 +14,12 @@ spec:
     - repoURL: https://github.com/rtnkwami/portfolio-hub.git
       path: k8s/charts/blueprint
       targetRevision: HEAD
+      valuesFrom:
+        - $values/k8s/environments/eks/values.yaml
+
+    - repoURL: https://github.com/rtnkwami/portfolio-hub.git
+      targetRevision: HEAD
+      refs: values
 
     - repoURL: https://github.com/rtnkwami/portfolio-hub.git
       path: k8s/environments/eks/manifests
