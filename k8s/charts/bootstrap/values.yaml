@@ -74,7 +74,7 @@ vlogs:
 
 config:
   clusterIssuer:
-    # Enabling this requires setting operators.certManager.enabled: true
+    # Enabling this requires setting certManager.enabled: true
     enabled: false
     # Name of the ClusterIssuer resource
     name: ""
@@ -102,7 +102,7 @@ config:
     solvers: []
   
   clusterSecretStore:
-    # Enabling this requires setting operators.eso.enabled: true
+    # Enabling this requires setting eso.enabled: true
     enabled: false
     # Name of the ClusterSecretStore resource
     name: ""
@@ -163,8 +163,4 @@ config:
   #     from: observability  # namespace where the HTTPRoute lives
   #   - name: allow-argocd
   #     from: argocd
-  referenceGrants:
-    # If referenceGrants is overriden in values, copy the below to allow complete creation
-    # of the observability route.
-    - name: allow-observability
-      from: observability
+  referenceGrants: []

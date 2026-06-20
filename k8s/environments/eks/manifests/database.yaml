@@ -6,6 +6,7 @@ spec:
   template:
     metadata:
       labels:
+        node-role.kubernetes.io/database: ""
         niovial.io/node-purpose: database
     spec:
       nodeClassRef:
@@ -32,6 +33,6 @@ spec:
           effect: NoSchedule
   disruption:
     consolidationPolicy: WhenEmpty
-    consolidateAfter: 30m
+    consolidateAfter: 20m
     budgets:
       - nodes: 10%
