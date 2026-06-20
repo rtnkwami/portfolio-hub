@@ -12,14 +12,15 @@ spec:
     namespace: argocd
   sources:
     - repoURL: https://github.com/rtnkwami/portfolio-hub.git
-      path: k8s/charts/blueprint
+      path: k8s/charts/bootstrap
       targetRevision: HEAD
-      valuesFrom:
-        - $values/k8s/environments/eks/values.yaml
+      helm:
+        valueFiles:
+          - $values/k8s/environments/eks/values.yaml
 
     - repoURL: https://github.com/rtnkwami/portfolio-hub.git
       targetRevision: HEAD
-      refs: values
+      ref: values
 
     - repoURL: https://github.com/rtnkwami/portfolio-hub.git
       path: k8s/environments/eks/manifests

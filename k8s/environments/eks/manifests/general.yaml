@@ -2,6 +2,8 @@ apiVersion: karpenter.sh/v1
 kind: NodePool
 metadata:
   name: general-spot
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 spec:
   weight: 80
   template:
@@ -35,6 +37,8 @@ apiVersion: karpenter.sh/v1
 kind: NodePool
 metadata:
   name: general-on-demand
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 spec:
   weight: 20
   template:
