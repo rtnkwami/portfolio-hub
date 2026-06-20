@@ -14,7 +14,7 @@ globals:
 
 crds:
   gatewayApi:
-    enabled: false
+    enabled: true
     version: v1.5.1
   
   prometheus:
