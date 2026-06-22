@@ -51,7 +51,7 @@ resource "hcloud_load_balancer_network" "cp_lb_attachment" {
   network_id = hcloud_network.private_network.id
 }
 
-resource "hcloud_load_balancer_service" "cp__lb_listener" {
+resource "hcloud_load_balancer_service" "cp_lb_listener" {
   load_balancer_id = hcloud_load_balancer.controlplane_lb.id
   protocol = "tcp"
   # kube-apiserver listens on 6443
@@ -62,6 +62,23 @@ resource "hcloud_load_balancer_service" "cp__lb_listener" {
   health_check {
     protocol = "tcp"
     port = 6443
+    retries = 3
+    interval = 10
+    timeout = 5
+  }
+}
+
+resource "hcloud_load_balancer_service" "cp_lb_talos_apid_listener" {
+  load_balancer_id = hcloud_load_balancer.controlplane_lb.id
+  protocol = "tcp"
+  # talosctl apid listens on 50000
+  listen_port = 50000
+  destination_port = 50000
+
+  # verify that kube-apiserver can be reached
+  health_check {
+    protocol = "tcp"
+    port = 50000
     retries = 3
     interval = 10
     timeout = 5
