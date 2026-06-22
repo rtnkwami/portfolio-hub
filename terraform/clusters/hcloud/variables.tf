@@ -10,3 +10,11 @@ variable "project_name" {
   type = string
   default = "homelab"
 }
+
+variable "talos_client_id" {
+  sensitive = true
+}
+
+variable "talos_client_secret" {
+  sensitive = true
+}

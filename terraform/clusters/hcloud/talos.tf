@@ -36,7 +36,7 @@ data "talos_machine_configuration" "controlplane" {
   cluster_name = var.project_name
   machine_type = "controlplane"
   # use a load balancer as the kube-apiserver endpoint
-  cluster_endpoint = "https://${hcloud_load_balancer_network.cp_lb_attachment.ip}:6443"
+  cluster_endpoint = "https://${hcloud_load_balancer.controlplane_lb.ipv4}:6443"
   machine_secrets = talos_machine_secrets.this.machine_secrets
   kubernetes_version = local.k8s_version
   talos_version = local.talos_version
@@ -70,10 +70,6 @@ resource "talos_machine_configuration_apply" "controlplane_config" {
         install = {
           disk = "/dev/sda"
         }
-        # use the load balancer as the entrypoint/endpoint for the talos API
-        certSANs = [
-          hcloud_load_balancer.controlplane_lb.ipv4
-        ]
       }
     })
   ]
@@ -107,7 +103,7 @@ resource "hcloud_server" "system_workers" {
 data "talos_machine_configuration" "worker" {
   cluster_name = var.project_name
   machine_type = "worker"
-  cluster_endpoint = "https://${hcloud_load_balancer_network.cp_lb_attachment.ip}:6443"
+  cluster_endpoint = "https://${hcloud_load_balancer.controlplane_lb.ipv4}:6443"
   machine_secrets = talos_machine_secrets.this.machine_secrets
   kubernetes_version = local.k8s_version
   talos_version = local.talos_version
