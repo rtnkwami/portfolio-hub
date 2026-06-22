@@ -8,7 +8,7 @@ terraform {
 
     talos = {
       source  = "siderolabs/talos"
-      version = "0.12.0-alpha.4"
+      version = "0.11.0"
     }
 
     hcloud = {
@@ -30,6 +30,11 @@ terraform {
     http = {
       source  = "hashicorp/http"
       version = "~>3.0"
+    }
+
+    local = {
+      source = "hashicorp/local"
+      version = "~>2.0"
     }
   }
 }

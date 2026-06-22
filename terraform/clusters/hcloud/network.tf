@@ -32,35 +32,11 @@ resource "hcloud_network_subnet" "reserved_subnet" {
   ip_range = cidrsubnet(hcloud_network.private_network.ip_range, 4, 3)
 }
 
-resource "imager_image" "talos_x86" {
-  image_url = "https://factory.talos.dev/image/376567988ad370138ad8b2698212367b8edcb69b5fd68c80be1f2ec7d603b4ba/v1.13.4/hcloud-amd64.raw.xz"
-  architecture = "x86"
-  server_type = "cx23"
+resource "hcloud_server_network" "cp_network_attachment" {
+  for_each = hcloud_server.control_plane
 
-  timeouts {
-    create = "10m"
-  }
-
-  labels = {
-    version = "1.13.4"
-  }
-}
-
-resource "hcloud_server" "control_plane" {
-  for_each = local.server_locations
-  
-  name = "controlplane-node-${each.key}"
-  server_type = "cx23"
-  location = each.value
-  image = imager_image.talos_x86.id
-
-  public_net {
-    ipv4_enabled = true
-  }
-
-  labels = {
-    "niovial.io/node-purpose" = "control-plane"
-  }
+  server_id = each.value.id
+  network_id = hcloud_network.private_network.id
 }
 
 resource "hcloud_load_balancer" "controlplane_lb" {
@@ -115,3 +91,4 @@ resource "hcloud_load_balancer_target" "cp_lb_target" {
 #     port = "5000"
 #   }
 # }
+
