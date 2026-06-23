@@ -24,6 +24,20 @@ resource "talos_machine_configuration_apply" "worker_config" {
         install = {
           disk = "/dev/sda"
         }
+        nodeLabels = {
+          "niovial.io/node-purpose" = "system"
+        }
+        kubelet = {
+          extraConfig = {
+            registerWithTaints = [
+              {
+                key = "niovial.io/node-purpose"
+                value = "system"
+                effect = "NoSchedule"
+              }
+            ]
+          }
+        }
       }
     })
   ]
