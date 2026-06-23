@@ -22,6 +22,18 @@ variable "k8s_version" {
   type = string
 }
 
+variable "talos_ccm_version" {
+  type = string
+}
+
+variable "prometheus_operator_crds_version" {
+  type = string
+}
+
+variable "gateway_api_crds_version" {
+  type = string
+}
+
 variable "tailscale_client_id" {
   sensitive = true
 }

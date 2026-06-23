@@ -1,5 +1,50 @@
 locals {
   bootstrap_node_key = "fsn1"
+  cloud_manifests = [
+    # use the cloud controller manager daemonset to ensure redundancy
+    "https://raw.githubusercontent.com/siderolabs/talos-cloud-controller-manager/${var.talos_ccm_version}/docs/deploy/cloud-controller-manager-daemonset.yml",
+    # these manifests are installed on control plane bootstrap because they are required by the following components:
+    # Cilium -> both Gateway API and exposing a Prometheus Service Monitor
+    # ArgoCD -> exposing a Prometheus Service Monitor
+    # this is only needed on initial cluster bootstrap, because the CRDs get replaced later with VMServiceScrape by the
+    # victoria-metrics-k8s-stack
+    "https://github.com/prometheus-operator/prometheus-operator/releases/download/${var.prometheus_operator_crds_version}/stripped-down-crds.yaml",
+    "https://github.com/kubernetes-sigs/gateway-api/releases/download/${var.gateway_api_crds_version}/experimental-install.yaml"
+    ]
+  
+  control_plane_config = {
+    machine = {
+      install = {
+        disk = "/dev/sda"
+      }
+      kubelet = {
+        extraArgs = {
+          cloud-provider = "external"
+          rotate-server-certificates = true
+        }
+      }
+      features = {
+        kubernetesTalosAPIAccess = {
+          enabled = true
+          allowedRoles = ["os:reader"]
+          allowedKubernetesNamespaces = ["kube-system"]
+        }
+      }
+    }
+    cluster = {
+      externalCloudProvider = {
+        enabled = true
+        manifests = local.cloud_manifests
+      }
+      controllerManager = {
+        # configure controller manager to use external ccm
+        # instead of in-tree provider
+        extraArgs = {
+          "cloud-provider" = "external"
+        }
+      }
+    }
+  }
 }
 
 data "talos_machine_configuration" "controlplane" {
@@ -17,15 +62,7 @@ resource "talos_machine_configuration_apply" "controlplane_config" {
   client_configuration = talos_machine_secrets.this.client_configuration
   machine_configuration_input = data.talos_machine_configuration.controlplane.machine_configuration
   node = each.value.ipv4_address
-  config_patches = [
-    yamlencode({
-      machine = {
-        install = {
-          disk = "/dev/sda"
-        }
-      }
-    })
-  ]
+  config_patches = [yamlencode(local.control_plane_config)]
 }
 
 resource "talos_machine_bootstrap" "controlplane" {
