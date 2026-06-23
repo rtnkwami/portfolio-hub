@@ -8,13 +8,24 @@ variable "hcloud_token" {
 
 variable "project_name" {
   type = string
-  default = "homelab"
 }
 
-variable "talos_client_id" {
+variable "talos_machine_image" {
+  type = string
+}
+
+variable "talos_version" {
+  type = string
+}
+
+variable "k8s_version" {
+  type = string
+}
+
+variable "tailscale_client_id" {
   sensitive = true
 }
 
-variable "talos_client_secret" {
+variable "tailscale_client_secret" {
   sensitive = true
 }

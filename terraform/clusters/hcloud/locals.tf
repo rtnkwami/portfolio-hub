@@ -7,11 +7,3 @@ data "http" "current_ipv4" {
     max_delay_ms = 1000
   }
 }
-
-locals {
-  server_locations = toset(["nbg1", "fsn1", "hel1"])
-  current_ip = "${chomp(data.http.current_ipv4.response_body)}/32"
-  bootstrap_node_key = "fsn1"
-  k8s_version = "v1.36.1"
-  talos_version = "v1.13"
-}
