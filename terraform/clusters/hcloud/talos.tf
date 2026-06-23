@@ -7,7 +7,7 @@ data "talos_client_configuration" "this" {
     [for node in hcloud_server.control_plane : node.ipv4_address],
     [for node in hcloud_server.workers : node.ipv4_address]
   )
-  endpoints = [hcloud_load_balancer.control_plane_lb.ipv4]
+  endpoints = [for node in hcloud_server.control_plane : node.ipv4_address]
 }
 
 resource "local_sensitive_file" "talosconfig" {

@@ -24,21 +24,6 @@ resource "hcloud_load_balancer_service" "kube_api_listener" {
   }
 }
 
-resource "hcloud_load_balancer_service" "talos_api_listener" {
-  load_balancer_id = hcloud_load_balancer.control_plane_lb.id
-  protocol = "tcp"
-  listen_port = 50000
-  destination_port = 50000
-
-  health_check {
-    protocol = "tcp"
-    port = 50000
-    retries = 3
-    interval = 10
-    timeout = 5
-  }
-}
-
 resource "hcloud_load_balancer_target" "cp_lb_target" {
   type = "label_selector"
   load_balancer_id = hcloud_load_balancer.control_plane_lb.id
