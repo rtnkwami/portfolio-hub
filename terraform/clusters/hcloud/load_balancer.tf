@@ -6,7 +6,7 @@ resource "hcloud_load_balancer" "control_plane_lb" {
 
 resource "hcloud_load_balancer_network" "cp_lb_attachment" {
   load_balancer_id = hcloud_load_balancer.control_plane_lb.id
-  network_id = hcloud_network.private_network.id
+  subnet_id = hcloud_network_subnet.load_balancer.id
 }
 
 resource "hcloud_load_balancer_service" "kube_api_listener" {

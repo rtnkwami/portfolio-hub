@@ -46,12 +46,14 @@ locals {
         # instead of in-tree provider
         extraArgs = {
           "cloud-provider" = "external"
+          "node-cidr-mask-size-ipv4" = "26" # each node should use 64 IPs
         }
       }
       network = {
         cni = {
           name = "none"
         }
+        podSubnets = [local.k8s_cidr.pod_cidr]
       }
       proxy = {
         disabled = true

@@ -10,6 +10,16 @@ data "helm_template" "cilium" {
   values = [
     yamlencode({
       ipam = { mode = "kubernetes" }
+      routingMode = "native"
+      k8s = {
+        requireIPv4PodCIDR = true
+      }
+      ipv4NativeRoutingCIDR = local.k8s_cidr.pod_cidr
+      encryption = {
+        enabled =  true
+        type = "wireguard"
+        nodeEncryption = true
+      }
       kubeProxyReplacement = true
       securityContext = {
         capabilities = {
@@ -81,8 +91,6 @@ data "helm_template" "cilium" {
 locals {
   cilium_manifest = {
     name = "cilium"
-    contents = <<-EOF
-      ${data.helm_template.cilium.manifest}
-    EOF
+    contents = data.helm_template.cilium.manifest
   }
 }

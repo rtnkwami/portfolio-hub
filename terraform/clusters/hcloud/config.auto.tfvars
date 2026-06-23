@@ -13,3 +13,5 @@ prometheus_operator_crds_version = "v0.92.0"
 gateway_api_crds_version = "v1.5.1"
 
 cilium_version = "1.19.4"
+
+hcloud_ccm_version = "1.33.0"
