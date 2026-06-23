@@ -12,6 +12,10 @@ locals {
     "https://github.com/kubernetes-sigs/gateway-api/releases/download/${var.gateway_api_crds_version}/experimental-install.yaml"
     ]
   
+  fundamental_manifests = concat(
+    [local.cilium_manifest],
+  )
+
   control_plane_config = {
     machine = {
       install = {
@@ -32,6 +36,7 @@ locals {
       }
     }
     cluster = {
+      inlineManifests = local.fundamental_manifests
       externalCloudProvider = {
         enabled = true
         manifests = local.cloud_manifests
@@ -42,6 +47,14 @@ locals {
         extraArgs = {
           "cloud-provider" = "external"
         }
+      }
+      network = {
+        cni = {
+          name = "none"
+        }
+      }
+      proxy = {
+        disabled = true
       }
     }
   }

@@ -11,3 +11,5 @@ talos_ccm_version = "v1.12.0"
 prometheus_operator_crds_version = "v0.92.0"
 
 gateway_api_crds_version = "v1.5.1"
+
+cilium_version = "1.19.4"

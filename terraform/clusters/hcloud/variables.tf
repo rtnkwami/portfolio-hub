@@ -34,6 +34,10 @@ variable "gateway_api_crds_version" {
   type = string
 }
 
+variable "cilium_version" {
+  type = string
+}
+
 variable "tailscale_client_id" {
   sensitive = true
 }
