@@ -42,6 +42,10 @@ variable "hcloud_ccm_version" {
   type = string
 }
 
+variable "hcloud_csi_version" {
+  type = string
+}
+
 variable "tailscale_client_id" {
   sensitive = true
 }
