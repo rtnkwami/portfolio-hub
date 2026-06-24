@@ -17,7 +17,7 @@ terraform {
     }
 
     imager = {
-      source = "hcloud-talos/imager"
+      source  = "hcloud-talos/imager"
       version = "~>1.0"
     }
 
@@ -33,7 +33,7 @@ terraform {
     }
 
     local = {
-      source = "hashicorp/local"
+      source  = "hashicorp/local"
       version = "~>2.0"
     }
   }

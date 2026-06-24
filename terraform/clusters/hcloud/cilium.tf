@@ -11,13 +11,13 @@ locals {
 }
 
 data "helm_template" "cilium" {
-  name       = "cilium"
-  namespace  = "kube-system"
-  repository = "oci://quay.io/cilium/charts"
-  chart      = "cilium"
-  version    = var.cilium_version
+  name         = "cilium"
+  namespace    = "kube-system"
+  repository   = "oci://quay.io/cilium/charts"
+  chart        = "cilium"
+  version      = var.cilium_version
   kube_version = var.k8s_version
-  wait       = false
+  wait         = false
 
   values = [
     yamlencode({
@@ -33,20 +33,20 @@ data "helm_template" "cilium" {
       }
       ipv4NativeRoutingCIDR = local.k8s_cidr.pod_cidr
       encryption = {
-        enabled =  true
-        type = "wireguard"
+        enabled        = true
+        type           = "wireguard"
         nodeEncryption = true
       }
       kubeProxyReplacement = true
       securityContext = {
         capabilities = {
-          ciliumAgent = ["CHOWN", "KILL", "NET_ADMIN", "NET_RAW", "IPC_LOCK", "SYS_ADMIN", "SYS_RESOURCE", "DAC_OVERRIDE", "FOWNER", "SETGID", "SETUID"]
+          ciliumAgent      = ["CHOWN", "KILL", "NET_ADMIN", "NET_RAW", "IPC_LOCK", "SYS_ADMIN", "SYS_RESOURCE", "DAC_OVERRIDE", "FOWNER", "SETGID", "SETUID"]
           cleanCiliumState = ["NET_ADMIN", "SYS_ADMIN", "SYS_RESOURCE"]
         }
       }
       cgroup = {
         autoMount = { enabled = false }
-        hostRoot = "/sys/fs/cgroup"
+        hostRoot  = "/sys/fs/cgroup"
       }
       # we use localhost here because talos has kube-prism installed by default
       # kube-prism provides a load balancer reachable on port 7445 for workers
@@ -56,20 +56,20 @@ data "helm_template" "cilium" {
       # we can still access the cluster endpoint via kube-prism
       k8sServiceHost = local.k8s_service_host
       k8sServicePort = local.k8s_service_port
-      gatewayAPI = { 
+      gatewayAPI = {
         enabled = true
       }
       operator = {
-        nodeSelector = { 
+        nodeSelector = {
           "niovial.io/node-purpose" = "system"
         }
         tolerations = [
           {
-            key = "niovial.io/node-purpose"
+            key      = "niovial.io/node-purpose"
             operator = "Exists"
           },
           {
-            key = "node.kubernetes.io/not-ready"
+            key      = "node.kubernetes.io/not-ready"
             operator = "Exists"
           }
         ]
@@ -81,21 +81,21 @@ data "helm_template" "cilium" {
         enabled = true
         relay = {
           enabled = true
-          nodeSelector = { 
+          nodeSelector = {
             "niovial.io/node-purpose" = "system"
           }
           tolerations = [{
-            key = "niovial.io/node-purpose"
+            key      = "niovial.io/node-purpose"
             operator = "Exists"
           }]
         }
         ui = {
           enabled = true
-            nodeSelector = { 
+          nodeSelector = {
             "niovial.io/node-purpose" = "system"
           }
           tolerations = [{
-            key = "niovial.io/node-purpose"
+            key      = "niovial.io/node-purpose"
             operator = "Exists"
           }]
         }
@@ -103,7 +103,7 @@ data "helm_template" "cilium" {
       prometheus = {
         enabled = true
         serviceMonitor = {
-          enabled = true
+          enabled        = true
           trustCRDsExist = true
         }
       }
@@ -113,7 +113,7 @@ data "helm_template" "cilium" {
 
 locals {
   cilium_manifest = {
-    name = "cilium"
+    name     = "cilium"
     contents = data.helm_template.cilium.manifest
   }
 }

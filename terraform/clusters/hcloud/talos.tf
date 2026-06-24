@@ -1,7 +1,7 @@
 resource "talos_machine_secrets" "this" {}
 
 data "talos_client_configuration" "this" {
-  cluster_name = var.project_name
+  cluster_name         = var.project_name
   client_configuration = talos_machine_secrets.this.client_configuration
   nodes = concat(
     [for node in hcloud_server.control_plane : node.ipv4_address],
@@ -18,8 +18,8 @@ resource "local_sensitive_file" "talosconfig" {
 
 resource "talos_cluster_kubeconfig" "this" {
   client_configuration = talos_machine_secrets.this.client_configuration
-  node = hcloud_server.control_plane[local.bootstrap_node_key].ipv4_address
-  depends_on = [talos_machine_bootstrap.controlplane]
+  node                 = hcloud_server.control_plane[local.bootstrap_node_key].ipv4_address
+  depends_on           = [talos_machine_bootstrap.controlplane]
 }
 
 resource "local_sensitive_file" "kubeconfig" {

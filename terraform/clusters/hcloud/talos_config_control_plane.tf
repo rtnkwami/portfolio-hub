@@ -10,8 +10,8 @@ locals {
     # victoria-metrics-k8s-stack
     "https://github.com/prometheus-operator/prometheus-operator/releases/download/${var.prometheus_operator_crds_version}/stripped-down-crds.yaml",
     "https://github.com/kubernetes-sigs/gateway-api/releases/download/${var.gateway_api_crds_version}/experimental-install.yaml"
-    ]
-  
+  ]
+
   fundamental_manifests = concat(
     [local.hcloud_secret_manifest],
     [local.cilium_manifest],
@@ -25,7 +25,7 @@ locals {
       }
       kubelet = {
         extraArgs = {
-          cloud-provider = "external"
+          cloud-provider             = "external"
           rotate-server-certificates = true
         }
         # see talos_config_workers.tf for more information
@@ -33,8 +33,8 @@ locals {
       }
       features = {
         kubernetesTalosAPIAccess = {
-          enabled = true
-          allowedRoles = ["os:reader"]
+          enabled                     = true
+          allowedRoles                = ["os:reader"]
           allowedKubernetesNamespaces = ["kube-system"]
         }
       }
@@ -42,14 +42,14 @@ locals {
     cluster = {
       inlineManifests = local.fundamental_manifests
       externalCloudProvider = {
-        enabled = true
+        enabled   = true
         manifests = local.cloud_manifests
       }
       controllerManager = {
         # configure controller manager to use external ccm
         # instead of in-tree provider
         extraArgs = {
-          "cloud-provider" = "external"
+          "cloud-provider"           = "external"
           "node-cidr-mask-size-ipv4" = "26" # each node should use 64 IPs
         }
       }
@@ -57,7 +57,7 @@ locals {
         cni = {
           name = "none"
         }
-        podSubnets = [local.k8s_cidr.pod_cidr]
+        podSubnets     = [local.k8s_cidr.pod_cidr]
         serviceSubnets = [local.k8s_cidr.service_cidr]
       }
       proxy = {
@@ -68,21 +68,21 @@ locals {
 }
 
 data "talos_machine_configuration" "controlplane" {
-  cluster_name = var.project_name
-  machine_type = "controlplane"
-  cluster_endpoint = "https://${hcloud_load_balancer.control_plane_lb.ipv4}:6443"
-  machine_secrets = talos_machine_secrets.this.machine_secrets
+  cluster_name       = var.project_name
+  machine_type       = "controlplane"
+  cluster_endpoint   = "https://${hcloud_load_balancer.control_plane_lb.ipv4}:6443"
+  machine_secrets    = talos_machine_secrets.this.machine_secrets
   kubernetes_version = var.k8s_version
-  talos_version = var.talos_version
+  talos_version      = var.talos_version
 }
 
 resource "talos_machine_configuration_apply" "controlplane_config" {
   for_each = hcloud_server.control_plane
 
-  client_configuration = talos_machine_secrets.this.client_configuration
+  client_configuration        = talos_machine_secrets.this.client_configuration
   machine_configuration_input = data.talos_machine_configuration.controlplane.machine_configuration
-  node = each.value.ipv4_address
-  config_patches = [yamlencode(local.control_plane_config)]
+  node                        = each.value.ipv4_address
+  config_patches              = [yamlencode(local.control_plane_config)]
 }
 
 resource "talos_machine_bootstrap" "controlplane" {
