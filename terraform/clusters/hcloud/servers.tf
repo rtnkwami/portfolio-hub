@@ -38,7 +38,7 @@ resource "hcloud_server_network" "control_plane_attachment" {
   for_each = hcloud_server.control_plane
   
   server_id = hcloud_server.control_plane[each.key].id
-  subnet_id = local.node_cidr.control_plane_cidr
+  subnet_id = hcloud_network_subnet.control_plane_subnet.id
 }
 
 resource "hcloud_server" "workers" {
@@ -62,5 +62,5 @@ resource "hcloud_server_network" "worker_attachment" {
   for_each = hcloud_server.workers
 
   server_id = hcloud_server.workers[each.key].id
-  subnet_id = local.node_cidr.app_cidr
+  subnet_id = hcloud_network_subnet.app_subnet.id
 }
