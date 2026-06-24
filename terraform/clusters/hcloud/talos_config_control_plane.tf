@@ -28,6 +28,7 @@ locals {
           cloud-provider = "external"
           rotate-server-certificates = true
         }
+        # see talos_config_workers.tf for more information
         clusterDNS = [cidrhost(local.k8s_cidr.service_cidr, 10)]
       }
       features = {

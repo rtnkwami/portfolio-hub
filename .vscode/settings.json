@@ -1,0 +1,7 @@
+{
+  "yaml.schemas": {
+    "https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/postgresql.cnpg.io/cluster_v1.json": "*db.yaml",
+    "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.35.0-standalone-strict/storageclass-storage-v1.json": "storage-class.yaml",
+    "https://gitlab.com/appsemble/appsemble/-/raw/HEAD/packages/cli/assets/appsemblerc.schema.json": "file:///home/nukuk/projects/portfolio-hub/k8s/cluster/infra/node-scaling/kustomization.yaml"
+  }
+}
