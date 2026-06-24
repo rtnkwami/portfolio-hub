@@ -32,6 +32,11 @@ data "helm_template" "cilium" {
         requireIPv4PodCIDR = true
       }
       ipv4NativeRoutingCIDR = local.k8s_cidr.pod_cidr
+      # enable eBPF masquerading instead of legacy iptables masquerading
+      # eBPF is more efficient.
+      bpf = {
+        masquerade = true
+      }
       encryption = {
         enabled        = true
         type           = "wireguard"
