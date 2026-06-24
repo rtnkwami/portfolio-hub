@@ -25,6 +25,12 @@ locals {
             }
           ]
         }
+        extraArgs = {
+          # setting this flag on both control plane and worker nodes
+          # ensures that the ccm works properly for both classes of nodes
+          cloud-provider             = "external"
+          rotate-server-certificates = true
+        }
       }
     }
   }
