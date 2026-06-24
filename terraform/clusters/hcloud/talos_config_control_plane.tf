@@ -13,7 +13,9 @@ locals {
     ]
   
   fundamental_manifests = concat(
+    [local.hcloud_secret_manifest],
     [local.cilium_manifest],
+    [local.hcloud_ccm_manifest]
   )
 
   control_plane_config = {
@@ -26,6 +28,7 @@ locals {
           cloud-provider = "external"
           rotate-server-certificates = true
         }
+        clusterDNS = [cidrhost(local.k8s_cidr.service_cidr, 10)]
       }
       features = {
         kubernetesTalosAPIAccess = {
@@ -54,6 +57,7 @@ locals {
           name = "none"
         }
         podSubnets = [local.k8s_cidr.pod_cidr]
+        serviceSubnets = [local.k8s_cidr.service_cidr]
       }
       proxy = {
         disabled = true

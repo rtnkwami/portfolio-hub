@@ -1,3 +1,15 @@
+locals {
+  # this is changed from "localhost" to "127.0.0.1" because
+  # if it isn't cilium will try to do a dns lookup for localhost to
+  # resolve the DNS name on both IPv4 and IPv6, causing an error when it
+  # can't find the IPv6 address.
+  # IPv6 isn't enabled by default on this cluster
+  k8s_service_host = "127.0.0.1"
+  # For future reference, this port number was orignall 7443 and shot me in the foot
+  # next time reference this https://docs.siderolabs.com/kubernetes-guides/advanced-guides/kubeprism#:~:text=port
+  k8s_service_port = 7445
+}
+
 data "helm_template" "cilium" {
   name       = "cilium"
   namespace  = "kube-system"
@@ -9,7 +21,12 @@ data "helm_template" "cilium" {
 
   values = [
     yamlencode({
+      # each node is assigned a CIDR range for pods besides their own IP
       ipam = { mode = "kubernetes" }
+      # configure cilium to use VPC routable pod IP CIDR
+      # This works in conjuction with hcloud ccm to handle IPAM
+      # hetnzer cloud networks are l3, so we cannot route on L2 (see https://docs.hetzner.com/networking/networks/technical-concepts/architecture/#:~:text=Cloud%20subnet%20at%20Layer%203%20%28IP%20%2F%20Network%20Layer%29%3A).
+      # the native routing mode that has to be used is this (https://docs.cilium.io/en/stable/network/concepts/routing/#native-routing:~:text=The%20node%20itself%20does%20not)
       routingMode = "native"
       k8s = {
         requireIPv4PodCIDR = true
@@ -37,8 +54,8 @@ data "helm_template" "cilium" {
       # needs a way to be routed to the cluster endpoint. As such, even if we don't use the
       # load balancer endpoint (which is the cluster's actual control plane endpoint)
       # we can still access the cluster endpoint via kube-prism
-      k8sServiceHost = "localhost"
-      k8sServicePort = 7445
+      k8sServiceHost = local.k8s_service_host
+      k8sServicePort = local.k8s_service_port
       gatewayAPI = { 
         enabled = true
       }
@@ -46,10 +63,16 @@ data "helm_template" "cilium" {
         nodeSelector = { 
           "niovial.io/node-purpose" = "system"
         }
-        tolerations = [{
-          key = "niovial.io/node-purpose"
-          operator = "Exists"
-        }]
+        tolerations = [
+          {
+            key = "niovial.io/node-purpose"
+            operator = "Exists"
+          },
+          {
+            key = "node.kubernetes.io/not-ready"
+            operator = "Exists"
+          }
+        ]
         podDisruptionBudget = {
           enabled = true
         }
