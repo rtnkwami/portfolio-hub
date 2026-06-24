@@ -53,10 +53,3 @@ resource "hcloud_network_subnet" "database_subnet" {
   network_zone = "eu-central"
   ip_range = local.node_cidr.db_cidr
 }
-
-resource "hcloud_network_subnet" "reserved_subnet" {
-  network_id = hcloud_network.private_network.id
-  type = "cloud"
-  network_zone = "eu-central"
-  ip_range = local.node_cidr.reserved_cidr
-}

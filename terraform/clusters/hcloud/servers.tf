@@ -34,6 +34,13 @@ resource "hcloud_server" "control_plane" {
   }
 }
 
+resource "hcloud_server_network" "control_plane_attachment" {
+  for_each = hcloud_server.control_plane
+  
+  server_id = hcloud_server.control_plane[each.key].id
+  subnet_id = local.node_cidr.control_plane_cidr
+}
+
 resource "hcloud_server" "workers" {
   for_each = local.server_locations
 
@@ -49,4 +56,11 @@ resource "hcloud_server" "workers" {
   labels = {
     "niovial.io/node-purpose" = "system"
   }
+}
+
+resource "hcloud_server_network" "worker_attachment" {
+  for_each = hcloud_server.workers
+
+  server_id = hcloud_server.workers[each.key].id
+  subnet_id = local.node_cidr.app_cidr
 }
