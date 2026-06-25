@@ -89,6 +89,10 @@ data "helm_template" "cluster_autoscaler" {
           operator = "Exists"
         }
       ]
+      serviceMonitor = {
+        enabled = true
+        namespace = "observability"
+      }
       autoscalingGroups = [
         for nodepool in local.ca_nodepools : {
           name = nodepool.name
@@ -98,6 +102,9 @@ data "helm_template" "cluster_autoscaler" {
           maxSize = nodepool.max
         }
       ]
+      extraArgs = {
+        expander = "least-waste"
+      }
       extraEnv = {
         # secret is created as "cluster-config". k8s mounts this due to extraVolumeSecrets below
         # as the path specified in extraVolumeSecrets + the secret key.
