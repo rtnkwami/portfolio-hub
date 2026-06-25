@@ -1,6 +1,6 @@
 locals {
   talos_image      = var.talos_machine_image
-  server_locations = toset(["nbg1", "fsn1", "hel1"])
+  server_locations = toset(local.zones)
 }
 
 resource "imager_image" "talos_x86" {

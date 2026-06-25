@@ -16,7 +16,8 @@ locals {
     [local.hcloud_secret_manifest],
     [local.cilium_manifest],
     [local.hcloud_ccm_manifest],
-    [local.hcloud_csi_manifest]
+    [local.hcloud_csi_manifest],
+    [local.cluster_autoscaler_manifest]
   )
 
   control_plane_config = {

@@ -1,0 +1,40 @@
+locals {
+  cluster_autoscaler_talos_config = {
+    for nodepool in local.ca_nodepools : nodepool.name => [
+      {
+        machine = {
+          install = {
+            disk = "/dev/sda"
+          }
+          nodeLabels = nodepool.labels
+          kubelet = {
+            # see talos_config_workers.tf for why this is here
+            clusterDNS = [cidrhost(local.k8s_cidr.service_cidr, 10)]
+            extraConfig = {
+              registerWithTaints = nodepool.taints
+            }
+            extraArgs = {
+              # setting this flag on both control plane and worker nodes
+              # ensures that the ccm works properly for both classes of nodes
+              cloud-provider             = "external"
+              rotate-server-certificates = true
+            }
+          }
+        }
+      }
+    ]
+  }
+}
+
+data "talos_machine_configuration" "cluster_autoscaler_config" {
+  for_each = { for nodepool in local.ca_nodepools : nodepool.name => nodepool }
+  
+  cluster_name       = var.project_name
+  machine_type       = "worker"
+  cluster_endpoint   = "https://${hcloud_load_balancer.control_plane_lb.ipv4}:6443"
+  machine_secrets    = talos_machine_secrets.this.machine_secrets
+  kubernetes_version = var.k8s_version
+  talos_version      = var.talos_version
+  # apparently config_patches can be used here and I never knew
+  config_patches = [for config in local.cluster_autoscaler_talos_config[each.key] : yamlencode(config)]
+}

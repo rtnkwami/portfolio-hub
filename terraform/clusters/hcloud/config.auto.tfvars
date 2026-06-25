@@ -17,3 +17,5 @@ cilium_version = "1.19.4"
 hcloud_ccm_version = "1.33.0"
 
 hcloud_csi_version = "2.21.2"
+
+cluster_autoscaler_version = "9.58.0"
