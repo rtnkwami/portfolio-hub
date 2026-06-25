@@ -87,6 +87,7 @@ data "helm_template" "cluster_autoscaler" {
         {
           key      = "niovial.io/node-purpose"
           operator = "Exists"
+          value    = "system"
         }
       ]
       serviceMonitor = {

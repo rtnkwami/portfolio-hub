@@ -72,6 +72,7 @@ data "helm_template" "cilium" {
           {
             key      = "niovial.io/node-purpose"
             operator = "Exists"
+            value    = "system"
           },
           {
             key      = "node.kubernetes.io/not-ready"
