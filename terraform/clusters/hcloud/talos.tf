@@ -27,3 +27,13 @@ resource "local_sensitive_file" "kubeconfig" {
   filename        = "${path.module}/outputs/kubeconfig"
   file_permission = "0600"
 }
+
+locals {
+  kubeconfig_data = {
+    name = var.project_name
+    server = local.cluster_endpoint
+    ca     = base64decode(talos_cluster_kubeconfig.this.kubernetes_client_configuration.ca_certificate)
+    cert   = base64decode(talos_cluster_kubeconfig.this.kubernetes_client_configuration.client_certificate)
+    key    = base64decode(talos_cluster_kubeconfig.this.kubernetes_client_configuration.client_key)
+  }
+}
