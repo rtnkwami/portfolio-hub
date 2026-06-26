@@ -50,6 +50,10 @@ variable "cluster_autoscaler_version" {
   type = string
 }
 
+variable "argocd_version" {
+  type = string
+}
+
 variable "tailscale_client_id" {
   sensitive = true
 }
