@@ -1,4 +1,5 @@
 locals {
+  cluster_endpoint = "https://${hcloud_load_balancer.control_plane_lb.ipv4}:6443"
   bootstrap_node_key = "fsn1"
   cloud_manifests = [
     # use the cloud controller manager daemonset to ensure redundancy
@@ -72,7 +73,7 @@ locals {
 data "talos_machine_configuration" "controlplane" {
   cluster_name       = var.project_name
   machine_type       = "controlplane"
-  cluster_endpoint   = "https://${hcloud_load_balancer.control_plane_lb.ipv4}:6443"
+  cluster_endpoint   = local.cluster_endpoint
   machine_secrets    = talos_machine_secrets.this.machine_secrets
   kubernetes_version = var.k8s_version
   talos_version      = var.talos_version
