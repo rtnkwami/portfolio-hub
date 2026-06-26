@@ -86,7 +86,7 @@ data "helm_template" "cluster_autoscaler" {
       tolerations = [
         {
           key      = "niovial.io/node-purpose"
-          operator = "Exists"
+          operator = "Equal"
           value    = "system"
         }
       ]

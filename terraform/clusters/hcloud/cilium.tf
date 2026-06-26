@@ -71,7 +71,7 @@ data "helm_template" "cilium" {
         tolerations = [
           {
             key      = "niovial.io/node-purpose"
-            operator = "Exists"
+            operator = "Equal"
             value    = "system"
           },
           {
@@ -92,7 +92,8 @@ data "helm_template" "cilium" {
           }
           tolerations = [{
             key      = "niovial.io/node-purpose"
-            operator = "Exists"
+            operator = "Equal"
+            value = "system"
           }]
         }
         ui = {
@@ -102,7 +103,8 @@ data "helm_template" "cilium" {
           }
           tolerations = [{
             key      = "niovial.io/node-purpose"
-            operator = "Exists"
+            operator = "Equal"
+            value = "system"
           }]
         }
       }

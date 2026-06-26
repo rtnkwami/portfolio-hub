@@ -39,7 +39,7 @@ data "helm_template" "hcloud_csi" {
         tolerations = [
           {
             key      = "niovial.io/node-purpose"
-            operator = "Exists"
+            operator = "Equal"
             value    = "system"
           }
         ],
