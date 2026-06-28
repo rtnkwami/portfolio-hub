@@ -68,7 +68,7 @@ spec:
             - key: niovial.io/node-purpose
               operator: Exists
         prometheus:
-          serviceMonitor:
+          servicemonitor:
             enabled: true
   destination:
     namespace: cert-manager
