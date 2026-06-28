@@ -6,3 +6,4 @@ resources:
   - external-secrets.yaml
   - keda.yaml
   - observability/node-exporter.yaml
+  - observability/vlogs-collector.yaml
