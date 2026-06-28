@@ -23,7 +23,7 @@ spec:
             enabled: true 
   destination:
     namespace: node-exporter
-    server: {{ $.Values.globals.destinationServer }}
+    server: https://kubernetes.default.svc
   syncPolicy:
     automated:
       prune: true
