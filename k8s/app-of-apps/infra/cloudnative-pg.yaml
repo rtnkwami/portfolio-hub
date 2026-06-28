@@ -34,3 +34,13 @@ spec:
           podMonitorEnabled: true
           grafanaDashboard:
             create: true
+  destination:
+    namespace: cert-manager
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - ServerSideApply=true
+      - CreateNamespace=true
