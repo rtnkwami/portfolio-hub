@@ -5,3 +5,4 @@ resources:
   - cloudnative-pg.yaml
   - external-secrets.yaml
   - keda.yaml
+  - observability
