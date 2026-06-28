@@ -15,12 +15,6 @@ spec:
     targetRevision: 2.20.1
     helm:
     valuesObject:
-      nodeSelector:
-        niovial.io/node-purpose: system
-      tolerations:
-        - key: niovial.io/node-purpose
-          operator: Equal
-          value: system
       topologySpreadConstraints:
         operator:
           - topologyKey: "topology.kubernetes.io/zone"
@@ -47,10 +41,28 @@ spec:
                 app.kubernetes.io/instance: keda
             matchLabelKeys: ["pod-template-hash"]
       operator:
+        nodeSelector:
+          niovial.io/node-purpose: system
+        tolerations:
+          - key: niovial.io/node-purpose
+            operator: Equal
+            value: system
         replicaCount: 2
       metricsServer:
+        nodeSelector:
+          niovial.io/node-purpose: system
+        tolerations:
+          - key: niovial.io/node-purpose
+            operator: Equal
+            value: system
         replicaCount: 2
       webhooks:
+        nodeSelector:
+          niovial.io/node-purpose: system
+        tolerations:
+          - key: niovial.io/node-purpose
+            operator: Equal
+            value: system
         replicaCount: 2
       prometheus:
         metricServer:
