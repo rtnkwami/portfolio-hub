@@ -33,8 +33,8 @@ data "talos_machine_configuration" "cluster_autoscaler_config" {
   machine_type       = "worker"
   cluster_endpoint   = local.cluster_endpoint
   machine_secrets    = talos_machine_secrets.this.machine_secrets
-  kubernetes_version = var.k8s_version
-  talos_version      = var.talos_version
+  kubernetes_version = local.k8s_version
+  talos_version      = local.talos_version
   # apparently config_patches can be used here and I never knew
   config_patches = [for config in local.cluster_autoscaler_talos_config[each.key] : yamlencode(config)]
 }

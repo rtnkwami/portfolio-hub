@@ -5,8 +5,8 @@ data "helm_template" "hcloud_csi" {
   namespace = "kube-system"
   repository = "https://charts.hetzner.cloud"
   chart = "hcloud-csi"
-  version = var.hcloud_csi_version
-  kube_version = var.k8s_version
+  version = local.hcloud_csi_version
+  kube_version = local.k8s_version
   wait = false
 
   values = [

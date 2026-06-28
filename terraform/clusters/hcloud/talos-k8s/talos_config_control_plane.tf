@@ -1,16 +1,15 @@
 locals {
-  cluster_endpoint = "https://${hcloud_load_balancer.control_plane_lb.ipv4}:6443"
   bootstrap_node_key = "fsn1"
   cloud_manifests = [
     # use the cloud controller manager daemonset to ensure redundancy
-    "https://raw.githubusercontent.com/siderolabs/talos-cloud-controller-manager/${var.talos_ccm_version}/docs/deploy/cloud-controller-manager-daemonset.yml",
+    "https://raw.githubusercontent.com/siderolabs/talos-cloud-controller-manager/${local.talos_ccm_version}/docs/deploy/cloud-controller-manager-daemonset.yml",
     # these manifests are installed on control plane bootstrap because they are required by the following components:
     # Cilium -> both Gateway API and exposing a Prometheus Service Monitor
     # ArgoCD -> exposing a Prometheus Service Monitor
     # this is only needed on initial cluster bootstrap, because the CRDs get replaced later with VMServiceScrape by the
     # victoria-metrics-k8s-stack
-    "https://github.com/prometheus-operator/prometheus-operator/releases/download/${var.prometheus_operator_crds_version}/stripped-down-crds.yaml",
-    "https://github.com/kubernetes-sigs/gateway-api/releases/download/${var.gateway_api_crds_version}/experimental-install.yaml"
+    "https://github.com/prometheus-operator/prometheus-operator/releases/download/${local.prometheus_operator_crds_version}/stripped-down-crds.yaml",
+    "https://github.com/kubernetes-sigs/gateway-api/releases/download/${local.gateway_api_crds_version}/experimental-install.yaml"
   ]
 
   fundamental_manifests = concat(
@@ -75,8 +74,8 @@ data "talos_machine_configuration" "controlplane" {
   machine_type       = "controlplane"
   cluster_endpoint   = local.cluster_endpoint
   machine_secrets    = talos_machine_secrets.this.machine_secrets
-  kubernetes_version = var.k8s_version
-  talos_version      = var.talos_version
+  kubernetes_version = local.k8s_version
+  talos_version      = local.talos_version
 }
 
 resource "talos_machine_configuration_apply" "controlplane_config" {

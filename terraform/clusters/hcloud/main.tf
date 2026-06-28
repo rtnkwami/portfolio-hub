@@ -1,24 +1,23 @@
-data "talos_cluster_health" "this" {
-  client_configuration = talos_machine_secrets.this.client_configuration
-  endpoints            = [for node in hcloud_server.control_plane : node.ipv4_address]
-  # for etcd checks, and other control plane checks talos cluster health expects the private IPs
-  # of the control plane nodes. Internal cluster healt checks should not be going over the internet
-  # hence, the private IPs of the control plane nodes are used here.
-  control_plane_nodes  = [for node in hcloud_server_network.control_plane_attachment : node.ip]
-  worker_nodes         = [for node in hcloud_server_network.worker_attachment : node.ip]
-  
-  depends_on           = [talos_machine_configuration_apply.worker_config]
+module "talos_k8s" {
+  source = "./talos-k8s"
+
+  hcloud_token = var.hcloud_token
+  project_name = "homelab"
+
+  talosconfig_path = "${path.module}/outputs/talosconfig"
+  kubeconfig_path = "${path.module}/outputs/kubeconfig"
+  nodepools = local.nodepools
 }
 
 resource "helm_release" "argocd" {
   provider = helm.deploy
-  
+
   name = "argocd"
   namespace = "argocd"
   create_namespace = true
   repository = "oci://ghcr.io/argoproj/argo-helm"
   chart = "argo-cd"
-  version = var.argocd_version
+  version = "9.7.0"
   wait = false
   
   values = [
@@ -38,5 +37,5 @@ resource "helm_release" "argocd" {
     })
   ]
 
-  depends_on = [ data.talos_cluster_health.this ]
+  depends_on = [module.talos_k8s]
 }

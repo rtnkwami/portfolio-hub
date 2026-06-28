@@ -1,5 +1,4 @@
 locals {
-  zones = ["nbg1", "fsn1", "hel1"]
   # create a nodepool per intent, instance type, and zone
   # this is meant to satisfy topology spread constraints such as
   # topology.kubernetes.io/zone and hostname, among others
@@ -7,7 +6,7 @@ locals {
   # karpenter and thus cannot do just-in-time provisioning of nodes based
   # on the exact requests of pods. So we have to bake that config in ourselves
   ca_nodepools = flatten([
-    for nodepool_name, nodepool in local.nodepool_config : [
+    for nodepool_name, nodepool in var.nodepools : [
       for size_name, instance_type in nodepool.sizes : [
         for zone_index, zone in local.zones : {
           name     = "${nodepool_name}-${size_name}-${zone_index + 1}"
@@ -56,8 +55,8 @@ data "helm_template" "cluster_autoscaler" {
   namespace = "kube-system"
   repository = "https://kubernetes.github.io/autoscaler"
   chart = "cluster-autoscaler"
-  version = var.cluster_autoscaler_version
-  kube_version = var.k8s_version
+  version = local.cluster_autoscaler_version
+  kube_version = local.k8s_version
 
   values = [
     yamlencode({

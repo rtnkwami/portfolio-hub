@@ -22,8 +22,8 @@ data "helm_template" "hcloud_ccm" {
   namespace    = "kube-system"
   chart        = "hcloud-cloud-controller-manager"
   repository   = "https://charts.hetzner.cloud"
-  version      = var.hcloud_ccm_version
-  kube_version = var.k8s_version
+  version      = local.hcloud_ccm_version
+  kube_version = local.k8s_version
   wait         = false
 
   values = [

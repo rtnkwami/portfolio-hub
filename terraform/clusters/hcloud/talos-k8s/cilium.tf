@@ -15,8 +15,8 @@ data "helm_template" "cilium" {
   namespace    = "kube-system"
   repository   = "oci://quay.io/cilium/charts"
   chart        = "cilium"
-  version      = var.cilium_version
-  kube_version = var.k8s_version
+  version      = local.cilium_version
+  kube_version = local.k8s_version
   wait         = false
 
   values = [

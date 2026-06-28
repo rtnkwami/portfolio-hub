@@ -1,6 +1,4 @@
 locals {
-  talos_version = var.talos_version
-  k8s_version   = var.k8s_version
   worker_config = {
     machine = {
       install = {
@@ -41,8 +39,8 @@ data "talos_machine_configuration" "worker" {
   machine_type       = "worker"
   cluster_endpoint   = local.cluster_endpoint
   machine_secrets    = talos_machine_secrets.this.machine_secrets
-  kubernetes_version = var.k8s_version
-  talos_version      = var.talos_version
+  kubernetes_version = local.k8s_version
+  talos_version      = local.talos_version
 }
 
 resource "talos_machine_configuration_apply" "worker_config" {
