@@ -7,3 +7,5 @@ resources:
   - keda.yaml
   - observability/node-exporter.yaml
   - observability/vlogs-collector.yaml
+  - observability/victoria-logs.yaml
+  - observability/victoria-metrics-stack.yaml
