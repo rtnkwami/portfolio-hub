@@ -35,7 +35,7 @@ spec:
           grafanaDashboard:
             create: true
   destination:
-    namespace: cert-manager
+    namespace: cloudnative-pg
     server: https://kubernetes.default.svc
   syncPolicy:
     automated:
