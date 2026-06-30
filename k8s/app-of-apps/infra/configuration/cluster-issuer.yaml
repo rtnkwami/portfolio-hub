@@ -9,7 +9,8 @@ spec:
   acme:
     email: cert-alerts@niovial.io
     server: https://acme-staging-v02.api.letsencrypt.org/directory
-    privateKeySecretRef: letsencrypt-staging
+    privateKeySecretRef:
+      name: letsencrypt-staging
     solvers:
       - dns01:
           cloudflare:
