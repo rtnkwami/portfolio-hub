@@ -4,7 +4,7 @@ metadata:
   name: vlogs
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "-5"
+    argocd.argoproj.io/sync-wave: "-8"
   finalizers:
     - resources-finalizer.argocd.argoproj.io/background
 spec:
