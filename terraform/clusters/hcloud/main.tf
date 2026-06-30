@@ -39,3 +39,25 @@ resource "helm_release" "argocd" {
 
   depends_on = [module.talos_k8s]
 }
+
+resource "kubernetes_namespace_v1" "external_secrets" {
+  metadata {
+    name = "external-secrets"
+  }
+
+  depends_on = [module.talos_k8s]
+}
+
+resource "kubernetes_secret_v1" "infisical_creds" {
+  metadata {
+    name = "infisical-credentials"
+    namespace = kubernetes_namespace_v1.external_secrets.metadata[0].name
+  }
+
+  data_wo = {
+    clientId = var.infisical_client_id
+    clientSecret = var.infisical_client_secret
+  }
+  data_wo_revision = 1
+  immutable = true
+}
