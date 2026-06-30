@@ -24,7 +24,7 @@ resource "tls_private_key" "ssh_key" {
 # the only reason this key exists is to prevent Hetzner from sending an email
 # every time a server is created, either via this module or via the cluster autoscaler
 resource "hcloud_ssh_key" "this" {
-  name = "${var.project_name}-default-key"
+  name       = "${var.project_name}-default-key"
   public_key = tls_private_key.ssh_key.public_key_openssh
 
   labels = {
@@ -39,7 +39,7 @@ resource "hcloud_server" "control_plane" {
   server_type = "cx23"
   location    = each.value
   image       = imager_image.talos_x86.id
-  ssh_keys = [hcloud_ssh_key.this.id]
+  ssh_keys    = [hcloud_ssh_key.this.id]
 
   public_net {
     ipv4_enabled = true
@@ -64,7 +64,7 @@ resource "hcloud_server" "workers" {
   location    = each.value
   server_type = "cx23"
   image       = imager_image.talos_x86.id
-  ssh_keys = [hcloud_ssh_key.this.id]
+  ssh_keys    = [hcloud_ssh_key.this.id]
 
   public_net {
     ipv4_enabled = true

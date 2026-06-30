@@ -5,21 +5,21 @@ module "talos_k8s" {
   project_name = "homelab"
 
   talosconfig_path = "${path.module}/outputs/talosconfig"
-  kubeconfig_path = "${path.module}/outputs/kubeconfig"
-  nodepools = local.nodepools
+  kubeconfig_path  = "${path.module}/outputs/kubeconfig"
+  nodepools        = local.nodepools
 }
 
 resource "helm_release" "argocd" {
   provider = helm.deploy
 
-  name = "argocd"
-  namespace = "argocd"
+  name             = "argocd"
+  namespace        = "argocd"
   create_namespace = true
-  repository = "oci://ghcr.io/argoproj/argo-helm"
-  chart = "argo-cd"
-  version = "9.7.0"
-  wait = false
-  
+  repository       = "oci://ghcr.io/argoproj/argo-helm"
+  chart            = "argo-cd"
+  version          = "9.7.0"
+  wait             = false
+
   values = [
     yamlencode({
       global = {
@@ -50,14 +50,14 @@ resource "kubernetes_namespace_v1" "external_secrets" {
 
 resource "kubernetes_secret_v1" "infisical_creds" {
   metadata {
-    name = "infisical-credentials"
+    name      = "infisical-credentials"
     namespace = kubernetes_namespace_v1.external_secrets.metadata[0].name
   }
 
   data_wo = {
-    clientId = var.infisical_client_id
+    clientId     = var.infisical_client_id
     clientSecret = var.infisical_client_secret
   }
   data_wo_revision = 1
-  immutable = true
+  immutable        = true
 }

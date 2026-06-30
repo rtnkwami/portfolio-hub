@@ -28,7 +28,7 @@ locals {
 
 data "talos_machine_configuration" "cluster_autoscaler_config" {
   for_each = { for nodepool in local.ca_nodepools : nodepool.name => nodepool }
-  
+
   cluster_name       = var.project_name
   machine_type       = "worker"
   cluster_endpoint   = local.cluster_endpoint

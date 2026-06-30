@@ -1,21 +1,21 @@
 
 
 data "helm_template" "hcloud_csi" {
-  name = "hcloud-csi"
-  namespace = "kube-system"
-  repository = "https://charts.hetzner.cloud"
-  chart = "hcloud-csi"
-  version = local.hcloud_csi_version
+  name         = "hcloud-csi"
+  namespace    = "kube-system"
+  repository   = "https://charts.hetzner.cloud"
+  chart        = "hcloud-csi"
+  version      = local.hcloud_csi_version
   kube_version = local.k8s_version
-  wait = false
+  wait         = false
 
   values = [
     yamlencode({
       controller = {
         replicaCount = 2
         podDisruptionBudget = {
-          create = true
-          minAvailable = null
+          create         = true
+          minAvailable   = null
           maxUnavailable = "1"
         }
         topologySpreadConstraints = [

@@ -16,13 +16,13 @@ variable "kubeconfig_path" {
 
 variable "nodepools" {
   type = map(object({
-    sizes = map(string)
-    min = number
-    max = number
+    sizes  = map(string)
+    min    = number
+    max    = number
     labels = map(string)
     taints = list(object({
-      key = string
-      value = string
+      key    = string
+      value  = string
       effect = string
     }))
   }))

@@ -9,13 +9,13 @@ locals {
     for nodepool_name, nodepool in var.nodepools : [
       for size_name, instance_type in nodepool.sizes : [
         for zone_index, zone in local.zones : {
-          name     = "${nodepool_name}-${size_name}-${zone_index + 1}"
-          instance_type     = instance_type
-          location = zone
-          min      = nodepool.min
-          max      = nodepool.max
-          labels   = nodepool.labels
-          taints   = nodepool.taints
+          name          = "${nodepool_name}-${size_name}-${zone_index + 1}"
+          instance_type = instance_type
+          location      = zone
+          min           = nodepool.min
+          max           = nodepool.max
+          labels        = nodepool.labels
+          taints        = nodepool.taints
         }
       ]
     ]
@@ -25,10 +25,10 @@ locals {
   # at runtime.
   cluster_autoscaler_config = {
     apiVersion = "v1"
-    kind = "Secret"
-    type = "Opaque"
+    kind       = "Secret"
+    type       = "Opaque"
     metadata = {
-      name = "cluster-autoscaler-config-secret"
+      name      = "cluster-autoscaler-config-secret"
       namespace = "kube-system"
     }
     data = {
@@ -40,8 +40,8 @@ locals {
           nodeConfigs = {
             for pool in local.ca_nodepools : pool.name => {
               cloudInit = data.talos_machine_configuration.cluster_autoscaler_config[pool.name].machine_configuration
-              labels = pool.labels
-              taints = pool.taints
+              labels    = pool.labels
+              taints    = pool.taints
             }
           }
         })
@@ -51,19 +51,19 @@ locals {
 }
 
 data "helm_template" "cluster_autoscaler" {
-  name = "cluster-autoscaler"
-  namespace = "kube-system"
-  repository = "https://kubernetes.github.io/autoscaler"
-  chart = "cluster-autoscaler"
-  version = local.cluster_autoscaler_version
+  name         = "cluster-autoscaler"
+  namespace    = "kube-system"
+  repository   = "https://kubernetes.github.io/autoscaler"
+  chart        = "cluster-autoscaler"
+  version      = local.cluster_autoscaler_version
   kube_version = local.k8s_version
 
   values = [
     yamlencode({
       cloudProvider = "hetzner"
-      replicaCount = 2
+      replicaCount  = 2
       podDisruptionBudget = {
-        minAvailable = null
+        minAvailable   = null
         maxUnavailable = 1
       }
       topologySpreadConstraints = [
@@ -73,7 +73,7 @@ data "helm_template" "cluster_autoscaler" {
           whenUnsatisfiable = "DoNotSchedule"
           labelSelector = {
             matchLabels = {
-              "app.kubernetes.io/instance"  = "cluster-autoscaler"
+              "app.kubernetes.io/instance" = "cluster-autoscaler"
             }
           }
           matchLabelKeys = ["pod-template-hash"]
@@ -90,16 +90,16 @@ data "helm_template" "cluster_autoscaler" {
         }
       ]
       serviceMonitor = {
-        enabled = true
+        enabled   = true
         namespace = "observability"
       }
       autoscalingGroups = [
         for nodepool in local.ca_nodepools : {
-          name = nodepool.name
+          name         = nodepool.name
           instanceType = nodepool.instance_type
-          region = nodepool.location
-          minSize = nodepool.min
-          maxSize = nodepool.max
+          region       = nodepool.location
+          minSize      = nodepool.min
+          maxSize      = nodepool.max
         }
       ]
       extraArgs = {
@@ -108,24 +108,24 @@ data "helm_template" "cluster_autoscaler" {
       extraEnv = {
         # secret is created as "cluster-config". k8s mounts this due to extraVolumeSecrets below
         # as the path specified in extraVolumeSecrets + the secret key.
-        HCLOUD_CLUSTER_CONFIG_FILE     = "/config/cluster-config"
-        HCLOUD_SSH_KEY = tostring(hcloud_ssh_key.this.id)
-        HCLOUD_PUBLIC_IPV4 = "true"
-        HCLOUD_NETWORK = tostring(hcloud_network.private_network.id)
+        HCLOUD_CLUSTER_CONFIG_FILE = "/config/cluster-config"
+        HCLOUD_SSH_KEY             = tostring(hcloud_ssh_key.this.id)
+        HCLOUD_PUBLIC_IPV4         = "true"
+        HCLOUD_NETWORK             = tostring(hcloud_network.private_network.id)
       }
       # needed to call hcloud API to provision nodes
       # also for secrets passed as environment variables
       extraEnvSecrets = {
         HCLOUD_TOKEN = {
           name = "hcloud"
-          key = "token"
+          key  = "token"
         }
       }
       # secrets to be mounted as a file (like .env)
       # and read by the controller
       extraVolumeSecrets = {
         cluster-autoscaler-config-secret = {
-          name = "cluster-autoscaler-config-secret"
+          name      = "cluster-autoscaler-config-secret"
           mountPath = "/config"
         }
       }
@@ -135,7 +135,7 @@ data "helm_template" "cluster_autoscaler" {
 
 locals {
   cluster_autoscaler_manifest = {
-    name = "cluster-autoscaler"
+    name     = "cluster-autoscaler"
     contents = <<-EOF
       ${data.helm_template.cluster_autoscaler.manifest}
       ---
