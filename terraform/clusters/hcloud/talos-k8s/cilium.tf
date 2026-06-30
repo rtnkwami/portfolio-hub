@@ -63,6 +63,9 @@ data "helm_template" "cilium" {
       k8sServicePort = local.k8s_service_port
       gatewayAPI = {
         enabled = true
+        gatewayClass = {
+          create = "true"
+        }
       }
       operator = {
         nodeSelector = {

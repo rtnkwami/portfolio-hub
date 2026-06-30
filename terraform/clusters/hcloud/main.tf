@@ -22,6 +22,12 @@ resource "helm_release" "argocd" {
 
   values = [
     yamlencode({
+      configs = {
+        cm = {
+          "timeout.reconciliation" = "60s"
+          "timeout.reconciliation.jitter" = "30s"
+        }
+      }
       global = {
         tolerations = [
           {
