@@ -1,0 +1,29 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: external-gateway
+  namespace: cluster-gateway
+  annotations:
+    argocd.argoproj.io/sync-wave: "-4"
+    # see cluster-issuer.yaml
+    cert-manager.io/cluster-issuer: letsencrypt-staging
+spec:
+  gatewayClassName: cilium
+  infrastructure:
+    load-balancer.hetzner.cloud/name: "external-gateway"
+    load-balancer.hetzner.cloud/location: "nbg1"
+    load-balancer.hetzner.cloud/uses-proxyprotocol: "true"
+  listeners:
+    - name: https
+      # used for wildcard certs for cert-manager
+      hostname: "*.niovial.io"
+      port: 443
+      protocol: HTTPS
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        # tls termination at gateway
+        mode: Terminate
+        certificateRefs:
+          - name: niovial-io-tls
