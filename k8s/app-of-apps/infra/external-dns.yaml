@@ -37,9 +37,9 @@ spec:
           - name: CF_API_TOKEN
             valueFrom:
               secretKeyRef:
-              # see configuration/cloudflare-dns-secret
-              name: cloudflare-dns-token
-              key: token
+                # see configuration/cloudflare-dns-secret
+                name: cloudflare-dns-token
+                key: token
         txtOwnerId: homelab
         serviceMonitor:
           enabled: true
