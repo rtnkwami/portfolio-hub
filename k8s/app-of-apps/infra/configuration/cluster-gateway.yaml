@@ -16,9 +16,10 @@ metadata:
 spec:
   gatewayClassName: cilium
   infrastructure:
-    load-balancer.hetzner.cloud/name: "external-gateway"
-    load-balancer.hetzner.cloud/location: "nbg1"
-    load-balancer.hetzner.cloud/uses-proxyprotocol: "true"
+    annotations:
+      load-balancer.hetzner.cloud/name: "external-gateway"
+      load-balancer.hetzner.cloud/location: "nbg1"
+      load-balancer.hetzner.cloud/uses-proxyprotocol: "true"
   listeners:
     - name: https
       # used for wildcard certs for cert-manager
