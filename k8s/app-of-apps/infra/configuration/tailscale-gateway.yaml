@@ -36,7 +36,7 @@ spec:
   listeners:
     - name: https
       port: 443
-      protocol: HTTPS
+      protocol: TLS
       tls:
         mode: Passthrough
       allowedRoutes:
