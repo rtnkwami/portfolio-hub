@@ -9,8 +9,6 @@ spec:
   service:
     type: LoadBalancer
     loadBalancerClass: tailscale
-    annotations:
-      tailscale.com/hostname: management-gateway
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: GatewayClass
@@ -30,6 +28,7 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
   name: management-gateway
+  namespace: gateway-system
   annotations:
     argocd.argoproj.io/sync-wave: "-1"
 spec:
