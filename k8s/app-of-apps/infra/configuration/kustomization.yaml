@@ -6,3 +6,4 @@ resources:
   - cluster-secret-store.yaml
   - cluster-issuer.yaml
   - tailscale-gateway.yaml
+  - tailnet-argocd.yaml
