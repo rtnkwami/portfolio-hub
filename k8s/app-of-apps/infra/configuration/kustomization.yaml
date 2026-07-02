@@ -7,3 +7,4 @@ resources:
   - cluster-issuer.yaml
   - tailscale-gateway.yaml
   - tailnet-argocd.yaml
+  - tailnet-grafana.yaml
