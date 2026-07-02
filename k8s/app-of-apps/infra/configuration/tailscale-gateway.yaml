@@ -33,10 +33,18 @@ metadata:
     argocd.argoproj.io/sync-wave: "-1"
 spec:
   gatewayClassName: tailscale
+  infrastructure:
+    annotations:
+      tailscale.com/hostname: management-gateway
   listeners:
-    - name: http
-      port: 80
-      protocol: HTTP
+    - name: https
+      hostname: "*.internal.niovial.io"
+      port: 443
+      protocol: HTTPS
       allowedRoutes:
         namespaces:
           from: All
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - name: internal-niovial-io-tls
