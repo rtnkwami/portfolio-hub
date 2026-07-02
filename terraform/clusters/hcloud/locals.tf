@@ -33,7 +33,6 @@ locals {
         small  = "cx23"
         medium = "cx33"
         large  = "cx43"
-        xlarge = "cx53"
       }
       min = 0
       max = 20
