@@ -7,11 +7,9 @@ spec:
   parentRefs:
     - name: management-gateway
       namespace: gateway-system
+  hostnames:
+    - "gitops.internal.niovial.io"
   rules:
-    - matches:
-        - path:
-            type: PathPrefix
-            value: /
-      backendRefs:
-        - name: argocd-server
-          port: 80
+    - backendRefs:
+      - name: argocd-server
+        port: 80
