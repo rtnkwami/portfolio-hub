@@ -2,6 +2,11 @@ variable "opentofu_state_bucket_region" {
   default = "us-east-1"
 }
 
+variable "project_name" {
+  type = string
+  default = "homelab"
+}
+
 variable "hcloud_token" {
   sensitive = true
 }

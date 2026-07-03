@@ -18,7 +18,7 @@ locals {
     [local.hcloud_ccm_manifest],
     [local.hcloud_csi_manifest],
     [local.cluster_autoscaler_manifest],
-    [local.argocd_manifest]
+    [local.argocd_manifest],
   )
 
   control_plane_config = {

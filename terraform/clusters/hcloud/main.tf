@@ -7,6 +7,9 @@ module "talos_k8s" {
   talosconfig_path = "${path.module}/outputs/talosconfig"
   kubeconfig_path  = "${path.module}/outputs/kubeconfig"
   nodepools        = local.nodepools
+
+  tailscale_client_id = var.tailscale_client_id
+  tailscale_client_secret = var.tailscale_client_secret
 }
 
 # Infisical is used as the external secret store for the cluster
@@ -32,49 +35,27 @@ resource "kubernetes_secret_v1" "infisical_creds" {
   immutable        = true
 }
 
-resource "kubernetes_namespace_v1" "tailscale" {
-  metadata {
-    name = "tailscale"
-    labels = {
-      "pod-security.kubernetes.io/enforce" = "privileged"
-    }
-  }
-
-  depends_on = [module.talos_k8s]
-}
-
 resource "tailscale_acl" "this" {
   overwrite_existing_content = true
   acl = jsonencode({
     tagOwners = {
       "tag:k8s-operator" = ["autogroup:admin"]
       "tag:k8s" = ["tag:k8s-operator"]
+      "tag:k8s-admin" = ["autogroup:admin"]
     }
     autoApprovers = {
       services = {
         "tag:k8s" = ["tag:k8s"]
+        "svc:*" = ["tag:k8s"]
       }
     }
-    acls = [
-      # Allow everything to talk to everything on the tailnet. This should
-      # be used on personal and test tailnets only.
-      {
-        action = "accept"
-        src = ["*"]
-        dst = ["*:*"]
-      }
-    ]
     grants = [
-      # Allow everything on the tailnet to talk to the API Server Proxy.
+      # Allow only k8s admins to access the k8s API proxy
       {
-        src = ["*"]
-        dst = ["tag:k8s-operator"]
-        ip = ["tcp:443"]
+        src = ["tag:k8s-admin"]
+        dst = ["tag:k8s", "tag:k8s-operator"]
+        ip = ["tcp:80", "tcp:443"]
       }
-    ]
-    nodeAttrs = [
-      # Let the Kubernetes operator use Tailscale Funnel
-      { target = ["tag:k8s"], attr = ["funnel"] } # tag that the Tailscale operator uses to tag proxies; defaults to 'tag:k8s'
     ]
   })
 }
@@ -91,11 +72,11 @@ resource "helm_release" "tailscale_operator" {
   provider = helm.deploy
 
   name = "tailscale-operator"
-  repository = "https://pkgs.tailscale.com/helmcharts"
   chart = "tailscale-operator"
+  repository = "https://pkgs.tailscale.com/helmcharts"
   version = "1.98.4"
-  namespace = kubernetes_namespace_v1.tailscale.metadata[0].name
-  wait = false
+  namespace = "tailscale"
+  create_namespace = true
 
   values = [
     yamlencode({
@@ -105,6 +86,9 @@ resource "helm_release" "tailscale_operator" {
       }
       ingressClass = {
         create = false
+      }
+      apiServerProxyConfig = {
+        allowImpersonation = "true"
       }
       operatorConfig = {
         nodeSelector = {
@@ -122,4 +106,56 @@ resource "helm_release" "tailscale_operator" {
   ]
 
   depends_on = [module.talos_k8s]
+}
+
+resource "helm_release" "kube-apiserver-proxy" {
+  provider = helm.deploy
+
+  name       = "kube-apiserver-proxy-manifest"
+  repository = "https://bedag.github.io/helm-charts/"
+  chart      = "raw"
+  namespace  = "tailscale"
+
+  values = [
+    yamlencode({
+      resources = [
+        {
+          apiVersion = "rbac.authorization.k8s.io/v1"
+          kind = "ClusterRoleBinding"
+          metadata = {
+            name = "${var.project_name}-tailscale-admin"
+          }
+          subjects = [
+            {
+              kind = "Group"
+              name = "tag:k8s-admin"
+              apiGroup = "rbac.authorization.k8s.io"
+            }
+          ]
+          roleRef = {
+            kind = "ClusterRole"
+            name = "cluster-admin"
+            apiGroup = "rbac.authorization.k8s.io"
+          }
+        },
+        {
+          apiVersion = "tailscale.com/v1alpha1"
+          kind       = "ProxyGroup"
+          metadata = {
+            name      = var.project_name
+            namespace = "tailscale"
+          }
+          spec = {
+            type     = "kube-apiserver"
+            replicas = 2
+            kubeAPIServer = {
+              mode = "auth"
+            }
+          }
+        }
+      ]
+    })
+  ]
+
+  depends_on = [helm_release.tailscale_operator]
 }
