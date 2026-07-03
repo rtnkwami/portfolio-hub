@@ -2,6 +2,11 @@ variable "hcloud_token" {
   sensitive = true
 }
 
+variable "project_name" {
+  type = string
+  default = "homelab"
+}
+
 variable "cloudflare_dns_token" {
   sensitive = true
 }

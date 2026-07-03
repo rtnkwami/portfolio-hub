@@ -1,11 +1,11 @@
 module "kubernetes" {
   source = "hcloud-k8s/kubernetes/hcloud"
-  version = "~>4.0"
+  version = "~>5.0"
 
   hcloud_token = var.hcloud_token
   cluster_delete_protection = false
 
-  cluster_name = "homelab"
+  cluster_name = var.project_name
   cluster_talosconfig_path = "./outputs/talosconfig"
   cluster_kubeconfig_path = "./outputs/kubeconfig"
 
@@ -21,13 +21,12 @@ module "kubernetes" {
   }
 
   cluster_allow_scheduling_on_control_planes = false
-  # enable this option only if you add additional control plane nodes
-  # kube_api_load_balancer_enabled = true
+  kube_api_load_balancer_enabled = true
   
   control_plane_nodepools = [
-    { name = "control", type = "cx23", location = "hel1", count = 1 },
-    # { name = "control", type = "cx23", location = "fsn1", count = 1 },
-    # { name = "control", type = "cx23", location = "nbg1", count = 1 }
+    { name = "control-1", type = "cx33", location = "hel1", count = 1 },
+    { name = "control-2", type = "cx33", location = "fsn1", count = 1 },
+    { name = "control-3", type = "cx33", location = "nbg1", count = 1 }
   ]
 
   worker_nodepools = [
@@ -43,6 +42,14 @@ module "kubernetes" {
       name     = "system-fixed-2"
       type     = "cx23"
       location = "fsn1"
+      count    = 1
+      labels = { "niovial.io/node-purpose" = "system" }
+      taints = ["niovial.io/node-purpose=system:NoSchedule" ]
+    },
+    {
+      name     = "system-fixed-2"
+      type     = "cx23"
+      location = "ngb1"
       count    = 1
       labels = { "niovial.io/node-purpose" = "system" }
       taints = ["niovial.io/node-purpose=system:NoSchedule" ]
