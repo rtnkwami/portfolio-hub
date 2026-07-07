@@ -35,6 +35,11 @@ spec:
         grafana:
           plugins:
             - victoriametrics-logs-datasource
+        vmsingle:
+          spec:
+            server:
+              persistentVolume:
+                name: cluster-metrics
   destination:
     namespace: observability
     server: https://kubernetes.default.svc
