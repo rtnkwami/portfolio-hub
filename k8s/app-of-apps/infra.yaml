@@ -9,10 +9,6 @@ metadata:
     - resources-finalizer.argocd.argoproj.io/background
 spec:
   project: infrastructure
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
   source:
     repoURL: https://github.com/rtnkwami/portfolio-hub.git
     path: k8s/app-of-apps/infra
@@ -22,3 +18,7 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
