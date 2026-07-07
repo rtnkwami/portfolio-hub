@@ -8,7 +8,7 @@ metadata:
   finalizers:
     - resources-finalizer.argocd.argoproj.io/background
 spec:
-  project: applications
+  project: default
   source:
     repoURL: https://github.com/rtnkwami/portfolio-hub.git
     path: k8s/app-of-apps/apps
