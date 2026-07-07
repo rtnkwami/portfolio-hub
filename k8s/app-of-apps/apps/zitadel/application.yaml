@@ -1,0 +1,49 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: zitadel
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io/background
+spec:
+  project: applications
+  source:
+    chart: zitadel
+    repoURL: https://charts.zitadel.com
+    targetRevision: 10.0.4
+    helm:
+      valuesObject:
+        nodeSelector:
+          niovial.io/node-purpose: system
+        tolerations:
+          - key: niovial.io/node-purpose
+            operator: Equal
+            value: system
+        replicaCount: 3
+        metrics:
+          serviceMonitor:
+            enabled: true
+        pdb:
+          enabled: true
+          maxUnavailable: 1
+        login:
+          gateway:
+            httpRoute:
+              enabled: true
+              parentRefs:
+                - name: management-gateway
+                  namespace: gateway-system
+              hostnames:
+                - "iam.internal.niovial.io"
+  destination:
+    namespace: zitadel
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - ServerSideApply=true
+      - CreateNamespace=true
