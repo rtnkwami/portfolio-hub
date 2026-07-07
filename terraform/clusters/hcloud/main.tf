@@ -12,6 +12,41 @@ module "talos_k8s" {
   tailscale_client_secret = var.tailscale_client_secret
 }
 
+resource "helm_release" "argocd" {
+  provider = helm.deploy
+
+  name             = "argocd"
+  chart            = "argo-cd"
+  repository       = "oci://ghcr.io/argoproj/argo-helm"
+  version          = "9.7.0"
+  namespace        = "argocd"
+  create_namespace = true
+  wait             = false
+
+  values = [
+    yamlencode({
+      configs = {
+        params = {
+          "server.insecure" = "true"
+        }
+      }
+      global = {
+        tolerations = [
+          {
+            key      = "niovial.io/node-purpose"
+            operator = "Equal"
+            value    = "system"
+          }
+        ]
+        nodeSelector = {
+          "niovial.io/node-purpose" = "system"
+        }
+      }
+    })
+  ]
+  depends_on = [module.talos_k8s]
+}
+
 # Infisical is used as the external secret store for the cluster
 resource "kubernetes_namespace_v1" "external_secrets" {
   metadata {
@@ -33,6 +68,16 @@ resource "kubernetes_secret_v1" "infisical_creds" {
   }
   data_wo_revision = 1
   immutable        = true
+}
+
+resource "kubernetes_namespace_v1" "tailscale" {
+  metadata {
+    name = "tailscale"
+    labels = {
+      "pod-security.kubernetes.io/enforce" = "privileged"
+    }
+  }
+  depends_on = [module.talos_k8s]
 }
 
 resource "tailscale_acl" "this" {
@@ -75,8 +120,7 @@ resource "helm_release" "tailscale_operator" {
   chart = "tailscale-operator"
   repository = "https://pkgs.tailscale.com/helmcharts"
   version = "1.98.4"
-  namespace = "tailscale"
-  create_namespace = true
+  namespace = kubernetes_namespace_v1.tailscale.metadata[0].name
 
   values = [
     yamlencode({
@@ -86,9 +130,6 @@ resource "helm_release" "tailscale_operator" {
       }
       ingressClass = {
         create = false
-      }
-      apiServerProxyConfig = {
-        allowImpersonation = "true"
       }
       operatorConfig = {
         nodeSelector = {
@@ -106,56 +147,4 @@ resource "helm_release" "tailscale_operator" {
   ]
 
   depends_on = [module.talos_k8s]
-}
-
-resource "helm_release" "kube-apiserver-proxy" {
-  provider = helm.deploy
-
-  name       = "kube-apiserver-proxy-manifest"
-  repository = "https://bedag.github.io/helm-charts/"
-  chart      = "raw"
-  namespace  = "tailscale"
-
-  values = [
-    yamlencode({
-      resources = [
-        {
-          apiVersion = "rbac.authorization.k8s.io/v1"
-          kind = "ClusterRoleBinding"
-          metadata = {
-            name = "${var.project_name}-tailscale-admin"
-          }
-          subjects = [
-            {
-              kind = "Group"
-              name = "tag:k8s-admin"
-              apiGroup = "rbac.authorization.k8s.io"
-            }
-          ]
-          roleRef = {
-            kind = "ClusterRole"
-            name = "cluster-admin"
-            apiGroup = "rbac.authorization.k8s.io"
-          }
-        },
-        {
-          apiVersion = "tailscale.com/v1alpha1"
-          kind       = "ProxyGroup"
-          metadata = {
-            name      = var.project_name
-            namespace = "tailscale"
-          }
-          spec = {
-            type     = "kube-apiserver"
-            replicas = 2
-            kubeAPIServer = {
-              mode = "auth"
-            }
-          }
-        }
-      ]
-    })
-  ]
-
-  depends_on = [helm_release.tailscale_operator]
 }

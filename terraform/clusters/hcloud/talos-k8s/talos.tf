@@ -35,6 +35,7 @@ data "talos_cluster_health" "this" {
   # of the control plane nodes. Internal cluster healt checks should not be going over the internet
   # hence, the private IPs of the control plane nodes are used here.
   control_plane_nodes = [for node in hcloud_server_network.control_plane_attachment : node.ip]
+  skip_kubernetes_checks = true
   depends_on = [talos_machine_configuration_apply.worker_config]
 }
 
