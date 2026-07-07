@@ -15,6 +15,5 @@ spec:
       - dns01:
           cloudflare:
             apiTokenSecretRef:
-              # see configuration/cloudflare-dns-secret
               name: cloudflare-dns-token
               key: token

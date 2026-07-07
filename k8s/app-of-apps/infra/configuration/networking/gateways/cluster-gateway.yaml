@@ -22,7 +22,6 @@ spec:
       load-balancer.hetzner.cloud/uses-proxyprotocol: "true"
   listeners:
     - name: https
-      # used for wildcard certs for cert-manager
       hostname: "*.niovial.io"
       port: 443
       protocol: HTTPS
@@ -30,7 +29,6 @@ spec:
         namespaces:
           from: All
       tls:
-        # tls termination at gateway
         mode: Terminate
         certificateRefs:
           - name: niovial-io-tls
