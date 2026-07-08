@@ -23,12 +23,21 @@ spec:
             enabled: true
         serviceMonitor:
           enabled: true
+        replicaCount: 2
         nodeSelector:
           niovial.io/node-purpose: system
         tolerations:
           - key: niovial.io/node-purpose
             operator: Equal
             value: system
+        topologySpreadConstraints:
+          - topologyKey: "topology.kubernetes.io/zone"
+            maxSkew: 1
+            whenUnsatisfiable: DoNotSchedule
+            labelSelector:
+              matchLabels:
+                app.kubernetes.io/name: victoria-metrics-operator
+            matchLabelKeys: ["pod-template-hash"]
   destination:
     namespace: vm-operator
     server: https://kubernetes.default.svc
