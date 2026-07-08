@@ -23,15 +23,7 @@ spec:
               type: victoriametrics-logs-datasource
               url: http://vlogs-victoria-logs-single-server:9428
         victoria-metrics-operator:
-          admissionWebhooks:
-            certManager:
-              enabled: true
-          nodeSelector:
-            niovial.io/node-purpose: system
-          tolerations:
-            - key: niovial.io/node-purpose
-              operator: Equal
-              value: system
+          enabled: false
         grafana:
           plugins:
             - victoriametrics-logs-datasource
