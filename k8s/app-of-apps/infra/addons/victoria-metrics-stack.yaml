@@ -31,6 +31,7 @@ spec:
           spec:
             removePvcAfterDelete: true
         vlsingle:
+          enabled: true
           spec:
             removePvcAfterDelete: true
   destination:
