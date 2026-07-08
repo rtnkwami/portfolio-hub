@@ -27,6 +27,9 @@ spec:
         grafana:
           plugins:
             - victoriametrics-logs-datasource
+        vmsingle:
+          spec:
+            removePvcAfterDelete: true
   destination:
     namespace: observability
     server: https://kubernetes.default.svc
