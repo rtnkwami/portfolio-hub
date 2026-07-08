@@ -30,10 +30,6 @@ spec:
         vmsingle:
           spec:
             removePvcAfterDelete: true
-        vlsingle:
-          enabled: true
-          spec:
-            removePvcAfterDelete: true
   destination:
     namespace: observability
     server: https://kubernetes.default.svc
