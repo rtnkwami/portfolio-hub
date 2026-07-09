@@ -33,6 +33,8 @@ spec:
           configmapConfig:
             ExternalDomain: "iam.niovial.io"
           dbSslCaCrtSecret: zitadel-db-ca
+        initJob:
+          command: "zitadel"
         login:
           gateway:
             httpRoute:
