@@ -1,0 +1,36 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: zitadel-db
+  namespace: zitadel
+  annotations:
+    argocd.argoproj.io/sync-wave: "-3"
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+spec:
+  imageName: ghcr.io/cloudnative-pg/postgresql:18.4-standard-trixie
+  instances: 3
+  postgresql:
+    synchronous:
+      method: any
+      number: 1
+      dataDurability: required
+    parameters:
+      shared_buffers: "1GB"
+  affinity:
+    enablePodAntiAffinity: true
+    topologyKey: topology.kubernetes.io/zone
+    podAntiAffinityType: required
+    nodeSelector:
+      niovial.io/node-purpose: database
+    tolerations:
+      - key: niovial.io/node-purpose
+        operator: Equal
+        value: database
+  resources:
+    requests:
+      memory: "4096Mi"
+      cpu: "2000m"
+    limits:
+      memory: "4096Mi"
+  storage:
+    size: 20Gi
