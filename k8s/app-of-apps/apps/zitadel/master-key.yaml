@@ -1,0 +1,60 @@
+apiVersion: generators.external-secrets.io/v1alpha1
+kind: Password
+metadata:
+  name: zitadel-master-key
+  namespace: zitadel
+  annotations:
+    argocd.argoproj.io/sync-wave: "-6"
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+spec:
+  length: 32
+  symbols: 0
+  digits: 10
+  secretKeys:
+    # zitadel requires this exact key in their helm chart
+    - masterkey
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: zitadel-master-key
+  namespace: zitadel
+  annotations:
+    argocd.argoproj.io/sync-wave: "-5"
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io/background
+spec:
+  refreshPolicy: CreatedOnce
+  target:
+    deletionPolicy: Delete
+  dataFrom:
+    - sourceRef:
+        generatorRef:
+          apiVersion: generators.external-secrets.io/v1alpha1
+          kind: Password
+          name: zitadel-master-key
+---
+apiVersion: external-secrets.io/v1alpha1
+kind: PushSecret
+metadata:
+  name: zitadel-master-key
+  namespace: zitadel
+  annotations:
+    argocd.argoproj.io/sync-wave: "-4"
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+spec:
+  secretStoreRefs:
+    - name: infisical
+      kind: ClusterSecretStore
+  updatePolicy: Replace
+  deletionPolicy: Delete
+  refreshInterval: "5h"
+  selector:
+    secret:
+      name: zitadel-master-key
+  data:
+    - match:
+        secretKey: masterkey
+        remoteRef:
+          remoteKey: zitadel-master-key
