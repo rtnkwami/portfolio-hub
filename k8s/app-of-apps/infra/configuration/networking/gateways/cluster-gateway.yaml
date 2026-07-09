@@ -20,6 +20,8 @@ spec:
       load-balancer.hetzner.cloud/name: "external-gateway"
       load-balancer.hetzner.cloud/location: "nbg1"
       load-balancer.hetzner.cloud/uses-proxyprotocol: "true"
+      load-balancer.hetzner.cloud/disable-private-ingress: "true"
+      load-balancer.hetzner.cloud/use-private-ip: "true"
   listeners:
     - name: https
       hostname: "*.niovial.io"
