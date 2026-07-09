@@ -22,6 +22,7 @@ spec:
       load-balancer.hetzner.cloud/uses-proxyprotocol: "true"
       load-balancer.hetzner.cloud/disable-private-ingress: "true"
       load-balancer.hetzner.cloud/use-private-ip: "true"
+      load-balancer.hetzner.cloud/ipv6-disabled: "true"
   listeners:
     - name: https
       hostname: "*.niovial.io"
