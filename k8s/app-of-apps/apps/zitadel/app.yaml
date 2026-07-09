@@ -15,12 +15,6 @@ spec:
     targetRevision: 10.0.4
     helm:
       valuesObject:
-        nodeSelector:
-          niovial.io/node-purpose: system
-        tolerations:
-          - key: niovial.io/node-purpose
-            operator: Equal
-            value: system
         replicaCount: 3
         metrics:
           serviceMonitor:
