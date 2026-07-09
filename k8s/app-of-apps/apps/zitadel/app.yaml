@@ -22,17 +22,17 @@ spec:
         pdb:
           enabled: true
           maxUnavailable: 1
+        env:
+          - name: ZITADEL_DATABASE_POSTGRES_DSN
+            valueFrom:
+              secretKeyRef:
+                name: zitadel-db-app
+                key: uri
         zitadel:
           masterkeySecretName: zitadel-master-key
           configmapConfig:
             ExternalDomain: "iam.niovial.io"
           dbSslCaCrtSecret: zitadel-db-ca
-          env:
-            - name: ZITADEL_DATABASE_POSTGRES_DSN
-              valueFrom:
-                secretKeyRef:
-                  name: zitadel-db-app
-                  key: uri
         login:
           gateway:
             httpRoute:
