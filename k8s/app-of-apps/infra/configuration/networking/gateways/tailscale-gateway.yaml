@@ -9,10 +9,17 @@ spec:
   provider:
     type: Kubernetes
     kubernetes:
-      envoyDaemonSet: {}
+      envoyDaemonSet:
+        pod:
+          tolerations:
+            - key: niovial.io/node-purpose
+              operator: Equal
+              value: system
       envoyService:
         type: LoadBalancer
         loadBalancerClass: tailscale
+        annotations:
+          tailscale.com/hostname: management-gateway
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: GatewayClass
@@ -25,7 +32,7 @@ spec:
   parametersRef:
     group: gateway.envoyproxy.io
     kind: EnvoyProxy
-    name: management-gateway-config
+    name: management-gateway-proxy
     namespace: envoy-gateway-system
 ---
 apiVersion: gateway.networking.k8s.io/v1
@@ -38,9 +45,6 @@ metadata:
     cert-manager.io/cluster-issuer: letsencrypt-staging
 spec:
   gatewayClassName: tailscale
-  infrastructure:
-    annotations:
-      tailscale.com/hostname: management-gateway
   listeners:
     - name: https
       hostname: "*.internal.niovial.io"
