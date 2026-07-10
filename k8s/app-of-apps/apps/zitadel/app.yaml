@@ -28,6 +28,14 @@ spec:
               secretKeyRef:
                 name: zitadel-db-app
                 key: uri
+        gateway:
+          httpRoute:
+            enabled: true
+            parentRefs:
+              - name: external-gateway
+                namespace: gateway-system
+            hostnames:
+              - "iam.niovial.io"
         zitadel:
           masterkeySecretName: zitadel-master-key
           configmapConfig:
