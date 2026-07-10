@@ -9,7 +9,7 @@ spec:
   provider:
     type: Kubernetes
     kubernetes:
-      envoyDaemonSet: true
+      envoyDaemonSet: {}
       envoyService:
         type: LoadBalancer
         loadBalancerClass: tailscale
