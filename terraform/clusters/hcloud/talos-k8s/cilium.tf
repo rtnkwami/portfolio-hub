@@ -63,7 +63,16 @@ data "helm_template" "cilium" {
       k8sServicePort = local.k8s_service_port
       gatewayAPI = {
         enabled = true
+        # see hcloud ccm's env vars in hcloud_ccm.tf for more information
         enableProxyProtocol = true
+        # app protocol allows you to specify the protocol you wish for cilium-envoy to use for communication
+        # over the specific gateway api route to your backend service. For example kubernetes.io/http
+        # or kubernetes.io/h2c
+        enableAppProtocol = true
+        # Alpn allows cilium-envoy to talk to the client requesting a connection with your backend
+        # to determine the protocols the client supports and then to select one which would be best suited for
+        # the communication between cilium-envoy and then backend service
+        enableAlpn = true
         gatewayClass = {
           create = "true"
         }

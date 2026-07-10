@@ -48,8 +48,12 @@ data "helm_template" "hcloud_ccm" {
         HCLOUD_LOAD_BALANCERS_USE_PRIVATE_IP          = { value = "true" }
         HCLOUD_LOAD_BALANCERS_ALGORITHM_TYPE          = { value = "least_connections" }
         HCLOUD_LOAD_BALANCERS_PRIVATE_SUBNET_IP_RANGE = { value = hcloud_network_subnet.load_balancer.ip_range }
+        # it is possible that ipv6 config can conflict with the proxy protocol setting
         HCLOUD_LOAD_BALANCERS_DISABLE_IPV6            = { value = "true" }
+        # do not allow traffic that should be external to be routable via the private network of the load balancer
         HCLOUD_LOAD_BALANCERS_DISABLE_PRIVATE_INGRESS = { value = "true" }
+        # the proxy protocol allows cilium to keep track of the src ip of a packet despite it being
+        # forwarded by a gateway (to prevent it's src from being replaced by the load balancer)
         HCLOUD_LOAD_BALANCERS_USES_PROXYPROTOCOL      = { value = "true" }
         KUBERNETES_SERVICE_HOST                       = { value = local.k8s_service_host }
         KUBERNETES_SERVICE_PORT                       = { value = tostring(local.k8s_service_port) }
