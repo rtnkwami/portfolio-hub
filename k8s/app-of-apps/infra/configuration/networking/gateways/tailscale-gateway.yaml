@@ -1,14 +1,18 @@
-apiVersion: cilium.io/v2alpha1
-kind: CiliumGatewayClassConfig
+apiVersion: config.gateway.envoyproxy.io/v1alpha1
+kind: EnvoyProxy
 metadata:
-  name: tailscale-gateway-config
-  namespace: gateway-system
+  name: management-gateway-proxy
+  namespace: envoy-gateway-system
   annotations:
     argocd.argoproj.io/sync-wave: "-3"
 spec:
-  service:
-    type: LoadBalancer
-    loadBalancerClass: tailscale
+  provider:
+    type: Kubernetes
+    kubernetes:
+      envoyDaemonSet: true
+      envoyService:
+        type: LoadBalancer
+        loadBalancerClass: tailscale
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: GatewayClass
@@ -17,12 +21,12 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "-2"
 spec:
-  controllerName: io.cilium/gateway-controller
+  controllerName: gateway.envoyproxy.io/gatewayclass-controller
   parametersRef:
-    group: cilium.io
-    kind: CiliumGatewayClassConfig
-    name: tailscale-gateway-config
-    namespace: gateway-system
+    group: gateway.envoyproxy.io
+    kind: EnvoyProxy
+    name: management-gateway-config
+    namespace: envoy-gateway-system
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
