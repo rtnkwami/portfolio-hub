@@ -48,6 +48,9 @@ data "helm_template" "hcloud_ccm" {
         HCLOUD_LOAD_BALANCERS_USE_PRIVATE_IP          = { value = "true" }
         HCLOUD_LOAD_BALANCERS_ALGORITHM_TYPE          = { value = "least_connections" }
         HCLOUD_LOAD_BALANCERS_PRIVATE_SUBNET_IP_RANGE = { value = hcloud_network_subnet.load_balancer.ip_range }
+        HCLOUD_LOAD_BALANCERS_DISABLE_IPV6            = { value = "true" }
+        HCLOUD_LOAD_BALANCERS_DISABLE_PRIVATE_INGRESS = { value = "true" }
+        HCLOUD_LOAD_BALANCERS_USES_PROXYPROTOCOL      = { value = "true" }
         KUBERNETES_SERVICE_HOST                       = { value = local.k8s_service_host }
         KUBERNETES_SERVICE_PORT                       = { value = tostring(local.k8s_service_port) }
       }
