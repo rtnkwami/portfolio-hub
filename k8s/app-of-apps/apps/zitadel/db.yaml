@@ -9,6 +9,11 @@ metadata:
 spec:
   imageName: ghcr.io/cloudnative-pg/postgresql:18.4-standard-trixie
   instances: 3
+  plugins:
+    - name: barman-cloud.cloudnative-pg.io
+      isWALArchiver: true
+      parameters:
+        barmanObjectName: zitadel-backup-store
   postgresql:
     synchronous:
       method: any
