@@ -1,4 +1,0 @@
-apiVersion: v2
-name: bootstrap
-description: GitOps bootstrap chart defining a cluster's desired state via ArgoCD
-version: 0.1.0
