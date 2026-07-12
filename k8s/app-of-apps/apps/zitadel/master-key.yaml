@@ -12,6 +12,6 @@ spec:
     kind: ClusterSecretStore
   refreshPolicy: CreatedOnce
   data:
-    - secretKey: token
+    - secretKey: masterkey
       remoteRef:
         key: k8s-zitadel-master-key
