@@ -1,0 +1,11 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: zitadel
+spec:
+  helm:
+    valuesObject:
+      gateway:
+        httpRoute:
+          annotations:
+            external-dns.alpha.kubernetes.io/ttl: "60"
