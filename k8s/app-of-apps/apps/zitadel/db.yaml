@@ -4,7 +4,7 @@ metadata:
   name: zitadel-db
   namespace: zitadel
   annotations:
-    argocd.argoproj.io/sync-wave: "-6"
+    argocd.argoproj.io/sync-wave: "-4"
     argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 spec:
   imageName: ghcr.io/cloudnative-pg/postgresql:18.4-standard-trixie
