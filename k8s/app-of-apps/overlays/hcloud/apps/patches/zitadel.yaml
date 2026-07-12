@@ -4,9 +4,10 @@ metadata:
   name: zitadel
   namespace: argocd
 spec:
-  helm:
-    valuesObject:
-      gateway:
-        httpRoute:
-          annotations:
-            external-dns.alpha.kubernetes.io/ttl: "60"
+  source:
+    helm:
+      valuesObject:
+        gateway:
+          httpRoute:
+            annotations:
+              external-dns.alpha.kubernetes.io/ttl: "60"
