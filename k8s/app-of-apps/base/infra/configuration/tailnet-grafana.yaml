@@ -1,0 +1,18 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: tailnet-grafana
+  namespace: observability
+  annotations:
+    argocd.argoproj.io/sync-wave: "9"
+    external-dns.alpha.kubernetes.io/ttl: "60"
+spec:
+  parentRefs:
+    - name: management-gateway
+      namespace: gateway-system
+  hostnames:
+    - "o11y.internal.niovial.io"
+  rules:
+    - backendRefs:
+      - name: vm-stack-grafana
+        port: 80

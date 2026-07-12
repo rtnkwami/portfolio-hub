@@ -1,0 +1,63 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: zitadel
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "8"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io/background
+spec:
+  project: applications
+  source:
+    chart: zitadel
+    repoURL: https://charts.zitadel.com
+    targetRevision: 10.0.4
+    helm:
+      valuesObject:
+        replicaCount: 3
+        metrics:
+          serviceMonitor:
+            enabled: true
+        pdb:
+          enabled: true
+          maxUnavailable: 1
+        env:
+          - name: ZITADEL_DATABASE_POSTGRES_DSN
+            valueFrom:
+              secretKeyRef:
+                name: zitadel-db-app
+                key: uri
+        gateway:
+          httpRoute:
+            enabled: true
+            parentRefs:
+              - name: external-gateway
+                namespace: gateway-system
+            hostnames:
+              - "iam.niovial.io"
+        zitadel:
+          masterkeySecretName: zitadel-master-key
+          configmapConfig:
+            ExternalDomain: "iam.niovial.io"
+          dbSslCaCrtSecret: zitadel-db-ca
+        initJob:
+          command: "zitadel"
+        login:
+          gateway:
+            httpRoute:
+              enabled: true
+              parentRefs:
+                - name: external-gateway
+                  namespace: gateway-system
+              hostnames:
+                - "iam.niovial.io"
+  destination:
+    namespace: zitadel
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - ServerSideApply=true
