@@ -7,6 +7,7 @@ metadata:
     argocd.argoproj.io/sync-wave: "-5"
     argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 spec:
+  retentionPolicy: "35d"
   configuration:
     destinationPath: s3://zitadel-backups
     endpointURL: https://f692b94900d33a4d47c0d10dd5e1339a.r2.cloudflarestorage.com
