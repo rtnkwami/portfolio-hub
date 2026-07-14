@@ -14,9 +14,8 @@ variable "kubeconfig_path" {
   type = string
 }
 
-variable "nodepools" {
+variable "workloads" {
   type = map(object({
-    sizes  = map(string)
     min    = number
     max    = number
     labels = map(string)

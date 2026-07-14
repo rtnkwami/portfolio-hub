@@ -9,12 +9,8 @@ data "http" "current_ipv4" {
 }
 
 locals {
-  nodepools = {
+  workloads = {
     system = {
-      sizes = {
-        small  = "cx23"
-        medium = "cx33"
-      }
       min = 0
       max = 3
       labels = {
@@ -29,11 +25,6 @@ locals {
       ]
     }
     general = {
-      sizes = {
-        small  = "cx23"
-        medium = "cx33"
-        large  = "cx43"
-      }
       min = 0
       max = 20
       labels = {
@@ -42,10 +33,6 @@ locals {
       taints = []
     }
     database = {
-      sizes = {
-        medium = "cx33"
-        large  = "cx43"
-      }
       min = 0
       max = 10
       labels = {

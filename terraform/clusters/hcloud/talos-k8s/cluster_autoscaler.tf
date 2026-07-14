@@ -1,4 +1,8 @@
 locals {
+  allowed_instance_types = [
+    "cx23", "cax11", "cx33", "cax21", "cx43",
+    "cpx22", "cax31", "cpx32", "ccx13", "cpx42", "ccx23"
+  ]
   expander_priorities = {
     "100" = [".*-cx23-.*", ".*-cax11-.*"]
     "90" = [".*-cx33-.*", ".*-cax21-.*"]
@@ -13,16 +17,16 @@ locals {
   # karpenter and thus cannot do just-in-time provisioning of nodes based
   # on the exact requests of pods. So we have to bake that config in ourselves
   ca_nodepools = flatten([
-    for nodepool_name, nodepool in var.nodepools : [
-      for size_name, instance_type in nodepool.sizes : [
-        for zone_index, zone in local.zones : {
-          name          = "${nodepool_name}-${size_name}-${zone_index + 1}"
+    for nodepool, config in var.workloads : [
+      for instance_type in local.allowed_instance_types : [
+        for zone in local.zones : {
+          name          = "${nodepool}-${instance_type}-${zone}"
           instance_type = instance_type
           location      = zone
-          min           = nodepool.min
-          max           = nodepool.max
-          labels        = nodepool.labels
-          taints        = nodepool.taints
+          min           = config.min
+          max           = config.max
+          labels        = config.labels
+          taints        = config.taints
         }
       ]
     ]

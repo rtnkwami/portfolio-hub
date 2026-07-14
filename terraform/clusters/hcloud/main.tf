@@ -6,7 +6,7 @@ module "talos_k8s" {
 
   talosconfig_path = "${path.module}/outputs/talosconfig"
   kubeconfig_path  = "${path.module}/outputs/kubeconfig"
-  nodepools        = local.nodepools
+  workloads        = local.workloads
 
   tailscale_client_id = var.tailscale_client_id
   tailscale_client_secret = var.tailscale_client_secret
