@@ -11,7 +11,7 @@ spec:
   project: infrastructure
   source:
     chart: spegel
-    repoURL: oci://ghcr.io/spegel-org/helm-charts
+    repoURL: oci://ghcr.io/spegel-org/helm-charts/spegel
     targetRevision: 0.7.3
     helm:
       valuesObject:
