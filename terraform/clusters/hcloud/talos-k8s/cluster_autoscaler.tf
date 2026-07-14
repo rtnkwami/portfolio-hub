@@ -1,4 +1,11 @@
 locals {
+  expander_priorities = {
+    "100" = [".*-cx23-.*", ".*-cax11-.*"]
+    "90" = [".*-cx33-.*", ".*-cax21-.*"]
+    "80" = [".*-cx43-.*", ".*-cpx22-.*", ".*-cax31-.*"]
+    "70" = [".*-cpx32-.*", ".*-ccx13-.*"]
+    "60" = [".*-cpx42-.*", ".*-ccx23-.*"]
+  }
   # create a nodepool per intent, instance type, and zone
   # this is meant to satisfy topology spread constraints such as
   # topology.kubernetes.io/zone and hostname, among others
@@ -93,6 +100,7 @@ data "helm_template" "cluster_autoscaler" {
         enabled   = true
         namespace = "observability"
       }
+      expanderPriorities = local.expander_priorities
       autoscalingGroups = [
         for nodepool in local.ca_nodepools : {
           name         = nodepool.name
@@ -103,7 +111,7 @@ data "helm_template" "cluster_autoscaler" {
         }
       ]
       extraArgs = {
-        expander = "least-waste"
+        expander = "priority"
       }
       extraEnv = {
         # secret is created as "cluster-config". k8s mounts this due to extraVolumeSecrets below
