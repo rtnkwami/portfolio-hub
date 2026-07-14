@@ -4,6 +4,7 @@ locals {
     "cpx22", "cax31", "cpx32", "ccx13", "cpx42", "ccx23"
   ]
   expander_priorities = {
+    # I configured cluster autoscaler here to pick nodes based on both existing capacity and cost.
     "100" = [".*-cx23-.*", ".*-cax11-.*"]
     "90" = [".*-cx33-.*", ".*-cax21-.*"]
     "80" = [".*-cx43-.*", ".*-cpx22-.*", ".*-cax31-.*"]
