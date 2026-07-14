@@ -4,3 +4,4 @@ resources:
   - ../../../base/apps
 patches:
   - path: patches/zitadel/app.yaml
+  - path: patches/zitadel/db.yaml
