@@ -3,4 +3,4 @@ kind: Kustomization
 resources:
   - ../../../base/apps
 patches:
-  - path: patches/zitadel.yaml
+  - path: patches/zitadel/app.yaml
