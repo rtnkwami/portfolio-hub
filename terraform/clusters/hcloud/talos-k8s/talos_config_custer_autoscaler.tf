@@ -6,6 +6,16 @@ locals {
           install = {
             disk = "/dev/sda"
           }
+          files = [
+            {
+              path = "/etc/cri/conf.d/20-customization.part"
+              op = "create"
+              content = <<-EOF
+                [plugins."io.containerd.cri.v1.images"]
+                discard_unpacked_layers = false
+              EOF
+            }
+          ]
           nodeLabels = nodepool.labels
           kubelet = {
             # see talos_config_workers.tf for why this is here
