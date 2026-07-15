@@ -117,6 +117,9 @@ data "helm_template" "cluster_autoscaler" {
       ]
       extraArgs = {
         expander = "priority"
+        scale-down-unneeded-time = "3m"
+        scale-down-delay-after-add = "1m"
+        scale-down-delay-after-failure = "1m"
       }
       extraEnv = {
         # secret is created as "cluster-config". k8s mounts this due to extraVolumeSecrets below
