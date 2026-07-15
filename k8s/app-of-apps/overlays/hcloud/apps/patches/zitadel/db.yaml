@@ -13,11 +13,11 @@ spec:
         name: barman-cloud.cloudnative-pg.io
         parameters:
           barmanObjectName: zitadel-backup-store
-          serverName: zitadel-db-2
+          serverName: zitadel-db-3
   instances: 3
   plugins:
     - name: barman-cloud.cloudnative-pg.io
       isWALArchiver: true
       parameters:
         barmanObjectName: zitadel-backup-store
-        serverName: zitadel-db-3
+        serverName: zitadel-db-4
