@@ -10,3 +10,5 @@ controllers:
         operator: Equal
         value: system
 
+spegel:
+  enabled: false
