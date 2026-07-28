@@ -41,28 +41,22 @@ spec:
                   app.kubernetes.io/instance: keda
               matchLabelKeys: ["pod-template-hash"]
         operator:
-          nodeSelector:
-            niovial.io/node-purpose: system
-          tolerations:
-            - key: niovial.io/node-purpose
-              operator: Equal
-              value: system
+          {{- if .Values.controllers.nodePlacement.enabled }}
+          {{- include "controller.nodeSelector" . | nindent 10 -}}
+          {{- include "controller.tolerations" . | nindent 10 }}
+          {{- end }}
           replicaCount: 2
         metricsServer:
-          nodeSelector:
-            niovial.io/node-purpose: system
-          tolerations:
-            - key: niovial.io/node-purpose
-              operator: Equal
-              value: system
+          {{- if .Values.controllers.nodePlacement.enabled }}
+          {{- include "controller.nodeSelector" . | nindent 10 }}
+          {{- include "controller.tolerations" . | nindent 10 }}
+          {{- end }}
           replicaCount: 2
         webhooks:
-          nodeSelector:
-            niovial.io/node-purpose: system
-          tolerations:
-            - key: niovial.io/node-purpose
-              operator: Equal
-              value: system
+          {{- if .Values.controllers.nodePlacement.enabled }}
+          {{- include "controller.nodeSelector" . | nindent 10 -}}
+          {{- include "controller.tolerations" . | nindent 10 }}
+          {{- end }}
           replicaCount: 2
         prometheus:
           metricServer:
