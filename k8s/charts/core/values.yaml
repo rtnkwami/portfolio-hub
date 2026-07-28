@@ -1,12 +1,12 @@
 controllers:
   nodePlacement:
-    enabled: false
+    enabled: true
    
     nodeSelector:
-      niovial.io/node-purpose: system
+      node.niovial.io/pool: system
     
     tolerations:
-      - key: niovial.io/node-purpose
+      - key: node.niovial.io/pool
         operator: Equal
         value: system
 
