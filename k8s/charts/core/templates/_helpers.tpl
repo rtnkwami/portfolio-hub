@@ -1,30 +1,3 @@
-{{- define "argocd.app.metadata" -}}
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: {{ .name }}
-  namespace: argocd
-  annotations:
-    argocd.argoproj.io/sync-wave: {{ .syncWave | quote }}
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
-{{- end -}}
-
-{{- define "argocd.app.destination" -}}
-destination:
-  namespace: {{ .namespace }}
-  server: https://kubernetes.default.svc
-{{- end -}}
-
-{{- define "argocd.app.syncPolicy" -}}
-automated:
-  prune: true
-  selfHeal: true
-syncOptions:
-  - ServerSideApply=true
-  - CreateNamespace=true
-{{- end -}}
-
 {{/*
 Expand the name of the chart.
 */}}
