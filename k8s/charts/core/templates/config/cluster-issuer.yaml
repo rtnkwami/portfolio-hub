@@ -12,8 +12,6 @@ spec:
     server: https://acme-staging-v02.api.letsencrypt.org/directory
     {{- else if eq .Values.networking.tls.issuer.environment "production" }}
     server: https://acme-v02.api.letsencrypt.org/directory
-    {{- else }}
-    {{ fail ("Invalid environment set in networking.tls.issuer.environment. Expected 'staging' or 'production'") }}
     {{- end }}
     privateKeySecretRef:
       name: letsencrypt-{{ .Values.networking.tls.issuer.environment }}
