@@ -8,7 +8,6 @@ metadata:
   finalizers:
     - resources-finalizer.argocd.argoproj.io/background
 spec:
-  project: infrastructure
   source:
     chart: cloudnative-pg
     repoURL: oci://ghcr.io/cloudnative-pg/charts/cloudnative-pg

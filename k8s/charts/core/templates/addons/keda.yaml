@@ -8,7 +8,6 @@ metadata:
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
-  project: infrastructure
   source:
     chart: keda
     repoURL: https://kedacore.github.io/charts

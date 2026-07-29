@@ -8,7 +8,6 @@ metadata:
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
-  project: infrastructure
   source:
     chart: cert-manager
     repoURL: oci://quay.io/jetstack/charts/cert-manager
