@@ -39,10 +39,12 @@ networking:
   tls:
     issuer:
       email: cert-alerts@niovial.io
+      # environment can either be staging or production
       environment: staging
-    # name of secret within external secret manager containing
-    # credentials to manage the DNS domain for this cluster
-    domainKey: k8s-certmanager-token
+      # name of secret within external secret manager containing
+      # credentials to manage the DNS domain for this cluster
+      remoteRef: k8s-certmanager-token
+
 
 monitoring:
   storage:
