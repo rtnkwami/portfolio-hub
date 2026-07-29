@@ -17,3 +17,4 @@ monitoring:
   storage:
     size:
       metrics: 30Gi
+      logs: 20Gi
