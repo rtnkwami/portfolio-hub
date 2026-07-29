@@ -18,3 +18,7 @@ monitoring:
     size:
       metrics: 30Gi
       logs: 20Gi
+
+networking:
+  gatewayAPI:
+    enabled: false
