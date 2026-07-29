@@ -36,6 +36,14 @@ networking:
   gatewayAPI:
     enabled: false
 
+  tls:
+    issuer:
+      email: cert-alerts@niovial.io
+      environment: staging
+    # name of secret within external secret manager containing
+    # credentials to manage the DNS domain for this cluster
+    domainKey: k8s-certmanager-token
+
 monitoring:
   storage:
     size:
