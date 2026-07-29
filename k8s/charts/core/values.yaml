@@ -12,3 +12,8 @@ controllers:
 
 spegel:
   enabled: false
+
+monitoring:
+  storage:
+    size:
+      metrics: 30Gi
