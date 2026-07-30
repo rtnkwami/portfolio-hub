@@ -1,38 +1,54 @@
+# Name of the Kubernetes cluster
 clusterName: homelab
 
 controllers:
+  # Controls where cluster controllers and operators are scheduled
   nodePlacement:
     enabled: true
-   
-    nodeSelector:
-      node.niovial.io/pool: system
-    
-    tolerations:
-      - key: node.niovial.io/pool
-        operator: Equal
-        value: system
+    # For example: node.niovial.io/pool: system
+    nodeSelector: {}
+    # For example:
+    # - key: node.niovial.io/pool
+    #   operator: Equal
+    #   value: system
+    tolerations: []
 
+# Set to true to enable spegel configuration on the created cluster
 spegel:
   enabled: false
 
 secrets:
-  provider: infisical
+  # Secret store provider used by External Secrets
+  # The provider name must match one of the configured providers in secrets.config
+  provider: ""
   
   config:
-    hostAPI: https://app.infisical.com
-    auth:
-      universalAuthCredentials:
-        clientId:
-          name: infisical-credentials
-          key: clientId
-          namespace: external-secrets
-        clientSecret:
-          name: infisical-credentials
-          key: clientSecret
-          namespace: external-secrets
-    secretsScope:
-      projectSlug: homelab-43la
-      environmentSlug: staging
+    # Configure the selected secret store provider here.
+    #
+    # Example:
+    #
+    # provider: infisical
+    # config:
+    #   infisical:
+    #     hostAPI: https://app.infisical.com
+    #     auth:
+    #       universalAuthCredentials:
+    #         clientId:
+    #           name: infisical-credentials
+    #           key: clientId
+    #           namespace: external-secrets
+    #         clientSecret:
+    #           name: infisical-credentials
+    #           key: clientSecret
+    #           namespace: external-secrets
+    #     secretsScope:
+    #       projectSlug: homelab-43la
+    #       environmentSlug: staging
+    #
+    # Only the configuration for the selected provider should be populated.
+    # Other providers should remain empty objects ({}) to avoid unused
+    # configuration being applied.
+    infisical: {}
 
 networking:
   gatewayAPI:
@@ -40,20 +56,27 @@ networking:
 
   tls:
     issuer:
-      email: cert-alerts@niovial.io
-      # environment can either be staging or production
+      # Email used for ACME certificate issuer notifications.
+      # E.g. cert-alerts@example.io
+      email: ""
+      # ACME issuer environment.
+      # Use "staging" for testing and "production" for trusted certificates.
       environment: staging
-      # name of secret within external secret manager containing
-      # credentials to manage the DNS domain for this cluster
-      remoteRef: k8s-certmanager-token
+      # Name of the secret in the external secret manager containing
+      # credentials required to manage DNS records for certificate validation.
+      # E.g. k8s-certmanager-token
+      remoteRef: ""
 
   dns:
-    # name of secret within external secret manager containing
-      # credentials to manage the DNS domain for this cluster
-    remoteRef: k8s-externaldns-token
+    # Name of the secret in the external secret manager containing
+    # credentials required to manage DNS records for this cluster.
+    remoteRef: ""
 
 monitoring:
   storage:
+    # Persistent storage allocation for observability data.
     size:
+      # Metrics retention storage.
       metrics: 30Gi
+      # Log retention storage.
       logs: 20Gi
