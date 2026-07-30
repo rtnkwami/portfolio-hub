@@ -41,20 +41,32 @@ spec:
               matchLabelKeys: ["pod-template-hash"]
         operator:
           {{- if .Values.controllers.nodePlacement.enabled }}
-          {{- include "controller.nodeSelector" . | nindent 10 -}}
-          {{- include "controller.tolerations" . | nindent 10 }}
+          {{- with .Values.controllers.nodePlacement.nodeSelector }}
+          {{ include "controller.nodeSelector" $ | nindent 10 }}
+          {{- end }}
+          {{- with .Values.controllers.nodePlacement.tolerations }}
+          {{- include "controller.tolerations" $ | nindent 10 }}
+          {{- end }}
           {{- end }}
           replicaCount: 2
         metricsServer:
           {{- if .Values.controllers.nodePlacement.enabled }}
-          {{- include "controller.nodeSelector" . | nindent 10 }}
-          {{- include "controller.tolerations" . | nindent 10 }}
+          {{- with .Values.controllers.nodePlacement.nodeSelector }}
+          {{- include "controller.nodeSelector" $ | nindent 10 }}
+          {{- end }}
+          {{- with .Values.controllers.nodePlacement.tolerations }}
+          {{- include "controller.tolerations" $ | nindent 10 }}
+          {{- end }}
           {{- end }}
           replicaCount: 2
         webhooks:
           {{- if .Values.controllers.nodePlacement.enabled }}
-          {{- include "controller.nodeSelector" . | nindent 10 -}}
-          {{- include "controller.tolerations" . | nindent 10 }}
+          {{- with .Values.controllers.nodePlacement.nodeSelector }}
+          {{ include "controller.nodeSelector" $ | nindent 10 }}
+          {{- end }}
+          {{- with .Values.controllers.nodePlacement.tolerations }}
+          {{- include "controller.tolerations" $ | nindent 10 }}
+          {{- end }}
           {{- end }}
           replicaCount: 2
         prometheus:
