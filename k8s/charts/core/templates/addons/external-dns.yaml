@@ -22,12 +22,10 @@ spec:
     targetRevision: 1.21.1
     helm:
       valuesObject:
-        nodeSelector:
-          niovial.io/node-purpose: system
-        tolerations:
-          - key: niovial.io/node-purpose
-            operator: Equal
-            value: system
+        {{- if .Values.controllers.nodePlacement.enabled }}
+        {{- include "controller.nodeSelector" . | nindent 8 -}}
+        {{- include "controller.tolerations" . | nindent 8 }}
+        {{- end }}
         sources:
           - service
           - gateway-httproute
