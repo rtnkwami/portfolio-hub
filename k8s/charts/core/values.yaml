@@ -1,3 +1,5 @@
+clusterName: homelab
+
 controllers:
   nodePlacement:
     enabled: true
@@ -45,6 +47,10 @@ networking:
       # credentials to manage the DNS domain for this cluster
       remoteRef: k8s-certmanager-token
 
+  dns:
+    # name of secret within external secret manager containing
+      # credentials to manage the DNS domain for this cluster
+    remoteRef: k8s-externaldns-token
 
 monitoring:
   storage:
