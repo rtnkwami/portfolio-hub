@@ -72,6 +72,13 @@ networking:
     # credentials required to manage DNS records for this cluster.
     remoteRef: ""
 
+  # Annotations to drill down to loadbalancer service
+  # Examples:
+  # load-balancer.hetzner.cloud/name: "external-gateway"
+  # load-balancer.hetzner.cloud/location: "nbg1"
+  externalGateway:
+    infrastructureAnnotations: {}
+
 monitoring:
   storage:
     # Persistent storage allocation for observability data.
