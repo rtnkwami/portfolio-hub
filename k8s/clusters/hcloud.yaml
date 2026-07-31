@@ -12,7 +12,7 @@ spec:
     namespace: argocd
   source:
     repoURL: https://github.com/rtnkwami/portfolio-hub.git
-    path: k8s/app-of-apps/overlays/hcloud
+    path: k8s/clusters/hetzner
     targetRevision: HEAD
   syncPolicy:
     automated:

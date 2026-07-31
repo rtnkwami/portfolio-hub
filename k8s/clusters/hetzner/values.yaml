@@ -1,0 +1,52 @@
+genesis:
+  controllers:
+    nodePlacement:
+      nodeSelector:
+        node.niovial.io/pool: system
+      tolerations:
+        - key: node.niovial.io/pool
+          operator: Equal
+          value: system
+  
+  spegel:
+    enabled: true
+  
+  secrets:
+    provider: infisical
+    config:
+      infisical:
+        hostAPI: https://app.infisical.com
+        auth:
+          universalAuthCredentials:
+            clientId:
+              name: infisical-credentials
+              key: clientId
+              namespace: external-secrets
+            clientSecret:
+              name: infisical-credentials
+              key: clientSecret
+              namespace: external-secrets
+        secretsScope:
+          projectSlug: homelab-43la
+          environmentSlug: staging
+  
+  networking:
+    tls:
+      issuer:
+        email: cert-alerts@niovial.io
+        remoteRef: /dns/niovial-io/certmanager-token
+    
+    dns:
+      remoteRef: /dns/niovial-io/externaldns-token
+    
+    externalGateway:
+      infrastructureAnnotations:
+        load-balancer.hetzner.cloud/name: "external-gateway"
+        load-balancer.hetzner.cloud/location: "nbg1"
+    
+    tailnet:
+      credentials:
+        clientId:
+          remoteRef: /tailscale/operator-client-id
+        clientSecret:
+          remoteRef: /tailscale/operator-client-secret
