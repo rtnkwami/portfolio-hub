@@ -35,11 +35,18 @@ genesis:
       issuer:
         email: cert-alerts@niovial.io
         remoteRef: /dns/niovial-io/certmanager-token
+    
     dns:
       remoteRef: /dns/niovial-io/externaldns-token
+    
     externalGateway:
       infrastructureAnnotations:
         load-balancer.hetzner.cloud/name: "external-gateway"
         load-balancer.hetzner.cloud/location: "nbg1"
+    
     tailnet:
-      enabled: false
+      credentials:
+        clientId:
+          remoteRef: /tailscale/operator-client-id
+        clientSecret:
+          remoteRef: /tailscale/operator-client-secret
