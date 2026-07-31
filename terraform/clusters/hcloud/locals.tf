@@ -14,11 +14,11 @@ locals {
       min = 0
       max = 3
       labels = {
-        "niovial.io/node-purpose" = "system"
+        "node.niovial.io/pool" = "system"
       }
       taints = [
         {
-          key    = "niovial.io/node-purpose"
+          key    = "node.niovial.io/pool"
           value  = "system"
           effect = "NoSchedule"
         }
@@ -28,7 +28,7 @@ locals {
       min = 0
       max = 20
       labels = {
-        "niovial.io/node-purpose" = "general"
+        "node.niovial.io/pool" = "general"
       }
       taints = []
     }
@@ -36,11 +36,11 @@ locals {
       min = 0
       max = 10
       labels = {
-        "niovial.io/node-purpose" = "database"
+        "node.niovial.io/pool" = "database"
       }
       taints = [
         {
-          key    = "niovial.io/node-purpose"
+          key    = "node.niovial.io/pool"
           value  = "database"
           effect = "NoSchedule"
         }
