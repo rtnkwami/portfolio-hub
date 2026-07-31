@@ -8,6 +8,7 @@ metadata:
   finalizers:
     - resources-finalizer.argocd.argoproj.io/background
 spec:
+  project: default
   source:
     chart: victoria-metrics-k8s-stack
     repoURL: oci://ghcr.io/victoriametrics/helm-charts/victoria-metrics-k8s-stack

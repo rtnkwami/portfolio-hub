@@ -8,6 +8,7 @@ metadata:
   finalizers:
     - resources-finalizer.argocd.argoproj.io/background
 spec:
+  project: default
   source:
     chart: plugin-barman-cloud
     repoURL: oci://ghcr.io/cloudnative-pg/charts/plugin-barman-cloud
