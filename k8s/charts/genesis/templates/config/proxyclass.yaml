@@ -1,0 +1,24 @@
+{{- if .Values.networking.tailnet.enabled -}}
+apiVersion: tailscale.com/v1alpha1
+kind: ProxyClass
+metadata:
+  name: tailnet-service-proxies
+spec:
+  {{- if eq .Values.networking.tls.issuer.environment "staging" }}
+  useLetsEncryptStagingEnvironment: true
+  {{- end }}
+  {{- if .Values.controllers.nodePlacement.enabled }}
+  statefulSet:
+    pod:
+      {{- with .Values.controllers.nodePlacement.nodeSelector }}
+      {{- include "controller.nodeSelector" $ | nindent 6 }}
+      {{- end }}
+      {{- with .Values.controllers.nodePlacement.tolerations }}
+      {{- include "controller.tolerations" $ | nindent 6 }}
+      {{- end }}
+  {{- end  }}
+  metrics:
+    enable: true
+    serviceMonitor:
+      enable: true
+{{- end  }}

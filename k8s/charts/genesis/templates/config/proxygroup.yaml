@@ -1,0 +1,10 @@
+{{- if .Values.networking.tailnet.enabled -}}
+apiVersion: tailscale.com/v1alpha1
+kind: ProxyGroup
+metadata:
+  name: tailnet-services
+spec:
+  type: ingress
+  replicas: 3
+  proxyClass: tailnet-service-proxies
+{{- end  }}

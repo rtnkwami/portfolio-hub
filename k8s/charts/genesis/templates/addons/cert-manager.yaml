@@ -1,0 +1,98 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cert-manager
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  source:
+    chart: cert-manager
+    repoURL: oci://quay.io/jetstack/charts/cert-manager
+    targetRevision: 1.20.2
+    helm:
+      valuesObject:
+        global:
+          {{- if .Values.controllers.nodePlacement.enabled }}
+          {{- with .Values.controllers.nodePlacement.nodeSelector }}
+          {{- include "controller.nodeSelector" $ | nindent 10 }}
+          {{- end }}
+          {{- end }}
+        {{- if .Values.controllers.nodePlacement.enabled }}
+        {{- with .Values.controllers.nodePlacement.tolerations }}
+        {{- include "controller.tolerations" $ | nindent 8 }}
+        {{- end }}
+        {{- end }}
+        replicaCount: 2
+        podDisruptionBudget:
+          enabled: true
+        crds:
+          enabled: true
+        config:
+          enableGatewayAPI: true
+        topologySpreadConstraints:
+          - topologyKey: "topology.kubernetes.io/zone"
+            maxSkew: 1
+            whenUnsatisfiable: DoNotSchedule
+            labelSelector:
+              matchLabels:
+                app.kubernetes.io/name: cert-manager
+                app.kubernetes.io/instance: cert-manager
+            matchLabelKeys: ["pod-template-hash"]
+        webhook:
+          replicaCount: 2
+          podDisruptionBudget:
+            enabled: true
+          {{- if .Values.controllers.nodePlacement.enabled }}
+          {{- with .Values.controllers.nodePlacement.tolerations }}
+          {{- include "controller.tolerations" $ | nindent 10 }}
+          {{- end }}
+          {{- end }}
+          topologySpreadConstraints:
+            - topologyKey: "topology.kubernetes.io/zone"
+              maxSkew: 1
+              whenUnsatisfiable: DoNotSchedule
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: webhook
+                  app.kubernetes.io/instance: cert-manager
+              matchLabelKeys: ["pod-template-hash"]
+        cainjector:
+          replicaCount: 2
+          podDisruptionBudget:
+            enabled: true
+          {{- if .Values.controllers.nodePlacement.enabled }}
+          {{- with .Values.controllers.nodePlacement.tolerations }}
+          {{- include "controller.tolerations" $ | nindent 10 }}
+          {{- end }}
+          {{- end }}
+          topologySpreadConstraints:
+            - topologyKey: "topology.kubernetes.io/zone"
+              maxSkew: 1
+              whenUnsatisfiable: DoNotSchedule
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: cainjector
+                  app.kubernetes.io/instance: cert-manager
+              matchLabelKeys: ["pod-template-hash"]
+        startupapicheck:
+          {{- if .Values.controllers.nodePlacement.enabled }}
+          {{- with .Values.controllers.nodePlacement.tolerations }}
+          {{- include "controller.tolerations" $ | nindent 10 }}
+          {{- end }}
+          {{- end }}
+        prometheus:
+          servicemonitor:
+            enabled: true
+  destination:
+    namespace: cert-manager
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - ServerSideApply=true
+      - CreateNamespace=true

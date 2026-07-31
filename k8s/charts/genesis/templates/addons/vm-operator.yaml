@@ -1,0 +1,51 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: vm-operator
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io/background
+spec:
+  source:
+    chart: victoria-metrics-operator
+    repoURL: oci://ghcr.io/victoriametrics/helm-charts/victoria-metrics-operator
+    targetRevision: 0.66.2
+    helm:
+      valuesObject:
+        {{- if .Values.controllers.nodePlacement.enabled }}
+        {{- with .Values.controllers.nodePlacement.nodeSelector }}
+        {{- include "controller.nodeSelector" $ | nindent 8 }}
+        {{- end }}
+        {{- with .Values.controllers.nodePlacement.tolerations }}
+        {{- include "controller.tolerations" $ | nindent 8 }}
+        {{- end }}
+        {{- end }}
+        admissionWebhooks:
+          certManager:
+            enabled: true
+        crds:
+          cleanup:
+            enabled: true
+        serviceMonitor:
+          enabled: true
+        replicaCount: 2
+        topologySpreadConstraints:
+          - topologyKey: "topology.kubernetes.io/zone"
+            maxSkew: 1
+            whenUnsatisfiable: DoNotSchedule
+            labelSelector:
+              matchLabels:
+                app.kubernetes.io/name: victoria-metrics-operator
+            matchLabelKeys: ["pod-template-hash"]
+  destination:
+    namespace: vm-operator
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - ServerSideApply=true
+      - CreateNamespace=true

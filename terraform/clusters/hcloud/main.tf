@@ -33,13 +33,13 @@ resource "helm_release" "argocd" {
       global = {
         tolerations = [
           {
-            key      = "niovial.io/node-purpose"
+            key      = "node.niovial.io/pool"
             operator = "Equal"
             value    = "system"
           }
         ]
         nodeSelector = {
-          "niovial.io/node-purpose" = "system"
+          "node.niovial.io/pool" = "system"
         }
       }
     })
@@ -133,11 +133,11 @@ resource "helm_release" "tailscale_operator" {
       }
       operatorConfig = {
         nodeSelector = {
-          "niovial.io/node-purpose" = "system"
+          "node.niovial.io/pool" = "system"
         }
         tolerations = [
           {
-            key      = "niovial.io/node-purpose"
+            key      = "node.niovial.io/pool"
             operator = "Equal"
             value    = "system"
           }

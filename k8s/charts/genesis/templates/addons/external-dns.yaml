@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: external-dns
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: external-dns
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "5"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: infrastructure
+  source:
+    chart: external-dns
+    repoURL: https://kubernetes-sigs.github.io/external-dns/
+    targetRevision: 1.21.1
+    helm:
+      valuesObject:
+        {{- if .Values.controllers.nodePlacement.enabled }}
+        {{- with .Values.controllers.nodePlacement.nodeSelector }}
+        {{- include "controller.nodeSelector" $ | nindent 8 }}
+        {{- end }}
+        {{- with .Values.controllers.nodePlacement.tolerations }}
+        {{- include "controller.tolerations" $ | nindent 8 }}
+        {{- end }}
+        {{- end }}
+        sources:
+          - service
+          - gateway-httproute
+          - gateway-tlsroute
+          - gateway-tcproute
+        rbac:
+          additionalPermissions:
+            - apiGroups: [""]
+              resources: ["namespaces"]
+              verbs: ["get","watch","list"]
+        provider:
+          name: cloudflare
+        env:
+          - name: CF_API_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: domain-credentials
+                key: token
+        txtOwnerId: {{ .Values.clusterName }}
+        serviceMonitor:
+          enabled: true
+  destination:
+    namespace: external-dns
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - ServerSideApply=true
