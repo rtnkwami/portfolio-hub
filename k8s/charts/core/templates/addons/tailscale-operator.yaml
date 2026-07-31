@@ -18,7 +18,7 @@ spec:
       valuesObject:
         operatorConfig:
           {{- with .Values.controllers.nodePlacement.nodeSelector }}
-          {{ include "controller.nodeSelector" $ | nindent 10 }}
+          {{- include "controller.nodeSelector" $ | nindent 10 }}
           {{- end }}
           {{- with .Values.controllers.nodePlacement.tolerations }}
           {{- include "controller.tolerations" $ | nindent 10 }}
@@ -34,5 +34,5 @@ spec:
     syncOptions:
       - ServerSideApply=true
       - CreateNamespace=true
-{{- end -}}
+{{- end }}
     
