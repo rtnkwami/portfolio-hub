@@ -3,6 +3,9 @@ apiVersion: tailscale.com/v1alpha1
 kind: ProxyGroup
 metadata:
   name: tailnet-services
+  annotations:
+    argocd.argoproj.io/sync-wave: "7"
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 spec:
   type: ingress
   replicas: 3
