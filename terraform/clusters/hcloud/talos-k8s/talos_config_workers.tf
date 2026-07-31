@@ -15,7 +15,7 @@ locals {
         }
       ]
       nodeLabels = {
-        "niovial.io/node-purpose" = "system"
+        "node.niovial.io/pool" = "system"
       }
       kubelet = {
         # because the default service cidr was changed, kubelet's baked in service cidr
@@ -27,7 +27,7 @@ locals {
         extraConfig = {
           registerWithTaints = [
             {
-              key    = "niovial.io/node-purpose"
+              key    = "node.niovial.io/pool"
               value  = "system"
               effect = "NoSchedule"
             }

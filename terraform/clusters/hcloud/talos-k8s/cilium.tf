@@ -79,11 +79,11 @@ data "helm_template" "cilium" {
       }
       operator = {
         nodeSelector = {
-          "niovial.io/node-purpose" = "system"
+          "node.niovial.io/pool" = "system"
         }
         tolerations = [
           {
-            key      = "niovial.io/node-purpose"
+            key      = "node.niovial.io/pool"
             operator = "Equal"
             value    = "system"
           },
@@ -101,10 +101,10 @@ data "helm_template" "cilium" {
         relay = {
           enabled = true
           nodeSelector = {
-            "niovial.io/node-purpose" = "system"
+            "node.niovial.io/pool" = "system"
           }
           tolerations = [{
-            key      = "niovial.io/node-purpose"
+            key      = "node.niovial.io/pool"
             operator = "Equal"
             value    = "system"
           }]
@@ -112,10 +112,10 @@ data "helm_template" "cilium" {
         ui = {
           enabled = true
           nodeSelector = {
-            "niovial.io/node-purpose" = "system"
+            "node.niovial.io/pool" = "system"
           }
           tolerations = [{
-            key      = "niovial.io/node-purpose"
+            key      = "node.niovial.io/pool"
             operator = "Equal"
             value    = "system"
           }]

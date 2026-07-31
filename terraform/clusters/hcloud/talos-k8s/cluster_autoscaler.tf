@@ -92,11 +92,11 @@ data "helm_template" "cluster_autoscaler" {
         }
       ]
       nodeSelector = {
-        "niovial.io/node-purpose" = "system"
+        "node.niovial.io/pool" = "system"
       }
       tolerations = [
         {
-          key      = "niovial.io/node-purpose"
+          key      = "node.niovial.io/pool"
           operator = "Equal"
           value    = "system"
         }
