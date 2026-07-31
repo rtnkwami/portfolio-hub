@@ -86,6 +86,12 @@ networking:
       clientSecret:
         remoteRef: ""
 
+    services:
+      argocd:
+        enabled: true
+      grafana:
+        enabled: true
+
 monitoring:
   storage:
     # Persistent storage allocation for observability data.

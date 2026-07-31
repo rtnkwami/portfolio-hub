@@ -1,0 +1,20 @@
+{{- if .Values.networking.tailnet.services.argocd.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: tailnet-argocd
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "9"
+    tailscale.com/hostname: {{ .Values.clusterName }}-argocd
+    tailscale.com/proxy-group: tailnet-services
+spec:
+  type: LoadBalancer
+  loadBalancerClass: tailscale
+  selector:
+    app.kubernetes.io/name: argocd
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+{{- end }}
