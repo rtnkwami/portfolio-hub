@@ -21,8 +21,3 @@ provider "kubernetes" {
   client_certificate     = module.talos_k8s.kubeconfig_data.cert
   client_key             = module.talos_k8s.kubeconfig_data.key
 }
-
-provider "tailscale" {
-  oauth_client_id = var.tailscale_client_id
-  oauth_client_secret = var.tailscale_client_secret
-}
