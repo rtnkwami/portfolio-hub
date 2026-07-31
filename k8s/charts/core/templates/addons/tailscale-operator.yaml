@@ -1,0 +1,38 @@
+{{- if .Values.networking.tailnet.enabled -}}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: vlogs
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "5"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io/background
+spec:
+  source:
+    chart: tailscale-operator
+    repoURL: https://pkgs.tailscale.com/helmcharts
+    targetRevision: 1.98.10
+    {{- if .Values.controllers.nodePlacement.enabled }}
+    helm:
+      valuesObject:
+        operatorConfig:
+          {{- with .Values.controllers.nodePlacement.nodeSelector }}
+          {{ include "controller.nodeSelector" $ | nindent 10 }}
+          {{- end }}
+          {{- with .Values.controllers.nodePlacement.tolerations }}
+          {{- include "controller.tolerations" $ | nindent 10 }}
+          {{- end }}
+    {{- end }}
+  destination:
+    namespace: tailscale
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - ServerSideApply=true
+      - CreateNamespace=true
+{{- end -}}
+    

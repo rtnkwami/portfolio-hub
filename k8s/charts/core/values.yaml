@@ -51,9 +51,6 @@ secrets:
     infisical: {}
 
 networking:
-  gatewayAPI:
-    enabled: false
-
   tls:
     issuer:
       # Email used for ACME certificate issuer notifications.
@@ -78,6 +75,16 @@ networking:
   # load-balancer.hetzner.cloud/location: "nbg1"
   externalGateway:
     infrastructureAnnotations: {}
+
+  tailnet:
+    enabled: true
+    credentials:
+      
+      clientId:
+        remoteRef: ""
+      
+      clientSecret:
+        remoteRef: ""
 
 monitoring:
   storage:
