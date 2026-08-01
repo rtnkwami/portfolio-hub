@@ -26,7 +26,7 @@ spec:
           whenUnsatisfiable: DoNotSchedule
           labelSelector:
             matchLabels:
-              tailscale.com/parent-resource: tailnet-services
+              tailscale.com/parent-resource: service-proxies
           matchLabelKeys: ["controller-revision-hash"]
   metrics:
     enable: true
