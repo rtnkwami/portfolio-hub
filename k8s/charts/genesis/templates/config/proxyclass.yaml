@@ -10,16 +10,24 @@ spec:
   {{- if eq .Values.networking.tls.issuer.environment "staging" }}
   useLetsEncryptStagingEnvironment: true
   {{- end }}
-  {{- if .Values.controllers.nodePlacement.enabled }}
   statefulSet:
     pod:
+      {{- if .Values.controllers.nodePlacement.enabled }}
       {{- with .Values.controllers.nodePlacement.nodeSelector }}
       {{- include "controller.nodeSelector" $ | nindent 6 }}
       {{- end }}
       {{- with .Values.controllers.nodePlacement.tolerations }}
       {{- include "controller.tolerations" $ | nindent 6 }}
       {{- end }}
-  {{- end  }}
+      {{- end  }}
+      topologySpreadConstraints:
+        - topologyKey: "topology.kubernetes.io/zone"
+          maxSkew: 1
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchLabels:
+              tailscale.com/parent-resource: tailnet-services
+          matchLabelKeys: ["controller-revision-hash"]
   metrics:
     enable: true
     serviceMonitor:
