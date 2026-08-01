@@ -6,7 +6,7 @@ metadata:
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "9"
-    tailscale.com/hostname: {{ .Values.clusterName }}-argocd
+    tailscale.com/hostname: argocd
     tailscale.com/proxy-group: tailnet-services
 spec:
   type: LoadBalancer

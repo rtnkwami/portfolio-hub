@@ -6,7 +6,7 @@ metadata:
   namespace: observability
   annotations:
     argocd.argoproj.io/sync-wave: "9"
-    tailscale.com/hostname: {{ .Values.clusterName }}-grafana
+    tailscale.com/hostname: grafana
     tailscale.com/proxy-group: tailnet-services
 spec:
   type: LoadBalancer
