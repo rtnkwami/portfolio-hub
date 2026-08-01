@@ -12,7 +12,7 @@ spec:
   type: LoadBalancer
   loadBalancerClass: tailscale
   selector:
-    app.kubernetes.io/name: argocd
+    app.kubernetes.io/name: argocd-server
   ports:
     - protocol: TCP
       port: 80
