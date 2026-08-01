@@ -28,9 +28,9 @@ resource "local_sensitive_file" "kubeconfig" {
   file_permission = "0600"
 }
 
-resource "time_sleep" "wait_cluster_health_1m" {
+resource "time_sleep" "wait_cluster_health_2m" {
   depends_on = [talos_machine_configuration_apply.worker_config]
-  create_duration = "60s"
+  create_duration = "120s"
 }
 
 locals {
