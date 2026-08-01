@@ -21,10 +21,12 @@ resource "tls_private_key" "ssh_key" {
   algorithm = "RSA"
 }
 
+resource "random_uuid" "ssh_key_id" {}
+
 # the only reason this key exists is to prevent Hetzner from sending an email
 # every time a server is created, either via this module or via the cluster autoscaler
 resource "hcloud_ssh_key" "this" {
-  name       = "${var.project_name}-default-key"
+  name       = "${var.project_name}-default-key-${random_uuid.ssh_key_id.id}"
   public_key = tls_private_key.ssh_key.public_key_openssh
 
   labels = {

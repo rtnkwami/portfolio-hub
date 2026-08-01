@@ -28,15 +28,9 @@ resource "local_sensitive_file" "kubeconfig" {
   file_permission = "0600"
 }
 
-data "talos_cluster_health" "this" {
-  client_configuration = talos_machine_secrets.this.client_configuration
-  endpoints            = [for node in hcloud_server.control_plane : node.ipv4_address]
-  # for etcd checks, and other control plane checks talos cluster health expects the private IPs
-  # of the control plane nodes. Internal cluster healt checks should not be going over the internet
-  # hence, the private IPs of the control plane nodes are used here.
-  control_plane_nodes = [for node in hcloud_server_network.control_plane_attachment : node.ip]
-  skip_kubernetes_checks = true
+resource "time_sleep" "wait_cluster_health_1m" {
   depends_on = [talos_machine_configuration_apply.worker_config]
+  create_duration = "60s"
 }
 
 locals {
