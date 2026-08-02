@@ -30,9 +30,10 @@ spec:
         vmsingle:
           spec:
             removePvcAfterDelete: true
-            resources:
-              requests:
-                storage: {{ .Values.monitoring.storage.size.metrics }}
+            storage:
+              resources:
+                requests:
+                  storage: {{ .Values.monitoring.storage.size.metrics }}
   destination:
     namespace: observability
     server: https://kubernetes.default.svc
