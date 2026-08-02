@@ -1,0 +1,17 @@
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: zitadel-master-key
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+spec:
+  secretStoreRef:
+    name: {{ .Values.secrets.provider }}
+    kind: ClusterSecretStore
+  refreshPolicy: CreatedOnce
+  data:
+    - secretKey: masterkey
+      remoteRef:
+        key: {{ .Values.secrets.masterkey }}

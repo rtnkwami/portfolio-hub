@@ -28,3 +28,13 @@ database:
 
   storage:
     size: 20Gi
+
+secrets:
+  # E.g. aws, infisical, etc.
+  provider: ""
+
+  masterkey: ""
+
+  backupKeys:
+    accessKeyId: ""
+    accessSecretKey: ""
