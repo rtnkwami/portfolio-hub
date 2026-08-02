@@ -1,52 +1,80 @@
 app:
-  # domain to host ZITADEL on
+  # Domain to host ZITADEL on
   domain: ""
 
 database:
   image: ghcr.io/cloudnative-pg/postgresql:18.4-standard-trixie
-  
+
   name: zitadel-db
-  
+
   ha:
+    # Enables a multi-instance CNPG cluster for high availability
     enabled: true
-  
+
   nodeSelector: {}
-  
+
   tolerations: []
-  
+
   resources:
-    # since this is a database, it is recommended that memory limits are set to the same
-    # value as memory requests
+    # Memory limits match memory requests (recommended for databases to
+    # avoid OOM-kill surprises). No CPU limit is set, to avoid CPU throttling.
     requests:
       memory: 4096Mi
       cpu: 2000m
     limits:
       memory: 4096Mi
-  
-  # recommended to be 25% of total memory size
-  # units should be in MB, GB or TB
+
+  # Postgres shared_buffers size. Recommended to be ~25% of the memory
+  # request/limit above. Units: MB, GB, or TB.
   sharedBufferSize: 1GB
 
   storage:
     size: 20Gi
 
 secrets:
-  # E.g. aws, infisical, etc.
+  # Provider type for the external secret store (e.g. aws, infisical, etc.).
+  # Must match the name of an existing ClusterSecretStore resource in the cluster.
   provider: ""
 
-  # name of the master key secret for ZITADEL in the external secret store
+  # Remote key name of the ZITADEL masterkey secret in the external secret store.
   masterkey: ""
 
+  # Remote key names of the S3 credentials in the external secret store
+  # (not the credential values themselves).
+  #
+  # Only used when backups.store.isS3 is false (i.e. a non-AWS S3-compatible
+  # store like R2 or MinIO). When isS3 is true, these are ignored and the
+  # chart uses AWS IAM role inheritance (EKS Pod Identity / IRSA) instead —
+  # no static access keys are created or stored.
   backupKeys:
     accessKeyId: ""
     accessSecretKey: ""
 
 backups:
   store:
+    # Set to true only for real AWS S3. Enables IAM role inheritance for
+    # credentials (no static keys) and omits endpointUrl (region-derived
+    # endpoint instead).
+    #
+    # Set to false for any S3-compatible store that isn't AWS S3 (e.g.
+    # Cloudflare R2, MinIO). Requires endpointUrl and static access keys
+    # (see secrets.backupKeys above).
     isS3: false
+
+    # Custom S3-compatible endpoint. Required when isS3 is false; ignored
+    # when isS3 is true.
     endpointUrl: ""
+
+    # How long to retain backups for, e.g. "35d". Passed to CNPG's
+    # retentionPolicy.
     retentionPeriod: 35d
-    
+
+  # Destination bucket path for backups, e.g. "s3://my-bucket" or
+  # "s3://my-bucket/some/prefix".
   bucket: ""
-  # backup schedule should be in CNPG Cron syntax (https://cloudnative-pg.io/docs/1.30/backup#cron-schedule)
+
+  # Backup schedule in CNPG Cron syntax — 6 fields (includes seconds),
+  # not standard 5-field Unix cron.
+  # https://cloudnative-pg.io/docs/1.30/backup#cron-schedule
+  # Default: daily at midnight.
   schedule: "0 0 0 * * *"

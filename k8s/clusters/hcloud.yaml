@@ -13,7 +13,7 @@ spec:
   source:
     repoURL: https://github.com/rtnkwami/portfolio-hub.git
     path: k8s/clusters/hetzner
-    targetRevision: HEAD
+    targetRevision: 1.0.0
   syncPolicy:
     automated:
       prune: true
