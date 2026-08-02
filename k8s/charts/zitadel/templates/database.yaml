@@ -1,3 +1,5 @@
+{{- $previous := printf "%s-%d" .Values.database.name (sub .Values.backups.version 1) }}
+{{- $current := printf "%s-%d" .Values.database.name (int .Values.backups.version) }}
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
@@ -7,6 +9,18 @@ metadata:
     argocd.argoproj.io/sync-wave: "4"
     argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 spec:
+  {{- if .Values.backups.recovery.enabled }}
+  bootstrap:
+    recovery:
+      source: {{ .Values.database.name }}
+  externalClusters:
+    - name: {{ .Values.database.name }}
+      plugin:
+        name: barman-cloud.cloudnative-pg.io
+        parameters:
+          barmanObjectName: zitadel-backup-store
+          serverName: {{ $previous }}
+  {{- end }}
   imageName: {{ .Values.database.image }}
   {{- if .Values.database.ha.enabled }}
   instances: 3
@@ -18,6 +32,9 @@ spec:
       isWALArchiver: true
       parameters:
         barmanObjectName: zitadel-backup-store
+        {{- if .Values.backups.recovery.enabled }}
+        serverName: {{ $current }}
+        {{- end }}
   postgresql:
     {{- if .Values.database.ha.enabled }}
     synchronous:

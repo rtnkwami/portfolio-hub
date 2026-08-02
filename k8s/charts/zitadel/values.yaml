@@ -51,6 +51,8 @@ secrets:
     accessSecretKey: ""
 
 backups:
+  # increment this version each time disaster and recover needs to happen
+  version: 1
   store:
     # Set to true only for real AWS S3. Enables IAM role inheritance for
     # credentials (no static keys) and omits endpointUrl (region-derived
@@ -73,8 +75,15 @@ backups:
   # "s3://my-bucket/some/prefix".
   bucket: ""
 
+  # path within backup bucket where backups are stored
+  backupPath: ""
+
   # Backup schedule in CNPG Cron syntax — 6 fields (includes seconds),
   # not standard 5-field Unix cron.
   # https://cloudnative-pg.io/docs/1.30/backup#cron-schedule
   # Default: daily at midnight.
   schedule: "0 0 0 * * *"
+  # enable cluster recovery from a previous backup version
+  recovery:
+    enabled: true
+    
