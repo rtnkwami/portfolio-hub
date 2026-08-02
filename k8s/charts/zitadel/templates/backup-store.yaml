@@ -1,0 +1,27 @@
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: zitadel-backup-store
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+spec:
+  retentionPolicy: {{ .Values.backups.store.retentionPeriod }}
+  configuration:
+    destinationPath: {{ .Values.backups.bucket }}
+    {{- if not .Values.backups.store.isS3 }}
+    endpointURL: {{ .Values.backups.store.endpointUrl }}
+    {{- end }}
+    s3Credentials:
+      accessKeyId:
+        name: zitadel-backup-keys
+        key: ACCESS_KEY_ID
+      secretAccessKey:
+        name: zitadel-backup-keys
+        key: ACCESS_SECRET_KEY
+    wal:
+      compression: gzip
+      maxParallel: 2
+    data:
+      compression: gzip

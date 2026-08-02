@@ -1,4 +1,5 @@
 app:
+  # domain to host ZITADEL on
   domain: ""
 
 database:
@@ -33,8 +34,17 @@ secrets:
   # E.g. aws, infisical, etc.
   provider: ""
 
+  # name of the master key secret for ZITADEL in the external secret store
   masterkey: ""
 
   backupKeys:
     accessKeyId: ""
     accessSecretKey: ""
+
+backups:
+  store:
+    isS3: false
+    endpointUrl: ""
+    retentionPeriod: 35d
+    
+  bucket: ""
