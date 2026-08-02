@@ -1,3 +1,4 @@
+{{- if not .Values.backups.store.isS3 }}
 apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
@@ -21,4 +22,5 @@ spec:
     - secretKey: ACCESS_SECRET_KEY
       remoteRef:
         key: {{ .Values.secrets.backupKeys.accessSecretKey }}
+{{- end }}
   

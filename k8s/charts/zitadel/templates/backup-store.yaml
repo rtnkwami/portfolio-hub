@@ -14,12 +14,16 @@ spec:
     endpointURL: {{ .Values.backups.store.endpointUrl }}
     {{- end }}
     s3Credentials:
+      {{- if .Values.backups.store.isS3 }}
+      inheritFromIAMRole: true
+      {{- else }}
       accessKeyId:
         name: zitadel-backup-keys
         key: ACCESS_KEY_ID
       secretAccessKey:
         name: zitadel-backup-keys
         key: ACCESS_SECRET_KEY
+      {{- end }}
     wal:
       compression: gzip
       maxParallel: 2
