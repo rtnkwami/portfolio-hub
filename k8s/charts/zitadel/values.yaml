@@ -48,3 +48,5 @@ backups:
     retentionPeriod: 35d
     
   bucket: ""
+  # backup schedule should be in CNPG Cron syntax (https://cloudnative-pg.io/docs/1.30/backup#cron-schedule)
+  schedule: "0 0 0 * * *"
