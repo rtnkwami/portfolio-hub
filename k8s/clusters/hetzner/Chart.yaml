@@ -2,8 +2,3 @@ apiVersion: v2
 name: hetzner
 description: Helm chart to create a Kubernetes cluster in Hetzner
 version: 1.0.0
-dependencies:
-  - name: genesis
-    version: 1.0.0
-    repository: file://../../charts/genesis
-
