@@ -1,0 +1,30 @@
+app:
+  domain: ""
+
+database:
+  image: ghcr.io/cloudnative-pg/postgresql:18.4-standard-trixie
+  
+  name: zitadel-db
+  
+  ha:
+    enabled: true
+  
+  nodeSelector: {}
+  
+  tolerations: []
+  
+  resources:
+    # since this is a database, it is recommended that memory limits are set to the same
+    # value as memory requests
+    requests:
+      memory: 4096Mi
+      cpu: 2000m
+    limits:
+      memory: 4096Mi
+  
+  # recommended to be 25% of total memory size
+  # units should be in MB, GB or TB
+  sharedBufferSize: 1GB
+
+  storage:
+    size: 20Gi

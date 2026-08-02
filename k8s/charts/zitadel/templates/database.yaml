@@ -1,0 +1,49 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: {{ .Values.database.name }}
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "4"
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+spec:
+  imageName: {{ .Values.database.image }}
+  {{- if .Values.database.ha.enabled }}
+  instances: 3
+  {{- else }}
+  instances: 1
+  {{- end }}
+  plugins:
+    - name: barman-cloud.cloudnative-pg.io
+      isWALArchiver: true
+      parameters:
+        barmanObjectName: zitadel-backup-store
+  postgresql:
+    {{- if .Values.database.ha.enabled }}
+    synchronous:
+      method: any
+      number: 1
+      dataDurability: required
+    {{- end }}
+    parameters:
+      shared_buffers: {{ .Values.database.sharedBufferSize }}
+  affinity:
+    {{- if .Values.database.ha.enabled }}
+    enablePodAntiAffinity: true
+    topologyKey: topology.kubernetes.io/zone
+    podAntiAffinityType: required
+    {{- end }}
+    {{- with .Values.database.nodeSelector }}
+    nodeSelector:
+      {{- toYaml . | nindent 6}}
+    {{- end -}}
+    {{- with .Values.database.tolerations }}
+    tolerations:
+      {{- toYaml . | nindent 6}}
+    {{- end -}}
+  {{- with .Values.database.resources }}
+  resources:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  storage:
+    size: {{ .Values.database.storage.size }}
