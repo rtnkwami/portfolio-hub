@@ -8,7 +8,7 @@ metadata:
   finalizers:
     - resources-finalizer.argocd.argoproj.io/background
 spec:
-  project: applications
+  project: default
   source:
     chart: zitadel
     repoURL: https://charts.zitadel.com
