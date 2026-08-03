@@ -9,7 +9,7 @@ database:
 
   ha:
     # Enables a multi-instance CNPG cluster for high availability
-    enabled: true
+    enabled: false
 
   nodeSelector: {}
 
@@ -74,9 +74,6 @@ backups:
   # Destination bucket path for backups, e.g. "s3://my-bucket" or
   # "s3://my-bucket/some/prefix".
   bucket: ""
-
-  # path within backup bucket where backups are stored
-  backupPath: ""
 
   # Backup schedule in CNPG Cron syntax — 6 fields (includes seconds),
   # not standard 5-field Unix cron.
