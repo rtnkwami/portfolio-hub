@@ -12,7 +12,7 @@ spec:
   source:
     repoURL: https://github.com/rtnkwami/portfolio-hub.git
     path: k8s/clusters/hetzner
-    targetRevision: 1.0.0
+    targetRevision: HEAD
     helm:
       valuesObject:
       {{- toYaml .Values.genesis | nindent 8 }}
