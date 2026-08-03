@@ -20,27 +20,43 @@ resource "helm_release" "argocd" {
   create_namespace = true
   wait             = false
 
-  values = [
-    yamlencode({
-      configs = {
-        params = {
-          "server.insecure" = "true"
-        }
-      }
-      global = {
-        tolerations = [
-          {
-            key      = "node.niovial.io/pool"
-            operator = "Equal"
-            value    = "system"
+    values = [
+      yamlencode({
+        configs = {
+          params = {
+            "server.insecure" = "true"
           }
-        ]
-        nodeSelector = {
-          "node.niovial.io/pool" = "system"
+          cm = {
+            "resource.customizations.health.argoproj.io_Application" = <<-EOF
+              hs = {}
+              hs.status = "Progressing"
+              hs.message = ""
+              if obj.status ~= nil then
+                if obj.status.health ~= nil then
+                  hs.status = obj.status.health.status
+                  if obj.status.health.message ~= nil then
+                    hs.message = obj.status.health.message
+                  end
+                end
+              end
+              return hs
+            EOF
+          }
         }
-      }
-    })
-  ]
+        global = {
+          tolerations = [
+            {
+              key      = "node.niovial.io/pool"
+              operator = "Equal"
+              value    = "system"
+            }
+          ]
+          nodeSelector = {
+            "node.niovial.io/pool" = "system"
+          }
+        }
+      })
+    ]
   depends_on = [module.talos_k8s]
 }
 
