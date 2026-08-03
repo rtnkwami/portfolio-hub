@@ -50,3 +50,35 @@ genesis:
           remoteRef: /tailscale/operator-client-id
         clientSecret:
           remoteRef: /tailscale/operator-client-secret
+
+zitadel:
+  app:
+    domain: iam.niovial.io
+  database:
+    ha:
+      enabled: true
+    
+    nodeSelector:
+      node.niovial.io/pool: database
+    
+    tolerations:
+      - key: node.niovial.io/pool
+        operator: Equal
+        value: database
+    
+  secrets:
+    provider: infisical
+    
+    masterkey: /zitadel/master-key
+   
+    backupKeys:
+      accessKeyId: /zitadel/r2-backup-key-id
+      accessSecretKey: /zitadel/r2/backup-key
+  
+  backups:
+    version: 1
+    store:
+      endpointUrl: https://f692b94900d33a4d47c0d10dd5e1339a.r2.cloudflarestorage.com
+    bucket: zitadel-backups
+    recovery:
+      enabled: false
