@@ -12,7 +12,7 @@ spec:
   source:
     chart: zitadel
     repoURL: https://charts.zitadel.com
-    targetRevision: 10.0.4
+    targetRevision: "10.0.4"
     helm:
       valuesObject:
         replicaCount: 3
