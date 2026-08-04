@@ -25,6 +25,9 @@ spec:
       hostname: "*.niovial.io"
       port: 443
       protocol: HTTPS
+      allowedRoutes:
+        namespaces:
+          from: All
       tls:
         mode: Terminate
         certificateRefs:
