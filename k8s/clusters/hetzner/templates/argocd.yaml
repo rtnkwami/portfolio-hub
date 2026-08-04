@@ -22,13 +22,13 @@ spec:
                 matchLabels:
                   app.kubernetes.io/instance: argocd
               matchLabelKeys: ["pod-template-hash"]
-        {{- if .Values.controllers.nodePlacement.enabled }}
-        {{- with .Values.controllers.nodePlacement.nodeSelector }}
-        {{- include "controller.nodeSelector" $ | nindent 10 }}
+        {{- with .Values.genesis.controllers.nodePlacement.nodeSelector }}
+        nodeSelector:
+          {{- toYaml . | nindent 10 }}
         {{- end }}
-        {{- with .Values.controllers.nodePlacement.tolerations }}
-        {{- include "controller.tolerations" $ | nindent 10 }}
-        {{- end }}
+        {{- with .Values.genesis.controllers.nodePlacement.tolerations }}
+        tolerations:
+          {{- toYaml . | nindent 10 }}
         {{- end }}
         configs:
           params:
