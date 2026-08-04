@@ -6,7 +6,7 @@ metadata:
   name: {{ .Values.database.name }}
   namespace: {{ .Release.Namespace }}
   annotations:
-    argocd.argoproj.io/sync-wave: "4"
+    argocd.argoproj.io/sync-wave: "0"
     argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 spec:
   {{- if .Values.backups.recovery.enabled }}

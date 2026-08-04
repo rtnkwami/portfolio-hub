@@ -4,7 +4,7 @@ metadata:
   name: zitadel-master-key
   namespace: {{ .Release.Namespace }}
   annotations:
-    argocd.argoproj.io/sync-wave: "2"
+    argocd.argoproj.io/sync-wave: "11"
     argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 spec:
   secretStoreRef:
