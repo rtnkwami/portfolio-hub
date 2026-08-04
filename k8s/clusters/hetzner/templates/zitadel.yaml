@@ -23,6 +23,10 @@ spec:
     automated:
       prune: true
       selfHeal: true
+    retry:
+      limit: 10
+      backoff:
+        duration: 10s
     syncOptions:
       - ServerSideApply=true
       - CreateNamespace=true
