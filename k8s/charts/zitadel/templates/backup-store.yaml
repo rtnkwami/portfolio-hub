@@ -9,7 +9,7 @@ metadata:
 spec:
   retentionPolicy: {{ .Values.backups.store.retentionPeriod }}
   configuration:
-    destinationPath: {{ .Values.backups.bucket }}
+    destinationPath: s3://{{ .Values.backups.bucket }}
     {{- if not .Values.backups.store.isS3 }}
     endpointURL: {{ .Values.backups.store.endpointUrl }}
     {{- end }}

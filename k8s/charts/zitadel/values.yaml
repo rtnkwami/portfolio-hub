@@ -71,8 +71,8 @@ backups:
     # retentionPolicy.
     retentionPeriod: 35d
 
-  # Destination bucket path for backups, e.g. "s3://my-bucket" or
-  # "s3://my-bucket/some/prefix".
+  # Destination bucket path for backups, e.g. "my-bucket" or
+  # "my-bucket/some/prefix".
   bucket: ""
 
   # Backup schedule in CNPG Cron syntax — 6 fields (includes seconds),
