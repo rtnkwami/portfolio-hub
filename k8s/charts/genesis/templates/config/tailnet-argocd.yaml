@@ -5,7 +5,7 @@ metadata:
   name: tailnet-argocd
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "9"
+    argocd.argoproj.io/sync-wave: "90"
     tailscale.com/hostname: argocd
     tailscale.com/proxy-group: service-proxies
 spec:

@@ -5,7 +5,7 @@ metadata:
   name: tailnet-grafana
   namespace: observability
   annotations:
-    argocd.argoproj.io/sync-wave: "9"
+    argocd.argoproj.io/sync-wave: "90"
     tailscale.com/hostname: grafana
     tailscale.com/proxy-group: service-proxies
 spec:
