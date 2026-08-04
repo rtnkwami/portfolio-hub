@@ -97,7 +97,7 @@ spec:
       prune: false
       selfHeal: true
     retry:
-      limit: -1
+      limit: 20
       backoff:
         duration: 10s
     syncOptions:
