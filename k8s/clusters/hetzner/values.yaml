@@ -73,7 +73,7 @@ zitadel:
    
     backupKeys:
       accessKeyId: /zitadel/r2-backup-key-id
-      accessSecretKey: /zitadel/r2/backup-key
+      accessSecretKey: /zitadel/r2-backup-key
   
   backups:
     version: 1
