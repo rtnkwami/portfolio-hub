@@ -72,6 +72,15 @@ spec:
               return hs
         redis-ha:
           enabled: true
+        redisSecretInit:
+          {{- with .Values.genesis.controllers.nodePlacement.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.genesis.controllers.nodePlacement.tolerations }}
+          tolerations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
         controller:
           replicas: 1
         server:
