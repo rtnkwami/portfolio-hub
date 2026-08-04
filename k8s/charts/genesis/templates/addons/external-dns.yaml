@@ -22,6 +22,7 @@ spec:
     targetRevision: 1.21.1
     helm:
       valuesObject:
+        triggerLoopOnEvent: true
         {{- if .Values.controllers.nodePlacement.enabled }}
         {{- with .Values.controllers.nodePlacement.nodeSelector }}
         {{- include "controller.nodeSelector" $ | nindent 8 }}
