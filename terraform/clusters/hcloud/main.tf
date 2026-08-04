@@ -23,9 +23,8 @@ resource "helm_release" "argocd" {
     values = [
       yamlencode({
         configs = {
-          params = {
-            "server.insecure" = "true"
-          }
+          # although argocd manages itself, at the very least, we need
+          # app healthchecks to remain in effect before making it manage itself.
           cm = {
             "resource.customizations.health.argoproj.io_Application" = <<-EOF
               hs = {}
@@ -58,6 +57,17 @@ resource "helm_release" "argocd" {
       })
     ]
   depends_on = [module.talos_k8s]
+  
+  # we do this because argocd manages itself
+  lifecycle {
+    ignore_changes = [
+      values,
+      version,
+      namespace,
+      name,
+      chart,
+    ]
+  }
 }
 
 # Infisical is used as the external secret store for the cluster
