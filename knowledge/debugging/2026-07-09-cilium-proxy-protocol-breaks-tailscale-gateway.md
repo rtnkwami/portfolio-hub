@@ -14,3 +14,9 @@ Cilium currently has no per-Gateway option to enable or disable proxy protocol; 
 Installed Envoy Gateway and reconfigured the Tailscale Gateway to run on it instead of under Cilium's Gateway API implementation. This bypasses Cilium's global proxy protocol enforcement for that Gateway specifically, since Envoy Gateway is a separate Gateway API implementation unaffected by Cilium's `enableProxyProtocol` setting. 
 
 Access to ArgoCD and Grafana over the private tailnet was restored.
+
+## Edit: 4th August, 2025
+
+Upon further reflection, I decided to let go of an additional Gateway API component, as I did not want to have yet another tool to maintain in my cluster. The only reason why I wanted to create a private gateway for services in my cluster to be exposed over my tailnet was to use user-friendly names such as `argocd.internal.example.com`.
+
+To me that isn't a justifiable reason to introduce Envoy Gateway into the cluster. As such I decided to drop Envoy Gateway from my cluster, and stick to exposing private services over my tailnet, using a configured proxy group for tailnet services.
