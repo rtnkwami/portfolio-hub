@@ -81,4 +81,4 @@ zitadel:
       endpointUrl: https://f692b94900d33a4d47c0d10dd5e1339a.r2.cloudflarestorage.com
     bucket: zitadel-backups
     recovery:
-      enabled: false
+      enabled: true
