@@ -5,6 +5,7 @@ metadata:
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "21"
+    argocd.argoproj.io/ignore-healthcheck: "true"
   finalizers:
     - resources-finalizer.argocd.argoproj.io/background
 spec:

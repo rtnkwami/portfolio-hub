@@ -4,6 +4,7 @@ metadata:
   name: external-dns
   annotations:
     argocd.argoproj.io/sync-wave: "0"
+    argocd.argoproj.io/ignore-healthcheck: "true"
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
