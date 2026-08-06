@@ -37,3 +37,4 @@ After further experimentation, I found that enabling application health checks f
 To ensure that healthchecks wouldn't choke ArgoCD anymore, I opted-out healthchecks from applications that were children of `genesis` while keeping healthchecks at the higher level where  `argocd`, `genesis` itself and `zitadel` were. That way sync waves + targeted health would gate application syncs correctly.
 
 This resolved the choking issue immediately.
+As an ending note, I went into the ArgoCD GitHub repository and found that they provide healthchecks for most of the custom resources I use in my clusters (e.g. cert-manager Certificate/CertificateRequests, GatewayAPI resources, etc.). As such, I didn't need to implement Lua scripts for any of these resources myself.
