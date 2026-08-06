@@ -32,9 +32,7 @@ spec:
       isWALArchiver: true
       parameters:
         barmanObjectName: zitadel-backup-store
-        {{- if .Values.backups.recovery.enabled }}
         serverName: {{ $current }}
-        {{- end }}
   postgresql:
     {{- if .Values.database.ha.enabled }}
     synchronous:
