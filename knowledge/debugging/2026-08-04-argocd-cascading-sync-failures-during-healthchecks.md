@@ -29,3 +29,11 @@ So I decided to investigate. ArgoCD application controller logs weren't giving m
 It appeared that, when I enabled health checks, ArgoCD was evaluating the health of each resource in a currently executing sync wave. Since there were too many resources to check from different operators and controllers in the same sync wave, ArgoCD's application controller began to choke on the number of things it needed to check, and thus began to time out.
 
 Separating resources into their own individual sync waves instead of concurrently applying a number of controllers all at the same time was the fix.
+
+## Edit: 6th August, 2026
+
+After further experimentation, I found that enabling application health checks for every single application was a bad idea. It caused ArgoCD to directly become overloaded again, since it was checking health for every single CRD on every single controller, plus every single resource in child applications, and all synchronously instead of asynchronously.
+
+To ensure that healthchecks wouldn't choke ArgoCD anymore, I opted-out healthchecks from applications that were children of `genesis` while keeping healthchecks at the higher level where  `argocd`, `genesis` itself and `zitadel` were. That way sync waves + targeted health would gate application syncs correctly.
+
+This resolved the choking issue immediately.
